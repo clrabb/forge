@@ -6,40 +6,25 @@
 
 class singleton_thermo
 {
-public:
-    static singleton_thermo* instance() { static singleton_thermo s_thermo; return &s_thermo; }
-  
 private:
-    static singleton_thermo* s_instance;
+    static singleton_thermo* s_thermo; 
     MAX6675* m_thermoc = 0;
 
 public:
-    
-    // Initialize the single instance
-    //
-    static void init(const int do_pin, const int cs_pin, const int clock_pin)
-    {
-        // Way not thread safe
-        //
-        singleton_thermo::s_instance = new singleton_thermo(do_pin, cs_pin, clock_pin);
-    }
-    
+    static singleton_thermo* instance() { return s_thermo; }
+    static void init(const int do_pin, const int cs_pin, const int clock_pin);
 
 public:
 
-    // Singleton imp ctor
+    // Singleton imp ctor/dtor
     //
-    singleton_thermo(int do_pin, int cs_pin, int clock_pin)
-    {
-        m_thermoc = new MAX6675(clock_pin, cs_pin, do_pin);
-    }
+    singleton_thermo(const int do_pin, const int cs_pin, const int clock_pin);
+
 
     ~singleton_thermo()
     {
         delete( m_thermoc );
     }
-
-public:
 
     // Decorate the Thermocouple lib
     //

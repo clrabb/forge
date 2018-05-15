@@ -38,6 +38,8 @@ void init_led()
     matrix.writeDisplay();
     delay(1000);
 
+
+
     return;
 }
 
@@ -54,7 +56,7 @@ void init_led()
 // -- CR 5/14/2018
 //
 void setup() {
-    //singleton_thermo::init(THERM_DO, THERM_CS, THERM_CLK);
+    singleton_thermo::init(THERM_DO, THERM_CS, THERM_CLK);
 
     // Set up pin usage
     //
