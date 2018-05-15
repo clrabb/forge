@@ -38,8 +38,6 @@ void init_led()
     matrix.writeDisplay();
     delay(1000);
 
-
-
     return;
 }
 
@@ -66,7 +64,7 @@ void setup() {
 
     // Set up display
     //
-    //init_led();
+    init_led();
 
     digitalWrite(GND_PIN, LOW);
     digitalWrite(VCC_PIN, HIGH);
@@ -78,17 +76,17 @@ void setup() {
 }
 
 void loop() {
-    //singleton_thermo* s = singleton_thermo::instance();
+    singleton_thermo* s = singleton_thermo::instance();
 
     Serial.println("Hello!");
 
     Serial.print("C = ");
-    //Serial.println(s->read_c());
+    Serial.println(s->read_c());
     Serial.print("F = ");
-    //Serial.println(s->read_f());
+    Serial.println(s->read_f());
 
-    //matrix.println(9999);
-    //matrix.writeDisplay();
+    matrix.println(round(s->read_f()));
+    matrix.writeDisplay();
 
     delay(1000);
 }

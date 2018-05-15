@@ -19,25 +19,14 @@ public:
     // Singleton imp ctor/dtor
     //
     singleton_thermo(const int do_pin, const int cs_pin, const int clock_pin);
+    ~singleton_thermo();
 
-
-    ~singleton_thermo()
-    {
-        delete( m_thermoc );
-    }
-
+ 
     // Decorate the Thermocouple lib
     //
-    float read_f()
-    {
-        //return m_thermoc->readFahrenheit();
-        return 500;
-    }
+    float read_f();
+    float read_c();
 
-    float read_c()
-    {
-        return m_thermoc->readCelsius();
-    }
 
 private:
     singleton_thermo(const singleton_thermo&); // disable copy ctor
