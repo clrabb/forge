@@ -1,2 +1,0 @@
-eclipse.preferences.version=1
-libraries=["MAX6675 library",{"package"\:"arduino","platform"\:"avr","library"\:"Wire"},"Adafruit GFX Library"]
