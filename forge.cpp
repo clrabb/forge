@@ -11,12 +11,32 @@ static const int THERM_DO   = 8;
 static const int THERM_CS   = 9;
 static const int THERM_CLK  = 10;
 
-
-
 static const long BAUD_RATE = 115200;
 
 
 Adafruit_7segment matrix = Adafruit_7segment();
+void init_led()
+{
+    matrix.begin(0x70);
+    matrix.print(9, DEC);
+    matrix.writeDisplay();
+    delay(100);
+
+    matrix.print(99, DEC);
+    matrix.writeDisplay();
+    delay(100);
+
+    matrix.print(999, DEC);
+    matrix.writeDisplay();
+    delay(100);
+
+    matrix.print(9999, DEC);
+    matrix.writeDisplay();
+    delay(1000);
+
+    return;
+}
+
 
 // There is some concern here regarding global vs non-global
 // variables.  In general I stay away from globals like the plague.
@@ -40,7 +60,7 @@ void setup() {
 
     // Set up display
     //
-    matrix.begin(0x70);
+    init_led();
 
 
     digitalWrite(GND_PIN, LOW);
