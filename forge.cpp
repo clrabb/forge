@@ -1,28 +1,46 @@
-
-// this example is public domain. enjoy!
-// www.ladyada.net/learn/sensors/thermocouple
-
 #include "arduino.h"
 #include "max6675.h"
+#include "Adafruit_LEDBackpack.h"
+#include "Adafruit_GFX.h"
 #include "singleton.h"
 
-static const int thermoDO   = 4;
-static const int thermoCS   = 7;
-static const int thermoCLK  = 9;
 
-static const int VCC_PIN     = 3;
-static const int GND_PIN     = 2;
+static const int GND_PIN    = 2;
+static const int VCC_PIN    = 3;
+static const int THERM_DO   = 8;
+static const int THERM_CS   = 9;
+static const int THERM_CLK  = 10;
+
+
 
 static const long BAUD_RATE = 115200;
 
-void setup() {
-    singleton_thermo::init(thermoDO, thermoCS, thermoCLK);
 
-    // Setup pin usage
+Adafruit_7segment matrix = Adafruit_7segment();
+
+// There is some concern here regarding global vs non-global
+// variables.  In general I stay away from globals like the plague.
+// The arduino has a very limited memory size, though, and allocating
+// and deallocating heap objects will fragment what little is there.
+// Placing them on the stack is probably ok but even those frames will chew
+// up memory.  I still don't know which practices are good or bad, here.
+// For those reasons, and because the setup/loop style really forces the
+// use of some globals, I am going to use singletons which are
+// effectively globals in any case.
+// -- CR 5/14/2018
+//
+void setup() {
+    singleton_thermo::init(THERM_DO, THERM_CS, THERM_CLK);
+
+    // Set up pin usage
     //
     pinMode(LED_BUILTIN, OUTPUT);
     pinMode(VCC_PIN,     OUTPUT);
     pinMode(GND_PIN,     LOW   );
+
+    // Set up display
+    //
+    matrix.begin(0x70);
 
 
     digitalWrite(GND_PIN, LOW);
@@ -41,6 +59,9 @@ void loop() {
     Serial.println(s.read_c());
     Serial.print("F = ");
     Serial.println(s.read_f());
+
+    matrix.println(9999);
+    matrix.writeDisplay();
 
     delay(1000);
 }

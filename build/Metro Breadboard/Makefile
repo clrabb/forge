@@ -10,6 +10,7 @@ mymkdir = mkdir -p $1
 endif
 
 PROJECT_OBJS = \
+	project/Adafruit_LEDBackpack.cpp.o \
 	project/forge.cpp.o \
 
 PLATFORM_CORE_OBJS = \
@@ -43,6 +44,11 @@ PLATFORM_VARIANT_OBJS = \
 
 LIBRARIES_OBJS = \
 	libraries/MAX6675_library/1.0.0/max6675.cpp.o \
+	libraries/Wire/src/Wire.cpp.o \
+	libraries/Wire/src/utility/twi.c.o \
+	libraries/Adafruit_GFX_Library/1.2.3/Adafruit_SPITFT.cpp.o \
+	libraries/Adafruit_GFX_Library/1.2.3/glcdfont.c.o \
+	libraries/Adafruit_GFX_Library/1.2.3/Adafruit_GFX.cpp.o \
 
 TARGETS = \
 	forge.hex \
@@ -64,9 +70,17 @@ clean:
 size:
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-size" -A "./forge.elf"
 
+project/Adafruit_LEDBackpack.cpp.o: ../../Adafruit_LEDBackpack.cpp project/Adafruit_LEDBackpack.cpp.d
+	@$(call mymkdir,$(dir $@))
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
+
+project/Adafruit_LEDBackpack.cpp.d: ;
+
+-include project/Adafruit_LEDBackpack.cpp.d 
+
 project/forge.cpp.o: ../../forge.cpp project/forge.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 
 project/forge.cpp.d: ;
 
@@ -75,7 +89,7 @@ project/forge.cpp.d: ;
 
 core/PluggableUSB.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/PluggableUSB.cpp core/PluggableUSB.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/PluggableUSB.cpp.d: ;
@@ -84,7 +98,7 @@ core/PluggableUSB.cpp.d: ;
 
 core/wiring_pulse.c.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/wiring_pulse.c core/wiring_pulse.c.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 	
 core/wiring_pulse.c.d: ;
@@ -93,7 +107,7 @@ core/wiring_pulse.c.d: ;
 
 core/Tone.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/Tone.cpp core/Tone.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/Tone.cpp.d: ;
@@ -102,7 +116,7 @@ core/Tone.cpp.d: ;
 
 core/wiring.c.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/wiring.c core/wiring.c.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 	
 core/wiring.c.d: ;
@@ -111,7 +125,7 @@ core/wiring.c.d: ;
 
 core/wiring_shift.c.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/wiring_shift.c core/wiring_shift.c.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 	
 core/wiring_shift.c.d: ;
@@ -120,7 +134,7 @@ core/wiring_shift.c.d: ;
 
 core/IPAddress.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/IPAddress.cpp core/IPAddress.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/IPAddress.cpp.d: ;
@@ -129,7 +143,7 @@ core/IPAddress.cpp.d: ;
 
 core/wiring_digital.c.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/wiring_digital.c core/wiring_digital.c.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 	
 core/wiring_digital.c.d: ;
@@ -138,7 +152,7 @@ core/wiring_digital.c.d: ;
 
 core/WString.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/WString.cpp core/WString.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/WString.cpp.d: ;
@@ -147,7 +161,7 @@ core/WString.cpp.d: ;
 
 core/Print.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/Print.cpp core/Print.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/Print.cpp.d: ;
@@ -156,7 +170,7 @@ core/Print.cpp.d: ;
 
 core/new.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/new.cpp core/new.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/new.cpp.d: ;
@@ -165,7 +179,7 @@ core/new.cpp.d: ;
 
 core/abi.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/abi.cpp core/abi.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/abi.cpp.d: ;
@@ -174,12 +188,12 @@ core/abi.cpp.d: ;
 
 core/wiring_pulse.S.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/wiring_pulse.S
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -x assembler-with-cpp -flto -MMD -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -x assembler-with-cpp -flto -MMD -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/HardwareSerial.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/HardwareSerial.cpp core/HardwareSerial.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/HardwareSerial.cpp.d: ;
@@ -188,7 +202,7 @@ core/HardwareSerial.cpp.d: ;
 
 core/Stream.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/Stream.cpp core/Stream.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/Stream.cpp.d: ;
@@ -197,7 +211,7 @@ core/Stream.cpp.d: ;
 
 core/HardwareSerial1.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/HardwareSerial1.cpp core/HardwareSerial1.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/HardwareSerial1.cpp.d: ;
@@ -206,7 +220,7 @@ core/HardwareSerial1.cpp.d: ;
 
 core/HardwareSerial0.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/HardwareSerial0.cpp core/HardwareSerial0.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/HardwareSerial0.cpp.d: ;
@@ -215,7 +229,7 @@ core/HardwareSerial0.cpp.d: ;
 
 core/hooks.c.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/hooks.c core/hooks.c.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 	
 core/hooks.c.d: ;
@@ -224,7 +238,7 @@ core/hooks.c.d: ;
 
 core/HardwareSerial2.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/HardwareSerial2.cpp core/HardwareSerial2.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/HardwareSerial2.cpp.d: ;
@@ -233,7 +247,7 @@ core/HardwareSerial2.cpp.d: ;
 
 core/HardwareSerial3.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/HardwareSerial3.cpp core/HardwareSerial3.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/HardwareSerial3.cpp.d: ;
@@ -242,7 +256,7 @@ core/HardwareSerial3.cpp.d: ;
 
 core/WInterrupts.c.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/WInterrupts.c core/WInterrupts.c.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 	
 core/WInterrupts.c.d: ;
@@ -251,7 +265,7 @@ core/WInterrupts.c.d: ;
 
 core/wiring_analog.c.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/wiring_analog.c core/wiring_analog.c.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 	
 core/wiring_analog.c.d: ;
@@ -260,7 +274,7 @@ core/wiring_analog.c.d: ;
 
 core/main.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/main.cpp core/main.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/main.cpp.d: ;
@@ -269,7 +283,7 @@ core/main.cpp.d: ;
 
 core/CDC.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/CDC.cpp core/CDC.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/CDC.cpp.d: ;
@@ -278,7 +292,7 @@ core/CDC.cpp.d: ;
 
 core/USBCore.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/USBCore.cpp core/USBCore.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/USBCore.cpp.d: ;
@@ -287,7 +301,7 @@ core/USBCore.cpp.d: ;
 
 core/WMath.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino/WMath.cpp core/WMath.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc-ar" rcs  "./core.a" "$@"
 
 core/WMath.cpp.d: ;
@@ -298,9 +312,49 @@ core/WMath.cpp.d: ;
 
 libraries/MAX6675_library/1.0.0/max6675.cpp.o: /Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0/max6675.cpp libraries/MAX6675_library/1.0.0/max6675.cpp.d
 	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" "$<" -o "$@"
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
 
 libraries/MAX6675_library/1.0.0/max6675.cpp.d: ;
 
 -include libraries/MAX6675_library/1.0.0/max6675.cpp.d
+
+libraries/Wire/src/Wire.cpp.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src/Wire.cpp libraries/Wire/src/Wire.cpp.d
+	@$(call mymkdir,$(dir $@))
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
+
+libraries/Wire/src/Wire.cpp.d: ;
+
+-include libraries/Wire/src/Wire.cpp.d
+
+libraries/Wire/src/utility/twi.c.o: /Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src/utility/twi.c libraries/Wire/src/utility/twi.c.d
+	@$(call mymkdir,$(dir $@))
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
+
+libraries/Wire/src/utility/twi.c.d: ;
+
+-include libraries/Wire/src/utility/twi.c.d
+
+libraries/Adafruit_GFX_Library/1.2.3/Adafruit_SPITFT.cpp.o: /Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3/Adafruit_SPITFT.cpp libraries/Adafruit_GFX_Library/1.2.3/Adafruit_SPITFT.cpp.d
+	@$(call mymkdir,$(dir $@))
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
+
+libraries/Adafruit_GFX_Library/1.2.3/Adafruit_SPITFT.cpp.d: ;
+
+-include libraries/Adafruit_GFX_Library/1.2.3/Adafruit_SPITFT.cpp.d
+
+libraries/Adafruit_GFX_Library/1.2.3/glcdfont.c.o: /Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3/glcdfont.c libraries/Adafruit_GFX_Library/1.2.3/glcdfont.c.d
+	@$(call mymkdir,$(dir $@))
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-gcc" -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD -flto -fno-fat-lto-objects -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
+
+libraries/Adafruit_GFX_Library/1.2.3/glcdfont.c.d: ;
+
+-include libraries/Adafruit_GFX_Library/1.2.3/glcdfont.c.d
+
+libraries/Adafruit_GFX_Library/1.2.3/Adafruit_GFX.cpp.o: /Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3/Adafruit_GFX.cpp libraries/Adafruit_GFX_Library/1.2.3/Adafruit_GFX.cpp.d
+	@$(call mymkdir,$(dir $@))
+	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
+
+libraries/Adafruit_GFX_Library/1.2.3/Adafruit_GFX.cpp.d: ;
+
+-include libraries/Adafruit_GFX_Library/1.2.3/Adafruit_GFX.cpp.d
 

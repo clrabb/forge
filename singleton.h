@@ -47,7 +47,8 @@ public:
     //
     float read_f()
     {
-        return m_thermoc->readFahrenheit();
+        //return m_thermoc->readFahrenheit();
+        return 500.00;
     }
 
     float read_c()
