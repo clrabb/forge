@@ -10,7 +10,6 @@ mymkdir = mkdir -p $1
 endif
 
 PROJECT_OBJS = \
-	project/Adafruit_LEDBackpack.cpp.o \
 	project/forge.cpp.o \
 
 PLATFORM_CORE_OBJS = \
@@ -69,14 +68,6 @@ clean:
 
 size:
 	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-size" -A "./forge.elf"
-
-project/Adafruit_LEDBackpack.cpp.o: ../../Adafruit_LEDBackpack.cpp project/Adafruit_LEDBackpack.cpp.d
-	@$(call mymkdir,$(dir $@))
-	"/Users/crabb/.arduinocdt/packages/arduino/tools/avr-gcc/4.9.2-atmel3.5.4-arduino2/bin/avr-g++" -c -g -Os -w -std=gnu++11 -fpermissive -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD -flto -mmcu=atmega328p -DF_CPU=16000000L -DARDUINO=10608 -DARDUINO_AVR_METRO -DARDUINO_ARCH_AVR   -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/cores/arduino" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/variants/standard" -I"/Users/crabb/.arduinocdt/libraries/MAX6675_library/1.0.0" -I"/Users/crabb/.arduinocdt/packages/arduino/hardware/avr/1.6.21/libraries/Wire/src" -I"/Users/crabb/.arduinocdt/libraries/Adafruit_GFX_Library/1.2.3" "$<" -o "$@"
-
-project/Adafruit_LEDBackpack.cpp.d: ;
-
--include project/Adafruit_LEDBackpack.cpp.d 
 
 project/forge.cpp.o: ../../forge.cpp project/forge.cpp.d
 	@$(call mymkdir,$(dir $@))

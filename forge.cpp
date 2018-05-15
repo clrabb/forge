@@ -1,7 +1,9 @@
-#include "arduino.h"
-#include "max6675.h"
-#include "Adafruit_LEDBackpack.h"
-#include "Adafruit_GFX.h"
+
+#include <arduino.h>
+#include <max6675.h>
+#include <Adafruit_LEDBackpack.h>
+#include <Adafruit_GFX.h>
+#include <Wire.h>
 #include "singleton.h"
 
 
@@ -15,9 +17,12 @@ static const long BAUD_RATE = 115200;
 
 
 Adafruit_7segment matrix = Adafruit_7segment();
+
+
 void init_led()
 {
     matrix.begin(0x70);
+
     matrix.print(9, DEC);
     matrix.writeDisplay();
     delay(100);
@@ -62,7 +67,6 @@ void setup() {
     //
     init_led();
 
-
     digitalWrite(GND_PIN, LOW);
     digitalWrite(VCC_PIN, HIGH);
 
@@ -75,6 +79,8 @@ void setup() {
 void loop() {
     singleton_thermo& s = singleton_thermo::instance();
 
+    Serial.println("Hello!");
+
     Serial.print("C = ");
     Serial.println(s.read_c());
     Serial.print("F = ");
@@ -85,4 +91,3 @@ void loop() {
 
     delay(1000);
 }
-
