@@ -20,19 +20,16 @@ public:
     //
     singleton_thermo(const int do_pin, const int cs_pin, const int clock_pin);
     ~singleton_thermo();
-
  
     // Decorate the Thermocouple lib
     //
     float read_f();
     float read_c();
 
-
 private:
     singleton_thermo(const singleton_thermo&); // disable copy ctor
     singleton_thermo & operator=(const singleton_thermo&); //disable assignment op
     singleton_thermo(); // disable default ctor
-
 };
 
 #endif

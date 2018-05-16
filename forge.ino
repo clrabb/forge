@@ -2,39 +2,45 @@
 #include <arduino.h>
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
+//#include <PinChangeInt.h>
 #include <Wire.h>
 #include "singleton.h"
 
+//#define __DEBUG__
 
+// Constants
+//
 static const int GND_PIN    = 2;
 static const int VCC_PIN    = 3;
 static const int THERM_DO   = 8;
 static const int THERM_CS   = 9;
 static const int THERM_CLK  = 10;
-
 static const long BAUD_RATE = 115200;
 
-
+// Globals :[
+//
 Adafruit_7segment matrix = Adafruit_7segment();
 
-  
+
+// Sets up LED and prints test pattern
+//
 void init_led()
 {
     matrix.begin(0x70);
 
-    matrix.print(9, DEC);
+    matrix.print(8, DEC);
     matrix.writeDisplay();
     delay(100);
 
-    matrix.print(99, DEC);
+    matrix.print(88, DEC);
     matrix.writeDisplay();
     delay(100);
 
-    matrix.print(999, DEC);
+    matrix.print(888, DEC);
     matrix.writeDisplay();
     delay(100);
 
-    matrix.print(9999, DEC);
+    matrix.print(8888, DEC);
     matrix.writeDisplay();
     delay(1000);
 
@@ -72,18 +78,19 @@ void setup() {
     Serial.begin(BAUD_RATE);
 
     // wait for MAX chip to stabilize
+    // 
     delay(500);
 }
 
 void loop() {
     singleton_thermo* s = singleton_thermo::instance();
 
-    Serial.println("Hello!");
-
+#ifdef __DEBUG__
     Serial.print("C = ");
     Serial.println(s->read_c());
     Serial.print("F = ");
     Serial.println(s->read_f());
+#endif
 
     matrix.println(round(s->read_f()));
     matrix.writeDisplay();
