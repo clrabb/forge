@@ -2,18 +2,21 @@
 #define SINGLETON_T_H
 
 template <class T>
-class singleton
+class singleton_t
 {
 private:
-    static singleton<T>* s_instance;
+    static T* s_instance;
 
 public:
-    static singleton<T>* instance() { return s_instance; }
-    singleton<T>(){}; // ctor
+    static T& instance() { return *s_instance; }
+    singleton_t<T>(T* i){ singleton_t<T>::s_instance = i; } // ctor
+    ~singleton_t<T>() { if (singleton_t<T>::s_instance != NULL) delete singleton_t<T>::s_instance; }  // dtor
 
 private:
-    singleton(const singleton&);             // disable copy ctor
-    singleton& operator=(const singleton&);  //disable assignment op
+    singleton_t(const singleton_t&);             // disable copy ctor
+    singleton_t& operator=(const singleton_t&);  //disable assignment op
 };
+
+template<typename T> T* singleton_t<T>::s_instance;
 
 #endif // SINGLETON_T_H

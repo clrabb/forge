@@ -1,7 +1,8 @@
 
 #include "forge.h"
-#include "singleton.h"
+#include "thermoc.h"
 #include "singleton_t.h"
+#include "forge_types.h"
 #include <arduino.h>
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
@@ -24,7 +25,8 @@ static const long BAUD_RATE = 115200;
 // Globals :[
 //
 Adafruit_7segment matrix = Adafruit_7segment();
-forge_data d;
+singleton_t<thermoc> s_tc( new thermoc(THERM_DO, THERM_CS, THERM_CLK) );
+singleton_t<error_struct> error_st( new error_struct() );
 
 // Sets up LED and prints test pattern
 //
@@ -63,9 +65,8 @@ void init_led()
 // effectively globals in any case.
 // -- CR 5/14/2018
 //
-void setup() {
-    singleton_thermo::init(THERM_DO, THERM_CS, THERM_CLK);
-    singleton<int> s;
+void setup() 
+{
 
     // Set up pin usage
     //
@@ -88,17 +89,18 @@ void setup() {
     delay(500);
 }
 
-void loop() {
-    singleton_thermo* s = singleton_thermo::instance();
-
+void loop() 
+{
+    thermoc& tc = s_tc.instance();
+   
 #ifdef __DEBUG__
     Serial.print("C = ");
-    Serial.println(s->read_c());
+    Serial.println(tc_tc->read_c());
     Serial.print("F = ");
-    Serial.println(s->read_f());
+    Serial.println(tc->read_f());
 #endif
 
-    matrix.println(round(s->read_f()));
+    matrix.println(round(tc.read_f()));
     matrix.writeDisplay();
 
     delay(1000);
