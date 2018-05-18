@@ -1,10 +1,14 @@
 
+#include "forge.h"
+#include "singleton.h"
+#include "singleton_t.h"
 #include <arduino.h>
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
-//#include <PinChangeInt.h>
 #include <Wire.h>
-#include "singleton.h"
+//#include <PinChangeInt.h>
+
+
 
 //#define __DEBUG__
 
@@ -20,7 +24,7 @@ static const long BAUD_RATE = 115200;
 // Globals :[
 //
 Adafruit_7segment matrix = Adafruit_7segment();
-
+forge_data d;
 
 // Sets up LED and prints test pattern
 //
@@ -61,12 +65,14 @@ void init_led()
 //
 void setup() {
     singleton_thermo::init(THERM_DO, THERM_CS, THERM_CLK);
+    singleton<int> s;
 
     // Set up pin usage
     //
     pinMode(LED_BUILTIN, OUTPUT);
     pinMode(VCC_PIN,     OUTPUT);
     pinMode(GND_PIN,     LOW   );
+    
 
     // Set up display
     //
@@ -78,7 +84,7 @@ void setup() {
     Serial.begin(BAUD_RATE);
 
     // wait for MAX chip to stabilize
-    // 
+    //
     delay(500);
 }
 
