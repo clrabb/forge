@@ -1,14 +1,14 @@
 
-#include "forge.h"
 #include "thermoc.h"
 #include "singleton_t.h"
 #include "forge_types.h"
+#include "forge_data.h"
+#include "error.h"
 #include <arduino.h>
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
 #include <Wire.h>
 //#include <PinChangeInt.h>
-
 
 
 //#define __DEBUG__
@@ -25,8 +25,16 @@ static const long BAUD_RATE = 115200;
 // Globals :[
 //
 Adafruit_7segment matrix = Adafruit_7segment();
-singleton_t<thermoc> s_tc( new thermoc(THERM_DO, THERM_CS, THERM_CLK) );
-singleton_t<error_struct> error_st( new error_struct() );
+
+void init_singletons()
+{
+    singleton_t<thermoc> s_tc( new thermoc(THERM_DO, THERM_CS, THERM_CLK) );
+    singleton_t<forge_data> s_fdata( new forge_data() );
+    singleton_t<error> s_error( new error() );
+
+    return;
+}
+
 
 // Sets up LED and prints test pattern
 //
@@ -79,6 +87,10 @@ void setup()
     //
     init_led();
 
+    // Initialize singletons
+    //
+    init_singletons();
+
     digitalWrite(GND_PIN, LOW);
     digitalWrite(VCC_PIN, HIGH);
 
@@ -87,22 +99,33 @@ void setup()
     // wait for MAX chip to stabilize
     //
     delay(500);
+
+    return;
 }
 
 void loop() 
 {
-    thermoc& tc = s_tc.instance();
+    thermoc& tc      = singleton_t<thermoc>::instance();
+    forge_data& fd   = singleton_t<forge_data>::instance();
+    error& es = singleton_t<error>::instance();
+
+    //if ( 
+
+    fd.current_temp( tc.read_f() );
+    
    
 #ifdef __DEBUG__
     Serial.print("C = ");
-    Serial.println(tc_tc->read_c());
+    Serial.println(tc.read_c());
     Serial.print("F = ");
-    Serial.println(tc->read_f());
+    Serial.println(tc.read_f());
 #endif
 
     matrix.println(round(tc.read_f()));
     matrix.writeDisplay();
 
     delay(1000);
+
+    return;
 }
 

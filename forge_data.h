@@ -22,14 +22,14 @@ public:
 
     // Member functions
     //
-    int get_setpoint() { return m_setpoint; }
-    void set_setpoint( int setpoint ) { m_setpoint = setpoint; }
+    int setpoint() { return m_setpoint; }
+    void setpoint( unsigned short setpoint ) { m_setpoint = setpoint; }
     
-    int get_current_temp() { return m_current_temp; }
-    void set_current_temp( int current_temp ) { m_current_temp = current_temp; }
+    int current_temp() { return m_current_temp; }
+    void current_temp( unsigned short current_temp ) { m_current_temp = current_temp; }
     
-    int get_mode() { return m_mode; }
-    forge_status set_mode( forge_mode mode );
+    int mode() { return m_mode; }
+    forge_status mode( forge_mode mode );
 
 private:
     // Disable unwanted compiler generated crap
