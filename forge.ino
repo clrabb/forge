@@ -10,19 +10,26 @@
 #include <Wire.h>
 //#include <PinChangeInt.h>
 
+#define __DEBUG__
+
 
 // Constants
 //
-static const int GND_PIN    = 2;
-static const int VCC_PIN    = 3;
+static const int UP_BTN_PIN = 2;
+static const int DN_BTN_PIN = 3;
 static const int THERM_DO   = 8;
 static const int THERM_CS   = 9;
 static const int THERM_CLK  = 10;
+
 static const long BAUD_RATE = 115200;
 
 // Globals :[
 //
 Adafruit_7segment matrix = Adafruit_7segment();
+int g_last_set_point              = 0;
+volatile int up_button_state      = 0;
+volatile int down_button_state    = 0;
+volatile int g_set_point          = 0;
 
 void init_singletons()
 {
@@ -77,8 +84,13 @@ void setup()
     // Set up pin usage
     //
     pinMode(LED_BUILTIN, OUTPUT);
-    pinMode(VCC_PIN,     OUTPUT);
-    pinMode(GND_PIN,     LOW   );
+    pinMode(UP_BTN_PIN, INPUT  );
+    pinMode(DN_BTN_PIN, INPUT  );
+
+    // Set up interrupts for buttons
+    //
+    attachInterrupt(0, upButton_ISR, CHANGE);
+    attachInterrupt(1, dnButton_ISR, CHANGE);
     
     // Initialize the various singletons
     //
@@ -87,9 +99,6 @@ void setup()
     // Set up display
     //
     init_led();
-
-    digitalWrite(GND_PIN, LOW);
-    digitalWrite(VCC_PIN, HIGH);
 
     // wait for MAX chip to stabilize
     //
@@ -103,17 +112,66 @@ void loop()
     thermoc& tc      = singleton_t<thermoc>::instance();
     forge_data& fd   = singleton_t<forge_data>::instance();
     error& es = singleton_t<error>::instance();
+
+
    
 #ifdef __DEBUG__
-    Serial.print("F = ");
-    Serial.println(tc.read_f());
+    Serial.print( "F = " );
+    Serial.println( tc.read_f() );
+    Serial.println( "set point: " );
+    Serial.println( g_set_point );
 #endif
 
-    matrix.println(round(tc.read_f()));
-    matrix.writeDisplay();
+    if ( g_last_set_point != g_set_point )
+    {
+        digitalWrite( LED_BUILTIN, HIGH );
+        matrix.println( g_set_point );
+        matrix.writeDisplay();
+        g_last_set_point = g_set_point;
+        delay( 1000 );
+    }
 
-    delay(1000);
+    digitalWrite( LED_BUILTIN, LOW );
+    matrix.println( round( tc.read_f() ) );
+    matrix.writeDisplay(); 
+
+    delay( 1000 );
 
     return;
+}
+
+// Interrupt routines
+//
+void upButton_ISR()
+{
+    // up_button_state is a global
+    //
+    up_button_state = digitalRead(UP_BTN_PIN);
+    if ( up_button_state == 1 )
+    {
+        ++g_set_point;
+    }
+
+    
+    /*
+    forge_data& fd = singleton_t<forge_data>::instance();
+    fd.setpoint( fd.setpoint() + 1 );
+    */
+}
+
+void dnButton_ISR()
+{
+    // up_button_state is a global
+    //
+    down_button_state = digitalRead(DN_BTN_PIN);
+    if ( down_button_state == 1 )
+    {
+        --g_set_point;
+    }
+
+    /*
+    forge_data& fd = singleton_t<forge_data>::instance();
+    fd.setpoint( fd.setpoint() + 1 );
+    */
 }
 
