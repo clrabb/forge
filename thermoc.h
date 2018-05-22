@@ -7,7 +7,7 @@
 class thermoc
 {
 private:
-    MAX6675* m_tc = 0;
+    MAX6675 m_tc;
 
 public:
 

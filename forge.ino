@@ -11,8 +11,6 @@
 //#include <PinChangeInt.h>
 
 
-//#define __DEBUG__
-
 // Constants
 //
 static const int GND_PIN    = 2;
@@ -34,7 +32,6 @@ void init_singletons()
 
     return;
 }
-
 
 // Sets up LED and prints test pattern
 //
@@ -75,6 +72,7 @@ void init_led()
 //
 void setup() 
 {
+    Serial.begin(BAUD_RATE);
 
     // Set up pin usage
     //
@@ -82,19 +80,16 @@ void setup()
     pinMode(VCC_PIN,     OUTPUT);
     pinMode(GND_PIN,     LOW   );
     
+    // Initialize the various singletons
+    //
+    init_singletons();
 
     // Set up display
     //
     init_led();
 
-    // Initialize singletons
-    //
-    init_singletons();
-
     digitalWrite(GND_PIN, LOW);
     digitalWrite(VCC_PIN, HIGH);
-
-    Serial.begin(BAUD_RATE);
 
     // wait for MAX chip to stabilize
     //
@@ -108,15 +103,8 @@ void loop()
     thermoc& tc      = singleton_t<thermoc>::instance();
     forge_data& fd   = singleton_t<forge_data>::instance();
     error& es = singleton_t<error>::instance();
-
-    //if ( 
-
-    fd.current_temp( tc.read_f() );
-    
    
 #ifdef __DEBUG__
-    Serial.print("C = ");
-    Serial.println(tc.read_c());
     Serial.print("F = ");
     Serial.println(tc.read_f());
 #endif

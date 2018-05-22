@@ -10,7 +10,6 @@ private:
 public:
     static T& instance() { return *s_instance; }
     singleton_t<T>(T* i){ singleton_t<T>::s_instance = i; } // ctor
-    ~singleton_t<T>() { if (singleton_t<T>::s_instance != 0) delete singleton_t<T>::s_instance; }  // dtor
 
 private:
     singleton_t(const singleton_t&);             // disable copy ctor
