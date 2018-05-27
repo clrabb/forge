@@ -10,10 +10,10 @@ class forge_data
 private:
     // Member variables
     //
-    unsigned short m_setpoint;
-    unsigned short m_current_temp;
-    forge_mode m_mode;
-
+    volatile unsigned short m_setpoint;
+    unsigned short          m_current_temp;
+    unsigned long           m_last_sp_changed_mills;
+    unsigned long           m_last_temp_changed_mills;
 
 public:
     // Ctors and dtors
@@ -27,9 +27,12 @@ public:
     
     int current_temp() { return m_current_temp; }
     void current_temp( unsigned short current_temp ) { m_current_temp = current_temp; }
-    
-    int mode() { return m_mode; }
-    forge_status mode( forge_mode mode );
+
+    unsigned long last_sp_changed_mills() { return m_last_sp_changed_mills; }
+    void last_sp_changed_mills( unsigned long mills ) { m_last_sp_changed_mills = mills; }
+
+    unsigned long last_temp_changed_mills() { return m_last_temp_changed_mills; }
+    void last_temp_changed_mills( unsigned long mills ) { m_last_temp_changed_mills = mills; }
 
 private:
     // Disable unwanted compiler generated crap

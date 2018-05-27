@@ -8,7 +8,7 @@
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
 #include <Wire.h>
-//#include <PinChangeInt.h>
+#include <math.h>
 
 #define __DEBUG__
 
@@ -20,22 +20,79 @@ static const int DN_BTN_PIN = 3;
 static const int THERM_DO   = 8;
 static const int THERM_CS   = 9;
 static const int THERM_CLK  = 10;
-
+static const int START_SP   = 100;
 static const long BAUD_RATE = 115200;
 
 // Globals :[
 //
 Adafruit_7segment matrix = Adafruit_7segment();
-int g_last_set_point              = 0;
-volatile int up_button_state      = 0;
-volatile int down_button_state    = 0;
-volatile int g_set_point          = 0;
+int           g_last_set_point               = 0;
+volatile int  up_button_state                = 0;
+volatile int  down_button_state              = 0;
+
+// Interrupt routines
+//
+void upButton_ISR()
+{
+    forge_data& fd = singleton_t< forge_data >::instance();
+    
+    // up_button_state is a global
+    //
+    up_button_state = digitalRead(UP_BTN_PIN);
+    if ( up_button_state == 1 )
+    {
+        fd.setpoint( fd.setpoint() + 1 );
+        fd.last_sp_changed_mills( millis() );
+    }
+
+    return;
+}
+
+void dnButton_ISR()
+{
+    forge_data& fd = singleton_t< forge_data >::instance();
+    // up_button_state is a global
+    //
+    down_button_state = digitalRead(DN_BTN_PIN);
+    if ( down_button_state == 1 && fd.setpoint() > 0 )
+    {
+        fd.setpoint( fd.setpoint() - 1 );
+    }
+    fd.last_sp_changed_mills( millis() );
+
+    return;
+}
 
 void init_singletons()
 {
     singleton_t<thermoc> s_tc( new thermoc(THERM_DO, THERM_CS, THERM_CLK) );
     singleton_t<forge_data> s_fdata( new forge_data() );
     singleton_t<error> s_error( new error() );
+
+    forge_data& fd = singleton_t< forge_data >::instance();
+    fd.last_sp_changed_mills( millis() ); // millis() returns milliseconds since startup
+    fd.setpoint( START_SP );
+
+    return;
+}
+
+void init_pins()
+{
+    // Set up pin usage
+    //
+    pinMode(LED_BUILTIN, OUTPUT);
+    pinMode(UP_BTN_PIN, INPUT  );
+    pinMode(DN_BTN_PIN, INPUT  );
+
+    return;
+}
+
+void init_interrupts()
+{
+    // Set up interrupts for buttons
+    //
+    attachInterrupt(0, upButton_ISR, RISING);
+    attachInterrupt(1, dnButton_ISR, RISING);
 
     return;
 }
@@ -81,23 +138,9 @@ void setup()
 {
     Serial.begin(BAUD_RATE);
 
-    // Set up pin usage
-    //
-    pinMode(LED_BUILTIN, OUTPUT);
-    pinMode(UP_BTN_PIN, INPUT  );
-    pinMode(DN_BTN_PIN, INPUT  );
-
-    // Set up interrupts for buttons
-    //
-    attachInterrupt(0, upButton_ISR, CHANGE);
-    attachInterrupt(1, dnButton_ISR, CHANGE);
-    
-    // Initialize the various singletons
-    //
+    init_pins();
+    init_interrupts();
     init_singletons();
-
-    // Set up display
-    //
     init_led();
 
     // wait for MAX chip to stabilize
@@ -107,71 +150,89 @@ void setup()
     return;
 }
 
-void loop() 
+void display_sp_changing()
 {
-    thermoc& tc      = singleton_t<thermoc>::instance();
-    forge_data& fd   = singleton_t<forge_data>::instance();
-    error& es = singleton_t<error>::instance();
-
-
-   
-#ifdef __DEBUG__
-    Serial.print( "F = " );
-    Serial.println( tc.read_f() );
-    Serial.println( "set point: " );
-    Serial.println( g_set_point );
-#endif
-
-    if ( g_last_set_point != g_set_point )
+    forge_data& fd = singleton_t< forge_data >::instance();
+    int current_setpoint = fd.setpoint();
+    if ( g_last_set_point != fd.setpoint() )
     {
-        digitalWrite( LED_BUILTIN, HIGH );
-        matrix.println( g_set_point );
+        matrix.println( current_setpoint );
         matrix.writeDisplay();
-        g_last_set_point = g_set_point;
-        delay( 1000 );
+        g_last_set_point = current_setpoint;
+        delay( 500 );
     }
-
-    digitalWrite( LED_BUILTIN, LOW );
-    matrix.println( round( tc.read_f() ) );
-    matrix.writeDisplay(); 
-
-    delay( 1000 );
 
     return;
 }
 
-// Interrupt routines
-//
-void upButton_ISR()
+void flash_setpoint_if_off()
 {
-    // up_button_state is a global
+     // If the current temp and the setpoint are off by this percent 
+    // flash the setpoint
     //
-    up_button_state = digitalRead(UP_BTN_PIN);
-    if ( up_button_state == 1 )
-    {
-        ++g_set_point;
-    }
+    static const int DISPLAY_SP_OFF_TOLERANCE = 5; 
 
+    forge_data& fd = singleton_t< forge_data >::instance();
+    int   abs_diff     = abs( fd.setpoint() - fd.current_temp() );
+    float avg          = ( fd.setpoint() + fd.current_temp() ) / 2;
+    float percent_diff = ( abs_diff / avg ) * 100;
     
-    /*
-    forge_data& fd = singleton_t<forge_data>::instance();
-    fd.setpoint( fd.setpoint() + 1 );
-    */
-}
-
-void dnButton_ISR()
-{
-    // up_button_state is a global
-    //
-    down_button_state = digitalRead(DN_BTN_PIN);
-    if ( down_button_state == 1 )
+    if ( percent_diff > DISPLAY_SP_OFF_TOLERANCE )
     {
-        --g_set_point;
+        digitalWrite( LED_BUILTIN, HIGH );
+        matrix.println( fd.setpoint() );
+        matrix.writeDisplay();
+        delay( 500 );
+        digitalWrite( LED_BUILTIN, LOW );
     }
 
-    /*
-    forge_data& fd = singleton_t<forge_data>::instance();
-    fd.setpoint( fd.setpoint() + 1 );
-    */
+    return;
 }
+
+void display_current_temp()
+{
+    // If the setpoint has not changed recently display the current temp
+    //
+    static const unsigned long MAX_MILLS_BETWEEN_SP_DISPLAY = 500;
+    static const unsigned long MIN_MILLS_BETWEEN_DISPLAY    = 2000;    
+
+    thermoc&    tc = singleton_t< thermoc >::instance();
+    forge_data& fd = singleton_t< forge_data >::instance();
+
+    // Bail if the last time we updated the display was too recent
+    //
+    if ( millis() - fd.last_temp_changed_mills() < MIN_MILLS_BETWEEN_DISPLAY )
+        return;
+
+    // Only show the current temp if Joe is done playing with the setpoint
+    //
+    if ( millis() - fd.last_sp_changed_mills() > MAX_MILLS_BETWEEN_SP_DISPLAY )
+    {
+        matrix.println( fd.current_temp() );
+        matrix.writeDisplay();
+
+        delay( 500 );
+
+        flash_setpoint_if_off();
+    }
+
+    return;
+}
+
+void loop() 
+{
+    thermoc& tc      = singleton_t<thermoc>::instance();
+    forge_data& fd   = singleton_t<forge_data>::instance();
+\
+    fd.current_temp( tc.read_f() );
+    
+    display_sp_changing();
+    display_current_temp();
+
+    delay( 50 );
+
+    return;
+}
+
+
 

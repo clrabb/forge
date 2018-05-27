@@ -15,14 +15,14 @@ thermoc::~thermoc()
 
 // Decorate the Thermocouple lib
 //
-float
+int
 thermoc::read_f()
 {
-    return this->m_tc.readFahrenheit();
+    return round( this->m_tc.readFahrenheit() );
 }
 
-float
+int
 thermoc::read_c()
 {
-    return this->m_tc.readCelsius();
+    return round( this->m_tc.readCelsius() );
 }
