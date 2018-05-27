@@ -3,6 +3,7 @@
 
 #include "forge_types.h"
 
+
 // Pretty much a struct
 //
 class forge_data
@@ -23,10 +24,10 @@ public:
     // Member functions
     //
     int setpoint() { return m_setpoint; }
-    void setpoint( unsigned short setpoint ) { m_setpoint = setpoint; }
+    void setpoint( signed short setpoint );
     
-    int current_temp() { return m_current_temp; }
-    void current_temp( unsigned short current_temp ) { m_current_temp = current_temp; }
+    signed short current_temp() { return m_current_temp; }
+    void current_temp( signed short new_temp );
 
     unsigned long last_sp_changed_mills() { return m_last_sp_changed_mills; }
     void last_sp_changed_mills( unsigned long mills ) { m_last_sp_changed_mills = mills; }

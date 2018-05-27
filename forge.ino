@@ -17,10 +17,12 @@
 //
 static const int UP_BTN_PIN = 2;
 static const int DN_BTN_PIN = 3;
+static const int OK_LED_PIN = 4;
+static const int SP_LED_PIN = 5;
 static const int THERM_DO   = 8;
 static const int THERM_CS   = 9;
 static const int THERM_CLK  = 10;
-static const int START_SP   = 100;
+static const int START_SP   = 70;
 static const long BAUD_RATE = 115200;
 
 // Globals :[
@@ -42,7 +44,6 @@ void upButton_ISR()
     if ( up_button_state == 1 )
     {
         fd.setpoint( fd.setpoint() + 1 );
-        fd.last_sp_changed_mills( millis() );
     }
 
     return;
@@ -80,9 +81,10 @@ void init_pins()
 {
     // Set up pin usage
     //
-    pinMode(LED_BUILTIN, OUTPUT);
-    pinMode(UP_BTN_PIN, INPUT  );
-    pinMode(DN_BTN_PIN, INPUT  );
+    pinMode( UP_BTN_PIN, INPUT   );
+    pinMode( DN_BTN_PIN, INPUT   );
+    pinMode( OK_LED_PIN, OUTPUT  );
+    pinMode( SP_LED_PIN, OUTPUT  );
 
     return;
 }
@@ -143,6 +145,8 @@ void setup()
     init_singletons();
     init_led();
 
+    digitalWrite( OK_LED_PIN, HIGH );
+
     // wait for MAX chip to stabilize
     //
     delay(500);
@@ -150,7 +154,7 @@ void setup()
     return;
 }
 
-void display_sp_changing()
+void display_sp_if_changing()
 {
     forge_data& fd = singleton_t< forge_data >::instance();
     int current_setpoint = fd.setpoint();
@@ -158,10 +162,14 @@ void display_sp_changing()
     {
         matrix.println( current_setpoint );
         matrix.writeDisplay();
+        digitalWrite( SP_LED_PIN, HIGH );
         g_last_set_point = current_setpoint;
         delay( 500 );
     }
 
+    matrix.println( fd.current_temp() );
+    matrix.writeDisplay();
+    digitalWrite( SP_LED_PIN, LOW );
     return;
 }
 
@@ -179,13 +187,15 @@ void flash_setpoint_if_off()
     
     if ( percent_diff > DISPLAY_SP_OFF_TOLERANCE )
     {
-        digitalWrite( LED_BUILTIN, HIGH );
+        digitalWrite( SP_LED_PIN, HIGH );
         matrix.println( fd.setpoint() );
         matrix.writeDisplay();
         delay( 500 );
-        digitalWrite( LED_BUILTIN, LOW );
+        digitalWrite( SP_LED_PIN, LOW );
     }
 
+    matrix.println( fd.current_temp() );
+    matrix.writeDisplay();
     return;
 }
 
@@ -223,10 +233,10 @@ void loop()
 {
     thermoc& tc      = singleton_t<thermoc>::instance();
     forge_data& fd   = singleton_t<forge_data>::instance();
-\
+
     fd.current_temp( tc.read_f() );
     
-    display_sp_changing();
+    display_sp_if_changing();
     display_current_temp();
 
     delay( 50 );

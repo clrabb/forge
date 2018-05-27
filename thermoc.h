@@ -18,8 +18,8 @@ public:
  
     // Decorate the Thermocouple lib
     //
-    int read_f();
-    int read_c();
+    signed short read_f();
+    signed short read_c();
 
 private:
     thermoc(const thermoc&); // disable copy ctor
