@@ -11,8 +11,6 @@
 #include <Wire.h>
 #include <math.h>
 
-#define __DEBUG__
-
 
 // Constants
 //
@@ -68,7 +66,7 @@ void init_singletons()
     singleton_t<thermoc> s_tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
     singleton_t<forge_data> s_fdata( new forge_data() );
     singleton_t<error> s_error( new error() );
-    singleton_t<Adafruit_7segment> s_matrix( new Adafruit_7segment() );
+    singleton_t<seven_seg> s_matrix( new seven_seg() );
     singleton_t<disp> s_display( new disp() );
 
     forge_data& fd = singleton_t< forge_data >::instance();
@@ -178,35 +176,7 @@ void display_sp_if_changing()
     return;
 }
 
-void flash_setpoint_if_off()
-{
-    /*
-     // If the current temp and the setpoint are off by this percent 
-    // flash the setpoint
-    //
-    static const int DISPLAY_SP_OFF_TOLERANCE = 5; 
 
-    // Calculate percent difference of the set point temp
-    // and the read temp
-    //
-    forge_data& fd = singleton_t< forge_data >::instance();
-    int   abs_diff     = abs( fd.setpoint() - fd.current_temp() );
-    float avg          = ( fd.setpoint() + fd.current_temp() ) / 2;
-    float percent_diff = ( abs_diff / avg ) * 100;
-    
-    if ( percent_diff > DISPLAY_SP_OFF_TOLERANCE )
-    {
-        digitalWrite( SP_LED_PIN, HIGH );       
-        matrix.print( fd.setpoint(), DEC );
-        matrix.writeDisplay();
-        delay( BLINK_ON_T );
-        digitalWrite( SP_LED_PIN, LOW );
-    }
-
-    matrix.print( fd.current_temp(), DEC );
-    matrix.writeDisplay();*/
-    return;
-}
 
 
 void display_current_temp()
@@ -214,7 +184,7 @@ void display_current_temp()
     disp& dis = singleton_t<disp>::instance();
     forge_data& fd = singleton_t<forge_data>::instance();
 
-    dis.display_temp( fd.current_temp() );
+    dis.display_temp();
 
     return;
 }
@@ -223,14 +193,19 @@ void loop()
 {
     thermoc& tc      = singleton_t<thermoc>::instance();
     forge_data& fd   = singleton_t<forge_data>::instance();
-//    display&
+    disp& displ      = singleton_t<disp>::instance();
 
-    fd.current_temp( tc.read_f() );
-    
+    signed short temp = tc.read_f();
+    fd.current_temp( temp );
+    displ.display_temp();
+    displ.display_setpoint();
+
+    /*
     display_sp_if_changing();
     display_current_temp();
+    */
 
-    delay( 50 );
+    delay( 200 );
 
     return;
 }

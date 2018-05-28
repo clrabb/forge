@@ -1,6 +1,7 @@
 #include "thermoc.h"
-#include "stdio.h"
-#include "stdlib.h"
+#include "forge_types.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 // Ctors
 //
@@ -18,7 +19,8 @@ thermoc::~thermoc()
 signed short
 thermoc::read_f()
 {
-    return round( this->m_tc.readFahrenheit() );
+    signed short read_temp = round( this->m_tc.readFahrenheit() );
+    return read_temp;
 }
 
 
