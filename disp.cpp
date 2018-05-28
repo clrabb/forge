@@ -1,4 +1,4 @@
-#include "display.h"
+#include "disp.h"
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
 #include <arduino.h>
@@ -8,7 +8,7 @@ static const int TEMP_DISPLAY_DEBOUNCE_PERIOD = 1000;
 // Accessing
 //
 unsigned long 
-display::mills_since_last_temp_display()
+disp::mills_since_last_temp_display()
 {
     unsigned long now = millis();
     return now - this->m_last_temp_display_mills;
@@ -16,20 +16,20 @@ display::mills_since_last_temp_display()
 
 
 double 
-display::seconds_since_last_temp_display()
+disp::seconds_since_last_temp_display()
 {
     return this->mills_since_last_temp_display() / 1000;
 }
 
 unsigned long 
-display::mills_since_last_sp_display()
+disp::mills_since_last_sp_display()
 {
     unsigned long now = millis();
     return now - this->m_last_sp_display_mills; 
 }
 
 double 
-display::seconds_since_last_sp_display()
+disp::seconds_since_last_sp_display()
 {
     return this->mills_since_last_sp_display() / 1000;
 }
@@ -37,7 +37,7 @@ display::seconds_since_last_sp_display()
 // Behavior
 //
 void 
-display::display_temp( signed short temp )
+disp::display_temp( signed short temp )
 {
     if ( this->mills_since_last_temp_display() < TEMP_DISPLAY_DEBOUNCE_PERIOD )
         return;
@@ -46,7 +46,7 @@ display::display_temp( signed short temp )
 }
 
 void 
-display::display_sp( signed short setpoint )
+disp::display_sp( signed short setpoint )
 {
     
 }

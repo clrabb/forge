@@ -4,7 +4,7 @@
 #include "forge_types.h"
 #include "forge_data.h"
 #include "error.h"
-#include "display.h"
+#include "disp.h"
 #include <arduino.h>
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
@@ -24,8 +24,6 @@ static const int THERM_DO    = 8;   // Data out from the MAX6675 module
 static const int THERM_CS    = 9;   // Chip select from same
 static const int THERM_CLK   = 10;  // Clock from same
 static const int START_SP    = 70;  // initial starting set point
-static const int BLINK_OFF_T = 700; // ms for blinking off
-static const int BLINK_ON_T  = 700; // ms for blinking on
 static const long BAUD_RATE = 115200;
 
 // Globals :[
@@ -71,6 +69,7 @@ void init_singletons()
     singleton_t<forge_data> s_fdata( new forge_data() );
     singleton_t<error> s_error( new error() );
     singleton_t<Adafruit_7segment> s_matrix( new Adafruit_7segment() );
+    singleton_t<disp> s_display( new disp() );
 
     forge_data& fd = singleton_t< forge_data >::instance();
     fd.setpoint( START_SP );
@@ -106,6 +105,9 @@ void init_led_matrix()
 {
     static const int TEST_NUMBER_DELAY = 100;
     static const int TEST_END_DELAY    = 1000;
+
+    Adafruit_7segment& matrix = singleton_t<Adafruit_7segment>::instance();
+    
     matrix.begin( 0x70 );
 
     matrix.print( 8, DEC );
@@ -122,6 +124,7 @@ void init_led_matrix()
 
     matrix.print(8888, DEC);
     matrix.writeDisplay();
+
     delay( TEST_END_DELAY );
 
     return;
@@ -155,6 +158,7 @@ void setup()
 
 void display_sp_if_changing()
 {
+    /*
     forge_data& fd = singleton_t< forge_data >::instance();
     int current_setpoint = fd.setpoint();
     if ( g_last_set_point != fd.setpoint() )
@@ -170,12 +174,13 @@ void display_sp_if_changing()
     matrix.writeDisplay();
     
     digitalWrite( SP_LED_PIN, LOW );
-    
+    */
     return;
 }
 
 void flash_setpoint_if_off()
 {
+    /*
      // If the current temp and the setpoint are off by this percent 
     // flash the setpoint
     //
@@ -199,56 +204,17 @@ void flash_setpoint_if_off()
     }
 
     matrix.print( fd.current_temp(), DEC );
-    matrix.writeDisplay();
+    matrix.writeDisplay();*/
     return;
 }
 
 
 void display_current_temp()
 {
-#ifdef __DEBUG__
-    Serial.println("------------ In display_current_temp() -----------------");
-#endif // __DEBUG__
+    disp& dis = singleton_t<disp>::instance();
+    forge_data& fd = singleton_t<forge_data>::instance();
 
-    // If the setpoint has not changed recently display the current temp
-    //
-    static const unsigned long MAX_MILLS_BETWEEN_SP_DISPLAY = 500;
-    static const unsigned long MIN_MILLS_BETWEEN_DISPLAY    = 2000;    
-
-    thermoc&    tc = singleton_t< thermoc >::instance();
-    forge_data& fd = singleton_t< forge_data >::instance();
-
-    // Bail if the last time we updated the display was too recent
-    //
-    if ( fd.mills_since_last_temp_change() < MIN_MILLS_BETWEEN_DISPLAY )
-    {
- #ifdef __DEBUG__
-        Serial.print("Bailing.  Temp changed ");
-        Serial.print( fd.seconds_since_last_temp_change() );
-        Serial.println( " seconds ago.");
- #endif // __DEBUG__
-        
-        return;  // Dirty return.  shuddup.
-    }
-
-
-    // Only show the current temp if Joe is done playing with the setpoint
-    //
-    if ( fd.mills_since_last_sp_change() > MAX_MILLS_BETWEEN_SP_DISPLAY )
-    {
-#ifdef __DEBUG__
-        static const int BUFF_SIZE = 1000;
-        char buffer[ BUFF_SIZE ];
-        snprintf( buffer, BUFF_SIZE - 1, "Last temp change was %f seconds ago", fd.seconds_since_last_temp_change() );
-#endif // __DEBUG__
-
-        matrix.print( fd.current_temp(), DEC );
-        matrix.writeDisplay();
-
-        delay( BLINK_ON_T );
-
-        flash_setpoint_if_off();
-    }
+    dis.display_temp( fd.current_temp() );
 
     return;
 }
@@ -257,6 +223,7 @@ void loop()
 {
     thermoc& tc      = singleton_t<thermoc>::instance();
     forge_data& fd   = singleton_t<forge_data>::instance();
+//    display&
 
     fd.current_temp( tc.read_f() );
     

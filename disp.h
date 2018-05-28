@@ -1,18 +1,20 @@
-#ifndef DISPLAY_H
-#define DISPLAY_H
+#ifndef DISP_H
+#define DISP_H
 
-class display
+class disp
 {
 private:
     // Member vars
     //
     unsigned long m_last_temp_display_mills = 0;
     unsigned long m_last_sp_display_mills   = 0;
+    static const int BLINK_OFF_T = 700; // ms for blinking off
+    static const int BLINK_ON_T  = 700; // ms for blinking on
     
 public:
     // Ctors & dtors
     //
-    display() {}
+    disp() {}
 
     // Accessing
     //
@@ -30,9 +32,9 @@ public:
 private:
     // Disable copy ctor and assignment op
     //
-    display( const display& );
-    display& operator=( const display& );
+    disp( const disp& );
+    disp& operator=( const disp& );
 };
 
-#endif // DISPLAY_H
+#endif // DISP_H
 
