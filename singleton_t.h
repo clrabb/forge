@@ -25,3 +25,4 @@ private:
 template<typename T> T* singleton_t<T>::s_instance;
 
 #endif // SINGLETON_T_H
+

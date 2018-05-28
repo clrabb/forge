@@ -35,6 +35,12 @@ public:
     unsigned long last_temp_changed_mills() { return m_last_temp_changed_mills; }
     void last_temp_changed_mills( unsigned long mills ) { m_last_temp_changed_mills = mills; }
 
+    unsigned long mills_since_last_sp_change();
+    double seconds_since_last_sp_change();
+
+    unsigned long mills_since_last_temp_change();
+    double seconds_since_last_temp_change();
+
 private:
     // Disable unwanted compiler generated crap
     //
@@ -44,3 +50,4 @@ private:
 };
 
 #endif // FORGE_DATA_H
+

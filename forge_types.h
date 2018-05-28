@@ -10,3 +10,4 @@ static const forge_status SUCCESS       = 1;
 static const forge_status ERR           = 0;    
 
 #endif FORGE_TYPES_H
+

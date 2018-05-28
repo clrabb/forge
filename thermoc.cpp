@@ -27,3 +27,4 @@ thermoc::read_c()
 {
     return round( this->m_tc.readCelsius() );
 }
+

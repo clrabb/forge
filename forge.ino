@@ -4,6 +4,7 @@
 #include "forge_types.h"
 #include "forge_data.h"
 #include "error.h"
+#include "display.h"
 #include <arduino.h>
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
@@ -17,7 +18,7 @@
 //
 static const int UP_BTN_PIN  = 2;   // Pin for the 'up' button
 static const int DN_BTN_PIN  = 3;   // Pin for the 'down' button
-static const int OK_LED_PIN  = 4;   // Pin for the 'green' led
+static const int PWR_LED_PIN = 4;   // Pin for the 'green' led
 static const int SP_LED_PIN  = 5;   // Pin for the 'red' led
 static const int THERM_DO    = 8;   // Data out from the MAX6675 module
 static const int THERM_CS    = 9;   // Chip select from same
@@ -29,7 +30,6 @@ static const long BAUD_RATE = 115200;
 
 // Globals :[
 //
-Adafruit_7segment matrix = Adafruit_7segment();
 int           g_last_set_point               = 0;
 volatile int  up_button_state                = 0;
 volatile int  down_button_state              = 0;
@@ -61,7 +61,6 @@ void dnButton_ISR()
     {
         fd.setpoint( fd.setpoint() - 1 );
     }
-    fd.last_sp_changed_mills( millis() );
 
     return;
 }
@@ -71,9 +70,9 @@ void init_singletons()
     singleton_t<thermoc> s_tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
     singleton_t<forge_data> s_fdata( new forge_data() );
     singleton_t<error> s_error( new error() );
+    singleton_t<Adafruit_7segment> s_matrix( new Adafruit_7segment() );
 
     forge_data& fd = singleton_t< forge_data >::instance();
-    fd.last_sp_changed_mills( millis() ); // millis() returns milliseconds since startup
     fd.setpoint( START_SP );
 
     return;
@@ -83,10 +82,10 @@ void init_pins()
 {
     // Set up pin usage
     //
-    pinMode( UP_BTN_PIN, INPUT   );
-    pinMode( DN_BTN_PIN, INPUT   );
-    pinMode( OK_LED_PIN, OUTPUT  );
-    pinMode( SP_LED_PIN, OUTPUT  );
+    pinMode( UP_BTN_PIN,  INPUT   );
+    pinMode( DN_BTN_PIN,  INPUT   );
+    pinMode( PWR_LED_PIN, OUTPUT  );
+    pinMode( SP_LED_PIN,  OUTPUT  );
 
     return;
 }
@@ -149,7 +148,7 @@ void setup()
 
     // Everything seems good.  Turnon the power light
     //
-    digitalWrite( OK_LED_PIN, HIGH );
+    digitalWrite( PWR_LED_PIN, HIGH );
     
     return;
 }
@@ -204,8 +203,13 @@ void flash_setpoint_if_off()
     return;
 }
 
+
 void display_current_temp()
 {
+#ifdef __DEBUG__
+    Serial.println("------------ In display_current_temp() -----------------");
+#endif // __DEBUG__
+
     // If the setpoint has not changed recently display the current temp
     //
     static const unsigned long MAX_MILLS_BETWEEN_SP_DISPLAY = 500;
@@ -216,13 +220,28 @@ void display_current_temp()
 
     // Bail if the last time we updated the display was too recent
     //
-    if ( millis() - fd.last_temp_changed_mills() < MIN_MILLS_BETWEEN_DISPLAY )
-        return;
+    if ( fd.mills_since_last_temp_change() < MIN_MILLS_BETWEEN_DISPLAY )
+    {
+ #ifdef __DEBUG__
+        Serial.print("Bailing.  Temp changed ");
+        Serial.print( fd.seconds_since_last_temp_change() );
+        Serial.println( " seconds ago.");
+ #endif // __DEBUG__
+        
+        return;  // Dirty return.  shuddup.
+    }
+
 
     // Only show the current temp if Joe is done playing with the setpoint
     //
-    if ( millis() - fd.last_sp_changed_mills() > MAX_MILLS_BETWEEN_SP_DISPLAY )
+    if ( fd.mills_since_last_sp_change() > MAX_MILLS_BETWEEN_SP_DISPLAY )
     {
+#ifdef __DEBUG__
+        static const int BUFF_SIZE = 1000;
+        char buffer[ BUFF_SIZE ];
+        snprintf( buffer, BUFF_SIZE - 1, "Last temp change was %f seconds ago", fd.seconds_since_last_temp_change() );
+#endif // __DEBUG__
+
         matrix.print( fd.current_temp(), DEC );
         matrix.writeDisplay();
 
@@ -248,6 +267,7 @@ void loop()
 
     return;
 }
+
 
 
 
