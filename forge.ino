@@ -15,14 +15,16 @@
 
 // Constants
 //
-static const int UP_BTN_PIN = 2;
-static const int DN_BTN_PIN = 3;
-static const int OK_LED_PIN = 4;
-static const int SP_LED_PIN = 5;
-static const int THERM_DO   = 8;
-static const int THERM_CS   = 9;
-static const int THERM_CLK  = 10;
-static const int START_SP   = 70;
+static const int UP_BTN_PIN  = 2;   // Pin for the 'up' button
+static const int DN_BTN_PIN  = 3;   // Pin for the 'down' button
+static const int OK_LED_PIN  = 4;   // Pin for the 'green' led
+static const int SP_LED_PIN  = 5;   // Pin for the 'red' led
+static const int THERM_DO    = 8;   // Data out from the MAX6675 module
+static const int THERM_CS    = 9;   // Chip select from same
+static const int THERM_CLK   = 10;  // Clock from same
+static const int START_SP    = 70;  // initial starting set point
+static const int BLINK_OFF_T = 700; // ms for blinking off
+static const int BLINK_ON_T  = 700; // ms for blinking on
 static const long BAUD_RATE = 115200;
 
 // Globals :[
@@ -40,7 +42,7 @@ void upButton_ISR()
     
     // up_button_state is a global
     //
-    up_button_state = digitalRead(UP_BTN_PIN);
+    up_button_state = digitalRead( UP_BTN_PIN );
     if ( up_button_state == 1 )
     {
         fd.setpoint( fd.setpoint() + 1 );
@@ -54,7 +56,7 @@ void dnButton_ISR()
     forge_data& fd = singleton_t< forge_data >::instance();
     // up_button_state is a global
     //
-    down_button_state = digitalRead(DN_BTN_PIN);
+    down_button_state = digitalRead( DN_BTN_PIN );
     if ( down_button_state == 1 && fd.setpoint() > 0 )
     {
         fd.setpoint( fd.setpoint() - 1 );
@@ -66,7 +68,7 @@ void dnButton_ISR()
 
 void init_singletons()
 {
-    singleton_t<thermoc> s_tc( new thermoc(THERM_DO, THERM_CS, THERM_CLK) );
+    singleton_t<thermoc> s_tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
     singleton_t<forge_data> s_fdata( new forge_data() );
     singleton_t<error> s_error( new error() );
 
@@ -93,64 +95,62 @@ void init_interrupts()
 {
     // Set up interrupts for buttons
     //
-    attachInterrupt(0, upButton_ISR, RISING);
-    attachInterrupt(1, dnButton_ISR, RISING);
+    attachInterrupt( 0, upButton_ISR, RISING );
+    attachInterrupt( 1, dnButton_ISR, RISING );
 
     return;
 }
 
 // Sets up LED and prints test pattern
 //
-void init_led()
+void init_led_matrix()
 {
-    matrix.begin(0x70);
+    static const int TEST_NUMBER_DELAY = 100;
+    static const int TEST_END_DELAY    = 1000;
+    matrix.begin( 0x70 );
 
-    matrix.print(8, DEC);
+    matrix.print( 8, DEC );
     matrix.writeDisplay();
-    delay(100);
+    delay( TEST_NUMBER_DELAY );
 
-    matrix.print(88, DEC);
+    matrix.print( 88, DEC );
     matrix.writeDisplay();
-    delay(100);
+    delay( TEST_NUMBER_DELAY );
 
-    matrix.print(888, DEC);
+    matrix.print( 888, DEC );
     matrix.writeDisplay();
-    delay(100);
+    delay( TEST_NUMBER_DELAY );
 
     matrix.print(8888, DEC);
     matrix.writeDisplay();
-    delay(1000);
+    delay( TEST_END_DELAY );
 
     return;
 }
 
-
-// There is some concern here regarding global vs non-global
-// variables.  In general I stay away from globals like the plague.
-// The arduino has a very limited memory size, though, and allocating
-// and deallocating heap objects will fragment what little is there.
-// Placing them on the stack is probably ok but even those frames will chew
-// up memory.  I still don't know which practices are good or bad, here.
-// For those reasons, and because the setup/loop style really forces the
-// use of some globals, I am going to use singletons which are
-// effectively globals in any case.
-// -- CR 5/14/2018
-//
 void setup() 
 {
-    Serial.begin(BAUD_RATE);
+    static const int MAX6675_INIT_STABALIZE_WAIT = 500;
 
+#ifdef __DEBUG__
+    Serial.begin( BAUD_RATE );
+#endif // __DEBUG__
+
+    // All the various initializing needed
+    //  
     init_pins();
     init_interrupts();
     init_singletons();
-    init_led();
-
-    digitalWrite( OK_LED_PIN, HIGH );
+    init_led_matrix();
 
     // wait for MAX chip to stabilize
     //
-    delay(500);
+    delay( MAX6675_INIT_STABALIZE_WAIT );
 
+    // Everything seems good.  Turnon the power light
+    //
+    digitalWrite( OK_LED_PIN, HIGH );
+    
     return;
 }
 
@@ -160,16 +160,18 @@ void display_sp_if_changing()
     int current_setpoint = fd.setpoint();
     if ( g_last_set_point != fd.setpoint() )
     {
-        matrix.println( current_setpoint );
+        matrix.print( current_setpoint, DEC );
         matrix.writeDisplay();
         digitalWrite( SP_LED_PIN, HIGH );
         g_last_set_point = current_setpoint;
         delay( 500 );
     }
 
-    matrix.println( fd.current_temp() );
+    matrix.print( fd.current_temp(), DEC );
     matrix.writeDisplay();
+    
     digitalWrite( SP_LED_PIN, LOW );
+    
     return;
 }
 
@@ -180,6 +182,9 @@ void flash_setpoint_if_off()
     //
     static const int DISPLAY_SP_OFF_TOLERANCE = 5; 
 
+    // Calculate percent difference of the set point temp
+    // and the read temp
+    //
     forge_data& fd = singleton_t< forge_data >::instance();
     int   abs_diff     = abs( fd.setpoint() - fd.current_temp() );
     float avg          = ( fd.setpoint() + fd.current_temp() ) / 2;
@@ -187,14 +192,14 @@ void flash_setpoint_if_off()
     
     if ( percent_diff > DISPLAY_SP_OFF_TOLERANCE )
     {
-        digitalWrite( SP_LED_PIN, HIGH );
-        matrix.println( fd.setpoint() );
+        digitalWrite( SP_LED_PIN, HIGH );       
+        matrix.print( fd.setpoint(), DEC );
         matrix.writeDisplay();
-        delay( 500 );
+        delay( BLINK_ON_T );
         digitalWrite( SP_LED_PIN, LOW );
     }
 
-    matrix.println( fd.current_temp() );
+    matrix.print( fd.current_temp(), DEC );
     matrix.writeDisplay();
     return;
 }
@@ -218,10 +223,10 @@ void display_current_temp()
     //
     if ( millis() - fd.last_sp_changed_mills() > MAX_MILLS_BETWEEN_SP_DISPLAY )
     {
-        matrix.println( fd.current_temp() );
+        matrix.print( fd.current_temp(), DEC );
         matrix.writeDisplay();
 
-        delay( 500 );
+        delay( BLINK_ON_T );
 
         flash_setpoint_if_off();
     }
