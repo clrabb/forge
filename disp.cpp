@@ -2,16 +2,19 @@
 #include "singleton_t.h"
 #include "forge_types.h"
 #include "forge_data.h"
+#include <ArduinoLog.h>
 #include <arduino.h>
-
-
 
 // Accessing
 //
 unsigned long 
 disp::mills_since_last_temp_display()
 {
+    Log.notice( "In disp::mills_since_last_temp_display()" CR );
+    
     unsigned long now = millis();
+
+    Log.notice( "Leaving disp::mills_since_last_temp_display() with retval %l" CR, now );
     return now - this->m_last_temp_display_mills;
 }
 
@@ -19,86 +22,177 @@ disp::mills_since_last_temp_display()
 double 
 disp::seconds_since_last_temp_display()
 {
-    return this->mills_since_last_temp_display() / 1000;
+    Log.notice( "In disp:seconds_since_last_temp_display()" CR );
+
+    unsigned long retval = this->mills_since_last_temp_display() / 1000;
+    
+    Log.notice( "Leaving disp::seconds_since_last_temp_display() with reval %D" CR, retval );
+    return retval;
 }
 
 unsigned long 
-disp::mills_since_last_sp_display()
+disp::mills_since_last_setpoint_display()
 {
+    Log.notice( "In disp::mills_since_last_sp_display()" CR );
     unsigned long now = millis();
-    return now - this->m_last_sp_display_mills; 
+    unsigned long retval = now - this->m_last_setpoint_display_mills; 
+
+    Log.notice( "Leaving disp::mills_since_last_sp_display() with retval %l" CR, retval );
 }
 
 double 
-disp::seconds_since_last_sp_display()
+disp::seconds_since_last_setpoint_display()
 {
-    return this->mills_since_last_sp_display() / 1000;
+    Log.notice( "In disp::seconds_since_last_sp_display()" CR );
+    
+    double retval = this->mills_since_last_setpoint_display() / 1000;
+
+    Log.notice( "Leaving disp::seconds_since_last_sp_display() with retval %D" CR, retval );
 }
 
-// Behavior
-//
-void 
-disp::display_temp()
+bool
+disp::is_too_soon_temp_display()
 {
-#ifdef __DEBUG__
-    Serial.println( "In display_temp()" );
-#endif // __DEBUG
-
-    forge_data& fd   = singleton_t<forge_data>::instance();
-    signed short temp = fd.current_temp();
-
-#ifdef __DEBUG__
-    Serial.print( "temp: " );
-    Serial.println( temp );
-    Serial.print( "last temp: " );
-    Serial.println( this->last_temp_seen() );
+    Log.notice( "In disp::is_too_soon_temp_display()" CR );
     
-#endif // __DEBUG__
+    static const unsigned long TEMP_DISPLAY_DEBOUNCE_PERIOD = 2000;
 
-    if ( this->mills_since_last_temp_display() < TEMP_DISPLAY_DEBOUNCE_PERIOD || temp == this->last_temp_seen() )
+    unsigned long last_temp_display = this->mills_since_last_temp_display();
+    bool too_soon = last_temp_display < TEMP_DISPLAY_DEBOUNCE_PERIOD;
+    if ( too_soon  )
     {
 
-#ifdef __DEBUG__
-    Serial.println( "Bailing" );
-#endif // __DEBUG__
-        return;
+        Log.notice( "Last temp display mills: %l, debounce period: %l.  Too soon.  Bailing" CR, 
+            last_temp_display,
+            TEMP_DISPLAY_DEBOUNCE_PERIOD
+        );
     }
+    
+    Log.notice( "Leaving disp::is_too_soon_temp_display() with retval %T" CR, too_soon );
 
-    this->print( fd.current_temp() );
-    this->last_temp_display_mills( millis() );
-    this->last_temp_seen( temp );
+    return too_soon;
+}
 
+bool
+disp::is_same_temp_temp_display()
+{
+    Log.notice( "In is_same_temp_temp_display()" CR );
+
+    forge_data& fd = singleton_t<forge_data>::instance();
+    bool is_same_temp = this->last_temp_seen() == fd.current_temp();
+
+    Log.notice( "Leaving is_same_temp_temp_display() with retval: %T" CR, is_same_temp );
+
+    return is_same_temp;
+}
+
+bool
+disp::is_joe_fiddling_sp()
+{
+    Log.notice( "In disp::is_joe_fiddling_sp()" CR );
+
+    forge_data& fd = singleton_t< forge_data >::instance();
+    signed short last_seen = this->last_setpoint_seen();
+    signed short current_setpoint = fd.setpoint();
+
+    bool is_fiddling = ( last_seen != current_setpoint );
+    
+    Log.notice( "Leaving is_joe_fiddlng_sp() with retval %T" CR, is_fiddling );
+
+    return is_fiddling;
+}
+
+// Main calling point from loop()
+//
+void
+disp::display()
+{
+    Log.notice( "In disp::display()" CR );
+
+    this->display_setpoint_if_changing();
+
+    digitalWrite( SP_LED_PIN, LOW );
+    
+    this->display_temp();
+
+    Log.notice( "Leaving disp::display()" CR );
     return;
 }
 
 void 
-disp::display_setpoint()
+disp::display_temp()
 {
-#ifdef __DEBUG__
-    Serial.println( "In display_setpoint()" );
-#endif // __DEBUG__
+    Log.notice( "In disp::display_temp()" CR );
+    
+    // Main debouncing routine
+    //
+    // I realize this can be done with a short circuit but I want to
+    // log the results of all three calls
+    //
+    bool too_soon     = this->is_too_soon_temp_display();
+    bool same_temp    = this->is_same_temp_temp_display();
+    bool joe_fiddling = is_joe_fiddling_sp();
+    if ( too_soon || same_temp || joe_fiddling )
+    {
+        Log.notice( "Nothing to do.  too_soon: %T; same_temp: %T; joe fiddling: %T" CR,
+            too_soon,
+            same_temp,
+            joe_fiddling
+        );
+    }
+    else
+    {
+        forge_data& fd = singleton_t<forge_data>::instance();
+        signed short current_temp = fd.current_temp();
+        this->print( current_temp );
+        this->last_temp_seen( current_temp );
+        this->last_temp_display_mills( millis() );
+    }  
 
-    disp& displ   = singleton_t<disp>::instance();
+    Log.notice( "Leaving disp::display_temp()" CR );
+    return;
+}
+
+void 
+disp::display_setpoint_if_changing()
+{
+    Log.notice( "In disp::display_setpoint()" CR );
+
+    if ( !( is_joe_fiddling_sp() ) )
+    {
+        Log.notice( "Joe's not fiddling with the set point.  I'm outta here" CR );
+        return;
+    }
+
+    Log.notice( "Looks like the setpoint is changing.  Print the current setpoint" CR );
+    
+    disp& displ    = singleton_t<disp>::instance();
     forge_data& fd = singleton_t<forge_data>::instance();
     
     this->print( fd.setpoint() );
+    digitalWrite( SP_LED_PIN, HIGH );
+    delay( BLINK_ON_T );
+    //digitalWrite( SP_LED_PIN, LOW );
 
+    this->last_setpoint_seen( fd.setpoint() );
+    this->last_setpoint_dipslay_mills( millis() );
+
+    Log.notice( "Leaving disp::display_setpoint()" CR );
     return;
 }
 
 void
 disp::print( int number )
 {
-#ifdef __DEBUG__
-    Serial.println( "In disp::print()" );
-    Serial.print( "Printing: " );
-    Serial.println( number );
-#endif // __DEBUG__
+    Log.notice( "In disp::print()" CR );
 
+    Log.notice( "Printing %d" CR, number );
     seven_seg& disp_led = singleton_t<seven_seg>::instance();
     disp_led.print( number, DEC );
     disp_led.writeDisplay();
-    
+
+    Log.notice( "Leaving disp::print()" CR );
+     
     return;
 }
 

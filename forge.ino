@@ -10,19 +10,8 @@
 #include <Adafruit_GFX.h>
 #include <Wire.h>
 #include <math.h>
+#include <ArduinoLog.h>
 
-
-// Constants
-//
-static const int UP_BTN_PIN  = 2;   // Pin for the 'up' button
-static const int DN_BTN_PIN  = 3;   // Pin for the 'down' button
-static const int PWR_LED_PIN = 4;   // Pin for the 'green' led
-static const int SP_LED_PIN  = 5;   // Pin for the 'red' led
-static const int THERM_DO    = 8;   // Data out from the MAX6675 module
-static const int THERM_CS    = 9;   // Chip select from same
-static const int THERM_CLK   = 10;  // Clock from same
-static const int START_SP    = 70;  // initial starting set point
-static const long BAUD_RATE = 115200;
 
 // Globals :[
 //
@@ -63,6 +52,8 @@ void dnButton_ISR()
 
 void init_singletons()
 {
+    Log.notice( "In init_singletons()" CR );
+    
     singleton_t<thermoc> s_tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
     singleton_t<forge_data> s_fdata( new forge_data() );
     singleton_t<error> s_error( new error() );
@@ -72,11 +63,13 @@ void init_singletons()
     forge_data& fd = singleton_t< forge_data >::instance();
     fd.setpoint( START_SP );
 
+    Log.notice( "Leaving init_singletons()" CR );
     return;
 }
 
 void init_pins()
 {
+    Log.notice( "In init_pins()" CR );
     // Set up pin usage
     //
     pinMode( UP_BTN_PIN,  INPUT   );
@@ -84,16 +77,19 @@ void init_pins()
     pinMode( PWR_LED_PIN, OUTPUT  );
     pinMode( SP_LED_PIN,  OUTPUT  );
 
+    Log.notice( "Leaving init_pins()" CR );
     return;
 }
 
 void init_interrupts()
 {
+    Log.notice( "In init_interrupts()" CR );
     // Set up interrupts for buttons
     //
     attachInterrupt( 0, upButton_ISR, RISING );
     attachInterrupt( 1, dnButton_ISR, RISING );
 
+    Log.notice( "Leaving init_interrupts()" CR );
     return;
 }
 
@@ -101,6 +97,8 @@ void init_interrupts()
 //
 void init_led_matrix()
 {
+    Log.notice( "in init_led_matrix()" CR );
+    
     static const int TEST_NUMBER_DELAY = 100;
     static const int TEST_END_DELAY    = 1000;
 
@@ -125,16 +123,19 @@ void init_led_matrix()
 
     delay( TEST_END_DELAY );
 
+    Log.notice( "Leaving init_led_matrix()" CR );
     return;
 }
 
 void setup() 
 {
     static const int MAX6675_INIT_STABALIZE_WAIT = 500;
+    static const int BAUD_RATE = 9600;
 
-#ifdef __DEBUG__
     Serial.begin( BAUD_RATE );
-#endif // __DEBUG__
+    Log.begin( LOG_LEVEL_VERBOSE, &Serial );
+    Log.notice( "In setup" CR );
+
 
     // All the various initializing needed
     //  
@@ -150,14 +151,18 @@ void setup()
     // Everything seems good.  Turnon the power light
     //
     digitalWrite( PWR_LED_PIN, HIGH );
-    
+
+    Log.notice( "Leaving setup()" CR );
     return;
 }
 
 void display_sp_if_changing()
 {
-    /*
-    forge_data& fd = singleton_t< forge_data >::instance();
+    Log.notice( "In forge::display_sp_if_changing()" CR );
+    
+    forge_data& fd    = singleton_t< forge_data >::instance();
+    seven_seg& matrix = singleton_t< seven_seg >::instance();
+    
     int current_setpoint = fd.setpoint();
     if ( g_last_set_point != fd.setpoint() )
     {
@@ -172,41 +177,27 @@ void display_sp_if_changing()
     matrix.writeDisplay();
     
     digitalWrite( SP_LED_PIN, LOW );
-    */
+
+    Log.notice( "Leaving forge::display_sp_if_changing()" CR );
     return;
 }
 
-
-
-
-void display_current_temp()
-{
-    disp& dis = singleton_t<disp>::instance();
-    forge_data& fd = singleton_t<forge_data>::instance();
-
-    dis.display_temp();
-
-    return;
-}
 
 void loop() 
 {
+    Log.notice( "In loop()" CR );
+    
     thermoc& tc      = singleton_t<thermoc>::instance();
     forge_data& fd   = singleton_t<forge_data>::instance();
     disp& displ      = singleton_t<disp>::instance();
 
     signed short temp = tc.read_f();
     fd.current_temp( temp );
-    displ.display_temp();
-    displ.display_setpoint();
-
-    /*
-    display_sp_if_changing();
-    display_current_temp();
-    */
-
-    delay( 200 );
-
+    displ.display();
+    
+    delay( 20 );
+    
+    Log.notice( "Leaving loop()" CR );
     return;
 }
 
