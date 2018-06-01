@@ -19,16 +19,21 @@ forge_data::current_temp( signed short new_temp )
 
 
 void
-forge_data::setpoint( signed short new_setpoint )
+forge_data::increment_setpoint()
 {
-    if ( new_setpoint != m_setpoint )
-    {
-        this->last_sp_changed_mills( millis() );
-    }
-
-    m_setpoint = new_setpoint; 
+    // Not logging because this is called from inside interrupt
+    //
+    this->last_sp_changed_mills( millis() );
+    ++m_setpoint;
 
     return;
+}
+
+void 
+forge_data::decrement_setpoint()
+{
+    this->last_sp_changed_mills( millis() );
+    --m_setpoint;
 }
 
 unsigned long

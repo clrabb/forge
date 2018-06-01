@@ -26,7 +26,8 @@ public:
     // Member functions
     //
     int setpoint() { return m_setpoint; }
-    
+    void increment_setpoint();
+    void decrement_setpoint();
     
     signed short current_temp() { return m_current_temp; }
     void current_temp( signed short new_temp );

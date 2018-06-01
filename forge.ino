@@ -149,33 +149,6 @@ void setup()
     return;
 }
 
-/*
-void display_sp_if_changing()
-{
-    Log.notice( "In forge::display_sp_if_changing()" CR );
-    
-    forge_data& fd    = singleton_t< forge_data >::instance();
-    seven_seg& matrix = singleton_t< seven_seg >::instance();
-    
-    int current_setpoint = fd.setpoint();
-    if ( g_last_set_point != fd.setpoint() )
-    {
-        matrix.print( current_setpoint, DEC );
-        matrix.writeDisplay();
-        digitalWrite( SP_LED_PIN, HIGH );
-        g_last_set_point = current_setpoint;
-        delay( 500 );
-    }
-
-    matrix.print( fd.current_temp(), DEC );
-    matrix.writeDisplay();
-    
-    digitalWrite( SP_LED_PIN, LOW );
-
-    Log.notice( "Leaving forge::display_sp_if_changing()" CR );
-    return;
-}
-*/
 
 void loop() 
 {
