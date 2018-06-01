@@ -2,6 +2,7 @@
 #include "singleton_t.h"
 #include "forge_types.h"
 #include "forge_data.h"
+#include "thermoc.h"
 #include <ArduinoLog.h>
 #include <arduino.h>
 
@@ -95,6 +96,8 @@ disp::is_joe_fiddling_sp()
     signed short last_seen = this->last_setpoint_seen();
     signed short current_setpoint = fd.setpoint();
 
+    Log.notice( "Last setpoint: %d current setpoint: %d" CR, last_seen, current_setpoint );
+
     bool is_fiddling = ( last_seen != current_setpoint );
     
     Log.notice( "Leaving is_joe_fiddlng_sp() with retval %T" CR, is_fiddling );
@@ -109,10 +112,13 @@ disp::display()
 {
     Log.notice( "In disp::display()" CR );
 
-    this->display_setpoint_if_changing();
+    thermoc& tc    = singleton_t< thermoc >::instance();
+    forge_data& fd = singleton_t< forge_data >::instance();
 
-    digitalWrite( SP_LED_PIN, LOW );
-    
+    signed short temp = tc.read_f();
+    fd.current_temp( temp );
+
+    this->display_setpoint_if_changing();
     this->display_temp();
 
     Log.notice( "Leaving disp::display()" CR );

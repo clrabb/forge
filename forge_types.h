@@ -1,7 +1,12 @@
 #ifndef FORGE_TYPES_H
 #define FORGE_TYPES_H
 
-#define DISABLE_LOGGING
+// Don't comment this line out unless
+// you want to just spam the snot out of the 
+// serial out.  It will also inflate the size of the code space
+// to something like the twinky in ghostbusters
+//
+//#define DISABLE_LOGGING
 
 
 #include <Adafruit_LEDBackpack.h>

@@ -12,25 +12,20 @@
 #include <math.h>
 #include <ArduinoLog.h>
 
-
-// Globals :[
-//
-int           g_last_set_point               = 0;
-volatile int  up_button_state                = 0;
-volatile int  down_button_state              = 0;
-
 // Interrupt routines
 //
 void upButton_ISR()
 {
-    forge_data& fd = singleton_t< forge_data >::instance();
+    forge_data& fd     = singleton_t< forge_data >::instance();
+
     
     // up_button_state is a global
     //
-    up_button_state = digitalRead( UP_BTN_PIN );
+    
+    volatile int up_button_state = digitalRead( UP_BTN_PIN );
     if ( up_button_state == 1 )
     {
-        fd.setpoint( fd.setpoint() + 1 );
+        fd.increment_setpoint();
     }
 
     return;
@@ -41,10 +36,11 @@ void dnButton_ISR()
     forge_data& fd = singleton_t< forge_data >::instance();
     // up_button_state is a global
     //
-    down_button_state = digitalRead( DN_BTN_PIN );
+
+    volatile int down_button_state = digitalRead( DN_BTN_PIN );
     if ( down_button_state == 1 && fd.setpoint() > 0 )
     {
-        fd.setpoint( fd.setpoint() - 1 );
+        fd.decrement_setpoint();
     }
 
     return;
@@ -59,9 +55,6 @@ void init_singletons()
     singleton_t<error> s_error( new error() );
     singleton_t<seven_seg> s_matrix( new seven_seg() );
     singleton_t<disp> s_display( new disp() );
-
-    forge_data& fd = singleton_t< forge_data >::instance();
-    fd.setpoint( START_SP );
 
     Log.notice( "Leaving init_singletons()" CR );
     return;
@@ -156,6 +149,7 @@ void setup()
     return;
 }
 
+/*
 void display_sp_if_changing()
 {
     Log.notice( "In forge::display_sp_if_changing()" CR );
@@ -181,22 +175,17 @@ void display_sp_if_changing()
     Log.notice( "Leaving forge::display_sp_if_changing()" CR );
     return;
 }
-
+*/
 
 void loop() 
 {
     Log.notice( "In loop()" CR );
-    
-    thermoc& tc      = singleton_t<thermoc>::instance();
-    forge_data& fd   = singleton_t<forge_data>::instance();
-    disp& displ      = singleton_t<disp>::instance();
-
-    signed short temp = tc.read_f();
-    fd.current_temp( temp );
+   
+    disp& displ = singleton_t<disp>::instance();
     displ.display();
-    
-    delay( 20 );
-    
+
+    digitalWrite( SP_LED_PIN, LOW );
+ 
     Log.notice( "Leaving loop()" CR );
     return;
 }

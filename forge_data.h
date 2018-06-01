@@ -19,12 +19,14 @@ private:
 public:
     // Ctors and dtors
     //
-    forge_data() {};
+    forge_data() 
+        : m_setpoint( START_SP )
+    {};
 
     // Member functions
     //
     int setpoint() { return m_setpoint; }
-    void setpoint( signed short setpoint );
+    
     
     signed short current_temp() { return m_current_temp; }
     void current_temp( signed short new_temp );
@@ -42,6 +44,7 @@ public:
     double seconds_since_last_temp_change();
 
 private:
+    void setpoint( signed short  setpoint );
     // Disable unwanted compiler generated crap
     //
     forge_data( const forge_data& );
