@@ -141,11 +141,11 @@ disp::flash_setpoint_if_off()
     if ( percent_diff > DISPLAY_SP_OFF_TOLERANCE )
     {
         digitalWrite( SP_LED_PIN, HIGH );
-        this->print( fd.setpoint() );
-        delay( 500 );
+        this->print_int( fd.setpoint() );
+        delay( BLINK_ON_T );
         digitalWrite( SP_LED_PIN, LOW );
-        this->print( fd.current_temp() );
-        delay( 500 );
+        this->print_int( fd.current_temp() );
+        delay( BLINK_OFF_T );
     }
 
     return;
@@ -172,7 +172,7 @@ disp::display_temp()
     {
         Log.notice( "The sp is changing.  New setpoint: %d" CR, fd.setpoint() );
 
-        this->print( fd.setpoint() );  
+        this->print_int( fd.setpoint() ); 
     }
     else if ( too_soon || same_temp  )
     {
@@ -188,8 +188,8 @@ disp::display_temp()
         //
         digitalWrite( SP_LED_PIN, LOW );
     
-        signed short current_temp = fd.current_temp();
-        this->print( current_temp );
+        temp_t current_temp = fd.current_temp();
+        this->print_temp( current_temp );
         this->last_temp_seen( current_temp );
         this->last_temp_display_mills( millis() );
     }  
@@ -214,7 +214,7 @@ disp::display_setpoint_if_changing()
     disp& displ    = singleton_t<disp>::instance();
     forge_data& fd = singleton_t<forge_data>::instance();
     
-    this->print( fd.setpoint() );
+    this->print_int( fd.setpoint() );
     digitalWrite( SP_LED_PIN, HIGH );
     delay( BLINK_ON_T );
 
@@ -226,7 +226,7 @@ disp::display_setpoint_if_changing()
 }
 
 void
-disp::print( int number )
+disp::print_int( int number )
 {
     Log.notice( "In disp::print()" CR );
 
@@ -239,4 +239,14 @@ disp::print( int number )
      
     return;
 }
+
+void
+disp::print_temp( double number )
+{
+    int value = static_cast< int >( number < 0 ? number - 0.5 : number + 0.5 );
+    return this->print_int( value );
+
+    return;
+}
+
 

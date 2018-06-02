@@ -150,8 +150,8 @@ void setup()
     // Set initial pid data
     //
     forge_data& fd = singleton_t< forge_data >::instance();
-    g_setpoint = (double)fd.setpoint();
-    g_input    = (double)fd.current_temp();
+    g_setpoint = fd.setpoint();
+    g_input    = fd.current_temp();
 
     // Turn the sucker on.
     //
@@ -176,10 +176,10 @@ void loop()
     // pid stuff
     //
     forge_data& fd = singleton_t< forge_data >::instance();
-    g_input = (double)fd.current_temp();
+    g_input = fd.current_temp();
     g_pid.Compute();
 
-    Log.notice( "About to send %D to output because of %D input" CR, g_output, g_input );
+    Log.notice( "About to send %D,%F to output because of %D,%F input" CR, g_output, g_input );
     analogWrite( PID_OUTPUT_PIN, g_output );
 
     Log.notice( "Leaving loop()" CR );

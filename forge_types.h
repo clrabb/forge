@@ -6,12 +6,14 @@
 // serial out.  It will also inflate the size of the code space
 // to something like the twinky in ghostbusters
 //
-//#define DISABLE_LOGGING
+#define DISABLE_LOGGING
 
 
 #include <Adafruit_LEDBackpack.h>
 #include "Adafruit_GFX.h"
 
+typedef double temp_t;
+typedef unsigned short setpoint_t;
 typedef unsigned short short_t;
 typedef short_t forge_err;
 typedef short_t forge_status;

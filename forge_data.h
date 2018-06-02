@@ -11,10 +11,10 @@ class forge_data
 private:
     // Member variables
     //
-    volatile unsigned short m_setpoint;
-    unsigned short          m_current_temp;
-    unsigned long           m_last_sp_changed_mills;
-    unsigned long           m_last_temp_changed_mills;
+    volatile setpoint_t m_setpoint;
+    temp_t              m_current_temp;
+    unsigned long       m_last_sp_changed_mills;
+    unsigned long       m_last_temp_changed_mills;
 
 public:
     // Ctors and dtors
@@ -25,12 +25,12 @@ public:
 
     // Member functions
     //
-    int setpoint() { return m_setpoint; }
+    setpoint_t setpoint() { return m_setpoint; }
     void increment_setpoint();
     void decrement_setpoint();
     
-    signed short current_temp() { return m_current_temp; }
-    void current_temp( signed short new_temp );
+    temp_t current_temp() { return m_current_temp; }
+    void current_temp( temp_t new_temp );
 
     unsigned long last_sp_changed_mills() { return m_last_sp_changed_mills; }
     void last_sp_changed_mills( unsigned long mills ) { m_last_sp_changed_mills = mills; }
@@ -45,7 +45,7 @@ public:
     double seconds_since_last_temp_change();
 
 private:
-    void setpoint( signed short  setpoint );
+    void setpoint( setpoint_t setpoint );
     // Disable unwanted compiler generated crap
     //
     forge_data( const forge_data& );

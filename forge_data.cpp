@@ -5,7 +5,7 @@
 #include <Arduino.h>
 
 void
-forge_data::current_temp( signed short new_temp )
+forge_data::current_temp( temp_t new_temp )
 {
     if ( new_temp != m_current_temp )
     {
