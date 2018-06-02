@@ -6,10 +6,9 @@
 #include "error.h"
 #include "disp.h"
 #include <arduino.h>
-#include <Adafruit_LEDBackpack.h>
-#include <Adafruit_GFX.h>
 #include <Wire.h>
 #include <math.h>
+#include <PID_v1.h>
 #include <ArduinoLog.h>
 
 // Interrupt routines
@@ -120,6 +119,12 @@ void init_led_matrix()
     return;
 }
 
+// HACK
+// Stop this from being global
+//
+double g_input, g_output, g_setpoint;
+PID g_pid( &g_input, &g_output, &g_setpoint, 2, 5, 1, DIRECT );
+
 void setup() 
 {
     static const int MAX6675_INIT_STABALIZE_WAIT = 500;
@@ -141,6 +146,17 @@ void setup()
     //
     delay( MAX6675_INIT_STABALIZE_WAIT );
 
+    // HACK
+    // Set initial pid data
+    //
+    forge_data& fd = singleton_t< forge_data >::instance();
+    g_setpoint = (double)fd.setpoint();
+    g_input    = (double)fd.current_temp();
+
+    // Turn the sucker on.
+    //
+    g_pid.SetMode( AUTOMATIC );
+
     // Everything seems good.  Turnon the power light
     //
     digitalWrite( PWR_LED_PIN, HIGH );
@@ -156,6 +172,15 @@ void loop()
    
     disp& displ = singleton_t<disp>::instance();
     displ.display();
+
+    // pid stuff
+    //
+    forge_data& fd = singleton_t< forge_data >::instance();
+    g_input = (double)fd.current_temp();
+    g_pid.Compute();
+
+    Log.notice( "About to send %D to output because of %D input" CR, g_output, g_input );
+    analogWrite( PID_OUTPUT_PIN, g_output );
 
     Log.notice( "Leaving loop()" CR );
     return;
