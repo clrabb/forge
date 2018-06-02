@@ -35,6 +35,7 @@ private:
 
     void display_setpoint_if_changing();
     void display_temp();
+    void flash_setpoint_if_off();
     
     void last_temp_display_mills( unsigned long mills ) 
         { m_last_temp_display_mills = mills; }

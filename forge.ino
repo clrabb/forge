@@ -157,8 +157,6 @@ void loop()
     disp& displ = singleton_t<disp>::instance();
     displ.display();
 
-    digitalWrite( SP_LED_PIN, LOW );
- 
     Log.notice( "Leaving loop()" CR );
     return;
 }

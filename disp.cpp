@@ -126,6 +126,30 @@ disp::display()
 }
 
 void 
+disp::flash_setpoint_if_off()
+{
+     // If the current temp and the setpoint are off by this percent 
+    // flash the setpoint
+    //
+    static const int DISPLAY_SP_OFF_TOLERANCE = 5; 
+
+    forge_data& fd = singleton_t< forge_data >::instance();
+    int   abs_diff     = abs( fd.setpoint() - fd.current_temp() );
+    float avg          = ( fd.setpoint() + fd.current_temp() ) / 2;
+    float percent_diff = ( abs_diff / avg ) * 100;
+    
+    if ( percent_diff > DISPLAY_SP_OFF_TOLERANCE )
+    {
+        digitalWrite( SP_LED_PIN, HIGH );
+        this->print( fd.setpoint() );
+        delay( 500 );
+        digitalWrite( SP_LED_PIN, LOW );
+    }
+
+    return;
+}
+
+void 
 disp::display_temp()
 {
     Log.notice( "In disp::display_temp()" CR );
@@ -135,20 +159,33 @@ disp::display_temp()
     // I realize this can be done with a short circuit but I want to
     // log the results of all three calls
     //
+    forge_data& fd    = singleton_t< forge_data >::instance();
     bool too_soon     = this->is_too_soon_temp_display();
     bool same_temp    = this->is_same_temp_temp_display();
     bool joe_fiddling = is_joe_fiddling_sp();
-    if ( too_soon || same_temp || joe_fiddling )
+
+    this->flash_setpoint_if_off();
+
+    if ( joe_fiddling )
     {
-        Log.notice( "Nothing to do.  too_soon: %T; same_temp: %T; joe fiddling: %T" CR,
+        Log.notice( "The sp is changing.  New setpoint: %d" CR, fd.setpoint() );
+
+        this->print( fd.setpoint() );  
+    }
+    else if ( too_soon || same_temp  )
+    {
+        Log.notice( "Nothing to do.  too_soon: %T; same_temp: %T" CR,
             too_soon,
-            same_temp,
-            joe_fiddling
+            same_temp
         );
     }
     else
     {
-        forge_data& fd = singleton_t<forge_data>::instance();
+        // This may get set to high if the setpoint is changing.  We want to 
+        // keep it that way until we print the temp again.
+        //
+        digitalWrite( SP_LED_PIN, LOW );
+    
         signed short current_temp = fd.current_temp();
         this->print( current_temp );
         this->last_temp_seen( current_temp );
@@ -178,11 +215,10 @@ disp::display_setpoint_if_changing()
     this->print( fd.setpoint() );
     digitalWrite( SP_LED_PIN, HIGH );
     delay( BLINK_ON_T );
-    //digitalWrite( SP_LED_PIN, LOW );
 
     this->last_setpoint_seen( fd.setpoint() );
     this->last_setpoint_dipslay_mills( millis() );
-
+   
     Log.notice( "Leaving disp::display_setpoint()" CR );
     return;
 }
