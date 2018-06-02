@@ -144,6 +144,8 @@ disp::flash_setpoint_if_off()
         this->print( fd.setpoint() );
         delay( 500 );
         digitalWrite( SP_LED_PIN, LOW );
+        this->print( fd.current_temp() );
+        delay( 500 );
     }
 
     return;
