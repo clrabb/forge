@@ -103,10 +103,16 @@ disp::display()
 void
 disp::display_setpoint()
 {
+    forge_data& fd = singleton_t< forge_data >::instance();
     seven_seg& seg = singleton_t< seven_seg >::instance();
+    
+    int tens = 0;
+    int ones = 0;
 
-    seg.writeDigitNum( 3, 0 );
-    seg.writeDigitNum( 4, 0 );
+    break_number( fd.setpoint(), tens, ones );
+
+    seg.writeDigitNum( 3, tens );
+    seg.writeDigitNum( 4, ones );
     seg.writeDisplay();
 
     return;

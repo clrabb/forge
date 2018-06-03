@@ -44,6 +44,19 @@ void dnButton_ISR()
     return;
 }
 
+
+void heartbeat( int times_through )
+{
+    if ( times_through % 10 == 0 )
+    {
+        digitalWrite( 5, HIGH );
+        delay( 20 );
+        digitalWrite( 5, LOW );
+    }
+
+    return;
+}
+
 void init_singletons()
 {
     Log.notice( "In init_singletons()" CR );
@@ -181,7 +194,7 @@ void setup()
 }
 
 
-int g_times_through = 0;
+int g_times_through;
 void loop() 
 {
     Log.notice( "In loop()" CR );
@@ -194,7 +207,7 @@ void loop()
     
     // update the current temp in the global data struct
     //
-    fd.current_temp( tc.read_f );
+    fd.current_temp( tc.read_f() );
 
     // Change pid output if needed
     //
@@ -206,19 +219,18 @@ void loop()
 
     // Send a heartbeat to an external LED
     //
-    heartbeat( g_times_through );
+    heartbeat( g_times_through++ );
 
     Log.notice( "Leaving loop()" CR );
     
     return;
 }
 
-void
-output_pid()
+void output_pid()
 {
     // Snag any needed globals
     //
-    forge_data& fd = sinleton_t< forge_data& >::instance();
+    forge_data& fd = singleton_t< forge_data >::instance();
     
     // Use different tuning parms depending of if we are far from the 
     // setpoint or not
@@ -238,19 +250,6 @@ output_pid()
     return;
 }
 
-void
-heartbeat( int times_through )
-{
-    ++g_times_through;
-    if ( g_times_through % 10 == 0 )
-    {
-        digitalWrite( 5, HIGH );
-        delay( 50 );
-        digitalWrite( 5, LOW );
-    }
-
-    return;
-}
 
 
 
