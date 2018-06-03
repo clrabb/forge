@@ -75,34 +75,18 @@ disp::is_too_soon_temp_display()
 }
 
 bool
-disp::is_same_temp_temp_display()
+disp::is_same_temp_as_last_display()
 {
-    Log.notice( "In is_same_temp_temp_display()" CR );
-
     forge_data& fd = singleton_t<forge_data>::instance();
     bool is_same_temp = this->last_temp_seen() == fd.current_temp();
-
-    Log.notice( "Leaving is_same_temp_temp_display() with retval: %T" CR, is_same_temp );
 
     return is_same_temp;
 }
 
 bool
-disp::is_joe_fiddling_sp()
+disp::is_same_setpoint_as_last_display()
 {
-    Log.notice( "In disp::is_joe_fiddling_sp()" CR );
-
-    forge_data& fd = singleton_t< forge_data >::instance();
-    signed short last_seen = this->last_setpoint_seen();
-    signed short current_setpoint = fd.setpoint();
-
-    Log.notice( "Last setpoint: %d current setpoint: %d" CR, last_seen, current_setpoint );
-
-    bool is_fiddling = ( last_seen != current_setpoint );
     
-    Log.notice( "Leaving is_joe_fiddlng_sp() with retval %T" CR, is_fiddling );
-
-    return is_fiddling;
 }
 
 // Main calling point from loop()
@@ -115,16 +99,16 @@ disp::display()
     thermoc& tc    = singleton_t< thermoc >::instance();
     forge_data& fd = singleton_t< forge_data >::instance();
 
-    signed short temp = tc.read_f();
+    temp_t temp = tc.read_f();
     fd.current_temp( temp );
 
-    this->display_setpoint_if_changing();
     this->display_temp();
 
     Log.notice( "Leaving disp::display()" CR );
     return;
 }
 
+/*
 void 
 disp::flash_setpoint_if_off()
 {
@@ -142,14 +126,15 @@ disp::flash_setpoint_if_off()
     {
         digitalWrite( SP_LED_PIN, HIGH );
         this->print_int( fd.setpoint() );
-        delay( BLINK_ON_T );
+        delay( 10 );
         digitalWrite( SP_LED_PIN, LOW );
         this->print_int( fd.current_temp() );
-        delay( BLINK_OFF_T );
+        delay( 10 );
     }
 
     return;
 }
+*/
 
 void 
 disp::display_temp()
@@ -164,17 +149,8 @@ disp::display_temp()
     forge_data& fd    = singleton_t< forge_data >::instance();
     bool too_soon     = this->is_too_soon_temp_display();
     bool same_temp    = this->is_same_temp_temp_display();
-    bool joe_fiddling = is_joe_fiddling_sp();
-
-    this->flash_setpoint_if_off();
-
-    if ( joe_fiddling )
-    {
-        Log.notice( "The sp is changing.  New setpoint: %d" CR, fd.setpoint() );
-
-        this->print_int( fd.setpoint() ); 
-    }
-    else if ( too_soon || same_temp  )
+  
+    if ( too_soon || same_temp  )
     {
         Log.notice( "Nothing to do.  too_soon: %T; same_temp: %T" CR,
             too_soon,
@@ -224,29 +200,4 @@ disp::display_setpoint_if_changing()
     Log.notice( "Leaving disp::display_setpoint()" CR );
     return;
 }
-
-void
-disp::print_int( int number )
-{
-    Log.notice( "In disp::print()" CR );
-
-    Log.notice( "Printing %d" CR, number );
-    seven_seg& disp_led = singleton_t<seven_seg>::instance();
-    disp_led.print( number, DEC );
-    disp_led.writeDisplay();
-
-    Log.notice( "Leaving disp::print()" CR );
-     
-    return;
-}
-
-void
-disp::print_temp( double number )
-{
-    int value = static_cast< int >( number < 0 ? number - 0.5 : number + 0.5 );
-    return this->print_int( value );
-
-    return;
-}
-
 

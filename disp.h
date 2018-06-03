@@ -15,9 +15,6 @@ private:
     temp_t        m_last_temp_seen              = 0;
     temp_t        m_last_setpoint_seen          = 0;
     
-    static const int BLINK_OFF_T = 700; // ms for blinking off
-    static const int BLINK_ON_T  = 700; // ms for blinking on
-    
 public:
     // Ctors & dtors
     //
@@ -35,12 +32,7 @@ public:
     //
     void display();
 
-private:
-
-    void display_setpoint_if_changing();
-    void display_temp();
-    void flash_setpoint_if_off();
-    
+private:    
     void last_temp_display_mills( unsigned long mills ) 
         { m_last_temp_display_mills = mills; }
   
@@ -54,11 +46,10 @@ private:
     temp_t last_temp_seen() { return m_last_temp_seen; }
 
     bool is_too_soon_temp_display();
-    bool is_same_temp_temp_display();
-    bool is_joe_fiddling_sp();
+    bool is_same_temp_as_last_display();
+    bool is_same_setpoint_as_last_display();
 
-    void print_temp( temp_t number );
-    void print_int( int number );
+    void print_temp( temp_t temp, setpoint_t setpoint );
 private:
     // Disable copy ctor and assignment op
     //

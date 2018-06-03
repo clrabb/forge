@@ -119,11 +119,18 @@ void init_led_matrix()
     return;
 }
 
+// Aggressive and conservative tunning parms
+// HACK
+// More globals
+double aggKp = 4, aggKi = 0.2, aggKd = 1;
+double conKp = 1, conKi = 0.05, conKd = 0.25;
+
 // HACK
 // Stop this from being global
 //
 double g_input, g_output, g_setpoint;
-PID g_pid( &g_input, &g_output, &g_setpoint, 2, 5, 1, DIRECT );
+PID g_pid( &g_input, &g_output, &g_setpoint, conKp, conKi, conKd, DIRECT );
+
 
 void setup() 
 {
@@ -134,6 +141,7 @@ void setup()
     Log.begin( LOG_LEVEL_VERBOSE, &Serial );
     Log.notice( "In setup" CR );
 
+    digitalWrite( LED_BUILTIN, HIGH );
 
     // All the various initializing needed
     //  
@@ -176,10 +184,18 @@ void loop()
     // pid stuff
     //
     forge_data& fd = singleton_t< forge_data >::instance();
+
+    // Use different tuning parms depending of if we are far from the 
+    // setpoint or not
+    //
     g_input = fd.current_temp();
+    double gap = abs( g_setpoint - g_input );
+    ( gap < 10 )
+        ? g_pid.SetTunings( conKp, conKi, conKd ) // Close, use conservative
+        : g_pid.SetTunings( aggKp, aggKi, aggKd ) // Far, use aggresive
+    ;
     g_pid.Compute();
 
-    Log.notice( "About to send %D,%F to output because of %D,%F input" CR, g_output, g_input );
     analogWrite( PID_OUTPUT_PIN, g_output );
 
     Log.notice( "Leaving loop()" CR );
