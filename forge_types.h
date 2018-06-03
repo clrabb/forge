@@ -7,7 +7,7 @@
 // to something like the twinky in ghostbusters
 //
 #define DISABLE_LOGGING
-#define __DEBUG__
+//#define __DEBUG__
 
 
 #include <Adafruit_LEDBackpack.h>

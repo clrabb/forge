@@ -64,7 +64,11 @@ bool
 disp::is_same_temp_as_last_display()
 {
     forge_data& fd = singleton_t<forge_data>::instance();
-    bool is_same_temp = this->last_temp_seen() == fd.current_temp();
+
+    int last_temp_displayed = round( this->last_temp_seen() );
+    int current_temp        = round( fd.current_temp() );
+    
+    bool is_same_temp = ( last_temp_displayed == current_temp );
 
     return is_same_temp;
 }
@@ -85,15 +89,28 @@ disp::display_setpoint()
 {
     forge_data& fd = singleton_t< forge_data >::instance();
     seven_seg& seg = singleton_t< seven_seg >::instance();
+
+    int last_setpoint_seen = round( this->last_setpoint_seen() );
+    int current_setpoint   = round( fd.setpoint() );
+
+    if ( last_setpoint_seen == current_setpoint )
+    {
+        Log.notice( "No need ot update the screen with the same setpoint.  bailing" CR );
+    }
+    else
+    {
+        Log.notice( "Setpoint different than last displayed.  Updating LED" CR );
+        int tens = 0;
+        int ones = 0;
     
-    int tens = 0;
-    int ones = 0;
-
-    break_number( fd.setpoint(), tens, ones );
-
-    seg.writeDigitNum( 3, tens );
-    seg.writeDigitNum( 4, ones );
-    seg.writeDisplay();
+        break_number( fd.setpoint(), tens, ones );
+    
+        seg.writeDigitNum( 3, tens );
+        seg.writeDigitNum( 4, ones );
+        seg.writeDisplay();
+    
+        this->last_setpoint_seen( fd.setpoint() );
+    }
 
     return;
 }

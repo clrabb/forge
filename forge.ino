@@ -102,6 +102,8 @@ void init_interrupts()
 //
 void init_led_matrix()
 {   
+    Log.notice( "In init_led_matrix()" CR );
+    
     static const int TEST_NUMBER_DELAY = 100;
     static const int TEST_END_DELAY    = 1000;
 
@@ -132,13 +134,15 @@ void init_led_matrix()
 
     delay( TEST_END_DELAY );
 
+    Log.notice( "Leaving init_led_matrix()" CR );
+    
     return;
 }
 
 void setup() 
 {
 
-    static const int MAX6675_INIT_STABALIZE_WAIT = 500;
+    static const int MAX6675_INIT_STABALIZE_WAIT = 2000;
     static const int BAUD_RATE = 9600;
 
     Serial.begin( BAUD_RATE );
