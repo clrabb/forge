@@ -2,7 +2,7 @@
 #define THERMOC_H
 
 #include "max6675.h"
-
+#include "forge_types.h"
 
 class thermoc
 {
@@ -18,8 +18,8 @@ public:
  
     // Decorate the Thermocouple lib
     //
-    signed short read_f();
-    signed short read_c();
+    temp_t read_f();
+    temp_t read_c();
 
 private:
     thermoc(const thermoc&); // disable copy ctor

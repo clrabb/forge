@@ -3,11 +3,11 @@
 #include "singleton_t.h"
 #include "forge_types.h"
 #include "forge_data.h"
+#include "forge_pid.h"
 #include "disp.h"
 #include <arduino.h>
 #include <Wire.h>
 #include <math.h>
-#include <PID_v1.h>
 #include <ArduinoLog.h>
 
 // Interrupt routines
@@ -65,6 +65,7 @@ void init_singletons()
     singleton_t<forge_data> s_fdata( new forge_data() );
     singleton_t<seven_seg> s_matrix( new seven_seg() );
     singleton_t<disp> s_display( new disp() );
+    singleton_t<forge_pid> fpid( new forge_pid() );
 
     Log.notice( "Leaving init_singletons()" CR );
     return;
@@ -134,19 +135,6 @@ void init_led_matrix()
     return;
 }
 
-// Aggressive and conservative tunning parms
-// HACK
-// More globals
-double aggKp = 4, aggKi = 0.2, aggKd = 1;
-double conKp = 1, conKi = 0.05, conKd = 0.25;
-
-// HACK
-// Stop this from being global
-//
-double g_input, g_output, g_setpoint;
-PID g_pid( &g_input, &g_output, &g_setpoint, conKp, conKi, conKd, DIRECT );
-
-
 void setup() 
 {
 
@@ -170,20 +158,17 @@ void setup()
     //
     delay( MAX6675_INIT_STABALIZE_WAIT );
 
-    // HACK
-    // Set initial pid data
-    //
-    forge_data& fd = singleton_t< forge_data >::instance();
-    thermoc&    tc = singleton_t< thermoc    >::instance();
+    forge_data& fd   = singleton_t< forge_data >::instance();
+    thermoc&    tc   = singleton_t< thermoc    >::instance();
+    forge_pid&  fpid = singleton_t< forge_pid >::instance();
     
-    temp_t current_temp = tc.read_f();
-    fd.current_temp( current_temp );
-    g_input    = current_temp;  // HACK, this shouldn't be global
-    g_setpoint = fd.setpoint();
+    fd.setpoint( START_SP );
+    fd.current_temp( tc.read_f() );
 
-    // Turn the sucker on.
+    //initialize pid
     //
-    g_pid.SetMode( AUTOMATIC );
+    fpid.initial_values( fd.current_temp(), fd.setpoint() );
+    fpid.start();
 
     // Everything seems good.  Turnon the power light
     //
@@ -217,9 +202,11 @@ void loop()
     //
     displ.display();
 
+#ifdef __DEBUG__
     // Send a heartbeat to an external LED
     //
     heartbeat( g_times_through++ );
+#endif // __DEBUG__
 
     Log.notice( "Leaving loop()" CR );
     
@@ -228,25 +215,28 @@ void loop()
 
 void output_pid()
 {
+    Log.notice( "**************** IN OUTPUT_ID() **************" CR );
     // Snag any needed globals
     //
-    forge_data& fd = singleton_t< forge_data >::instance();
-    
-    // Use different tuning parms depending of if we are far from the 
-    // setpoint or not
+    forge_data& fd   = singleton_t< forge_data >::instance();
+    forge_pid&  fpid = singleton_t< forge_pid >::instance();
+
+    double output = fpid.compute( fd.current_temp(), fd.setpoint() );
+
+#ifdef __DEBUG__
+    // Fucking logging framework doesn't deal with floats
     //
+    Serial.print( "Computed new output to regulator: " );
+    Serial.print( output );
+    Serial.print( ". Setpoint was " );
+    Serial.print( fd.setpoint() );
+    Serial.print( " . Temp was " );
+    Serial.println( fd.current_temp() );
+#endif // __DEBUG __
 
-    g_input = fd.current_temp();
-    double gap = abs( g_setpoint - g_input );
-    ( gap < 10 )
-        ? g_pid.SetTunings( conKp, conKi, conKd ) // Close, use conservative
-        : g_pid.SetTunings( aggKp, aggKi, aggKd ) // Far, use aggresive
-    ;
-    
-    g_pid.Compute();
+    analogWrite( PID_OUTPUT_PIN, output );
 
-    analogWrite( PID_OUTPUT_PIN, g_output );
-
+    Log.notice( "***************** LEAVING OUTPUT_PID() **************" CR );
     return;
 }
 

@@ -4,20 +4,27 @@
 #include <Arduino.h>
 #include <ArduinoLog.h>
 
+
 void
 forge_data::current_temp( temp_t new_temp )
 {
-    Log.notice( "Setting new temp to %d" CR, new_temp );
-    if ( new_temp != m_current_temp )
-    {
-        this->last_temp_changed_mills( millis() );
-    }
+    if ( m_current_temp == new_temp )
+        return;  // Bail.
 
-    m_current_temp = new_temp;
+    this->last_temp_changed_mills( millis() );
+    this->m_current_temp = new_temp;
+
+#ifdef __DEBUG__
+    // Stupid logging framework doesn't deal with doubles???
+    //
+    Serial.print( "Setting temp to: " );
+    Serial.print( new_temp );
+    Serial.print( ". Old temp was: " );
+    Serial.println( this->m_current_temp );
+#endif
 
     return;
 }
-
 
 void
 forge_data::increment_setpoint()

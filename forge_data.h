@@ -28,6 +28,7 @@ public:
     setpoint_t setpoint() { return m_setpoint; }
     void increment_setpoint();
     void decrement_setpoint();
+    void setpoint( setpoint_t sp ) { m_setpoint = sp; }
     
     temp_t current_temp() { return m_current_temp; }
     void current_temp( temp_t new_temp );
@@ -45,7 +46,6 @@ public:
     double seconds_since_last_temp_change();
 
 private:
-    void setpoint( setpoint_t setpoint );
     // Disable unwanted compiler generated crap
     //
     forge_data( const forge_data& );

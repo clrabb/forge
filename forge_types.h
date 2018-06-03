@@ -6,19 +6,21 @@
 // serial out.  It will also inflate the size of the code space
 // to something like the twinky in ghostbusters
 //
-//#define DISABLE_LOGGING
+#define DISABLE_LOGGING
+#define __DEBUG__
 
 
 #include <Adafruit_LEDBackpack.h>
-#include "Adafruit_GFX.h"
+#include <Adafruit_GFX.h>
+#include <PID_v1.h>
 
 typedef double temp_t;
 typedef unsigned short setpoint_t;
 typedef unsigned short short_t;
-typedef short_t forge_err;
-typedef short_t forge_status;
 typedef Adafruit_7segment seven_seg;
 typedef Adafruit_GFX gfx;
+typedef PID pid_v1;
+
 
 static const int UP_BTN_PIN     = 2;   // Pin for the 'up' button
 static const int DN_BTN_PIN     = 3;   // Pin for the 'down' button

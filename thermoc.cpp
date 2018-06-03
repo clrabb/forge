@@ -1,5 +1,4 @@
 #include "thermoc.h"
-#include "forge_types.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -16,17 +15,16 @@ thermoc::~thermoc()
 
 // Decorate the Thermocouple lib
 //
-signed short
+temp_t
 thermoc::read_f()
 {
-    signed short read_temp = round( this->m_tc.readFahrenheit() );
-    return read_temp;
+    return this->m_tc.readFahrenheit();
 }
 
 
-signed short
+temp_t
 thermoc::read_c()
 {
-    return round( this->m_tc.readCelsius() );
+    return this->m_tc.readCelsius();
 }
 
