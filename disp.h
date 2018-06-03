@@ -48,8 +48,12 @@ private:
     bool is_too_soon_temp_display();
     bool is_same_temp_as_last_display();
     bool is_same_setpoint_as_last_display();
-
-    void print_temp( temp_t temp, setpoint_t setpoint );
+    
+    void display_temp();
+    void display_setpoint();
+    void break_number( int number, int& tens, int& ones );
+    
+    void display_temp_impl( temp_t temp );
 private:
     // Disable copy ctor and assignment op
     //

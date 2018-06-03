@@ -94,61 +94,33 @@ disp::is_same_setpoint_as_last_display()
 void
 disp::display()
 {
-    Log.notice( "In disp::display()" CR );
-
-    thermoc& tc    = singleton_t< thermoc >::instance();
-    forge_data& fd = singleton_t< forge_data >::instance();
-
-    temp_t temp = tc.read_f();
-    fd.current_temp( temp );
-
-    this->display_temp();
-
-    Log.notice( "Leaving disp::display()" CR );
-    return;
+   this->display_temp();
+   this->display_setpoint();
+   
+   return;
 }
 
-/*
-void 
-disp::flash_setpoint_if_off()
+void
+disp::display_setpoint()
 {
-     // If the current temp and the setpoint are off by this percent 
-    // flash the setpoint
-    //
-    static const int DISPLAY_SP_OFF_TOLERANCE = 5; 
+    seven_seg& seg = singleton_t< seven_seg >::instance();
 
-    forge_data& fd = singleton_t< forge_data >::instance();
-    int   abs_diff     = abs( fd.setpoint() - fd.current_temp() );
-    float avg          = ( fd.setpoint() + fd.current_temp() ) / 2;
-    float percent_diff = ( abs_diff / avg ) * 100;
-    
-    if ( percent_diff > DISPLAY_SP_OFF_TOLERANCE )
-    {
-        digitalWrite( SP_LED_PIN, HIGH );
-        this->print_int( fd.setpoint() );
-        delay( 10 );
-        digitalWrite( SP_LED_PIN, LOW );
-        this->print_int( fd.current_temp() );
-        delay( 10 );
-    }
+    seg.writeDigitNum( 3, 0 );
+    seg.writeDigitNum( 4, 0 );
+    seg.writeDisplay();
 
     return;
 }
-*/
+
+
 
 void 
 disp::display_temp()
 {
-    Log.notice( "In disp::display_temp()" CR );
-    
     // Main debouncing routine
     //
-    // I realize this can be done with a short circuit but I want to
-    // log the results of all three calls
-    //
-    forge_data& fd    = singleton_t< forge_data >::instance();
-    bool too_soon     = this->is_too_soon_temp_display();
-    bool same_temp    = this->is_same_temp_temp_display();
+    bool too_soon   = this->is_too_soon_temp_display();
+    bool same_temp  = this->is_same_temp_as_last_display();
   
     if ( too_soon || same_temp  )
     {
@@ -159,45 +131,64 @@ disp::display_temp()
     }
     else
     {
-        // This may get set to high if the setpoint is changing.  We want to 
-        // keep it that way until we print the temp again.
-        //
-        digitalWrite( SP_LED_PIN, LOW );
-    
+        forge_data& fd = singleton_t< forge_data >::instance();
         temp_t current_temp = fd.current_temp();
-        this->print_temp( current_temp );
+
+        Log.notice( "About to call display_temp_impl with %d" CR, round( current_temp ) );
+        
+        this->display_temp_impl( current_temp );
         this->last_temp_seen( current_temp );
         this->last_temp_display_mills( millis() );
     }  
 
-    Log.notice( "Leaving disp::display_temp()" CR );
     return;
 }
 
+
+void
+disp::display_temp_impl( temp_t temp )
+{ 
+    seven_seg& seg = singleton_t< seven_seg >::instance();
+
+    // Hack
+    // This is temprary until the second display shows up
+    //
+
+    // get tens digit
+    // Yeah, ugly.  This is temporary
+    //
+    int rounded_temp = round( temp );
+    int tens = 0;
+    int ones = 0;    
+    this->break_number( rounded_temp, tens, ones );
+
+    Log.notice( "Ten digit is: %d, one digit is: %d" CR, tens, ones );
+
+    // Display tens
+    seg.writeDigitNum( 0, tens );
+
+    // display one
+    // 
+    seg.writeDigitNum( 1, ones );
+
+    seg.writeDisplay();
+
+    return;
+}
+
+// Break two digit number into ones and test
+//
 void 
-disp::display_setpoint_if_changing()
+disp::break_number( int num, int& tens, int& ones )
 {
-    Log.notice( "In disp::display_setpoint()" CR );
+    // Returns the tens digit of a positive number.
+    // 
+    tens = ( num / 10 ) % 10;
+    ones = num - ( tens * 10 );
 
-    if ( !( is_joe_fiddling_sp() ) )
-    {
-        Log.notice( "Joe's not fiddling with the set point.  I'm outta here" CR );
-        return;
-    }
-
-    Log.notice( "Looks like the setpoint is changing.  Print the current setpoint" CR );
+    Log.notice( "For number %d the tens place is %d and the ones place is %d" CR, num, tens, ones );
     
-    disp& displ    = singleton_t<disp>::instance();
-    forge_data& fd = singleton_t<forge_data>::instance();
-    
-    this->print_int( fd.setpoint() );
-    digitalWrite( SP_LED_PIN, HIGH );
-    delay( BLINK_ON_T );
-
-    this->last_setpoint_seen( fd.setpoint() );
-    this->last_setpoint_dipslay_mills( millis() );
-   
-    Log.notice( "Leaving disp::display_setpoint()" CR );
     return;
 }
+
 

@@ -3,7 +3,6 @@
 #include "singleton_t.h"
 #include "forge_types.h"
 #include "forge_data.h"
-#include "error.h"
 #include "disp.h"
 #include <arduino.h>
 #include <Wire.h>
@@ -51,7 +50,6 @@ void init_singletons()
     
     singleton_t<thermoc> s_tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
     singleton_t<forge_data> s_fdata( new forge_data() );
-    singleton_t<error> s_error( new error() );
     singleton_t<seven_seg> s_matrix( new seven_seg() );
     singleton_t<disp> s_display( new disp() );
 
@@ -62,12 +60,13 @@ void init_singletons()
 void init_pins()
 {
     Log.notice( "In init_pins()" CR );
+    
     // Set up pin usage
     //
-    pinMode( UP_BTN_PIN,  INPUT   );
-    pinMode( DN_BTN_PIN,  INPUT   );
-    pinMode( PWR_LED_PIN, OUTPUT  );
-    pinMode( SP_LED_PIN,  OUTPUT  );
+    pinMode( UP_BTN_PIN,     INPUT  );
+    pinMode( DN_BTN_PIN,     INPUT  );
+    pinMode( PWR_LED_PIN,    OUTPUT );
+    pinMode( STATUS_LED_PIN, OUTPUT );
 
     Log.notice( "Leaving init_pins()" CR );
     return;
@@ -88,13 +87,11 @@ void init_interrupts()
 // Sets up LED and prints test pattern
 //
 void init_led_matrix()
-{
-    Log.notice( "in init_led_matrix()" CR );
-    
+{   
     static const int TEST_NUMBER_DELAY = 100;
     static const int TEST_END_DELAY    = 1000;
 
-    Adafruit_7segment& matrix = singleton_t<Adafruit_7segment>::instance();
+    seven_seg& matrix = singleton_t< seven_seg >::instance();
     
     matrix.begin( 0x70 );
 
@@ -106,16 +103,21 @@ void init_led_matrix()
     matrix.writeDisplay();
     delay( TEST_NUMBER_DELAY );
 
+    matrix.drawColon( true );
+    matrix.writeDisplay();
+    delay( TEST_NUMBER_DELAY );
+
     matrix.print( 888, DEC );
+    matrix.drawColon( true );
     matrix.writeDisplay();
     delay( TEST_NUMBER_DELAY );
 
     matrix.print(8888, DEC);
+    matrix.drawColon( true );
     matrix.writeDisplay();
 
     delay( TEST_END_DELAY );
 
-    Log.notice( "Leaving init_led_matrix()" CR );
     return;
 }
 
@@ -134,6 +136,7 @@ PID g_pid( &g_input, &g_output, &g_setpoint, conKp, conKi, conKd, DIRECT );
 
 void setup() 
 {
+
     static const int MAX6675_INIT_STABALIZE_WAIT = 500;
     static const int BAUD_RATE = 9600;
 
@@ -141,10 +144,10 @@ void setup()
     Log.begin( LOG_LEVEL_VERBOSE, &Serial );
     Log.notice( "In setup" CR );
 
-    digitalWrite( LED_BUILTIN, HIGH );
 
     // All the various initializing needed
     //  
+
     init_pins();
     init_interrupts();
     init_singletons();
@@ -158,8 +161,12 @@ void setup()
     // Set initial pid data
     //
     forge_data& fd = singleton_t< forge_data >::instance();
+    thermoc&    tc = singleton_t< thermoc    >::instance();
+    
+    temp_t current_temp = tc.read_f();
+    fd.current_temp( current_temp );
+    g_input    = current_temp;  // HACK, this shouldn't be global
     g_setpoint = fd.setpoint();
-    g_input    = fd.current_temp();
 
     // Turn the sucker on.
     //
@@ -174,34 +181,76 @@ void setup()
 }
 
 
+int g_times_through = 0;
 void loop() 
 {
     Log.notice( "In loop()" CR );
-   
-    disp& displ = singleton_t<disp>::instance();
-    displ.display();
 
-    // pid stuff
+    // Snag the various globals
     //
     forge_data& fd = singleton_t< forge_data >::instance();
+    disp& displ    = singleton_t< disp >::instance();
+    thermoc& tc    = singleton_t< thermoc >::instance();
+    
+    // update the current temp in the global data struct
+    //
+    fd.current_temp( tc.read_f );
 
+    // Change pid output if needed
+    //
+    output_pid();
+    
+    // /Run the display loop
+    //
+    displ.display();
+
+    // Send a heartbeat to an external LED
+    //
+    heartbeat( g_times_through );
+
+    Log.notice( "Leaving loop()" CR );
+    
+    return;
+}
+
+void
+output_pid()
+{
+    // Snag any needed globals
+    //
+    forge_data& fd = sinleton_t< forge_data& >::instance();
+    
     // Use different tuning parms depending of if we are far from the 
     // setpoint or not
     //
+
     g_input = fd.current_temp();
     double gap = abs( g_setpoint - g_input );
     ( gap < 10 )
         ? g_pid.SetTunings( conKp, conKi, conKd ) // Close, use conservative
         : g_pid.SetTunings( aggKp, aggKi, aggKd ) // Far, use aggresive
     ;
+    
     g_pid.Compute();
 
     analogWrite( PID_OUTPUT_PIN, g_output );
 
-    Log.notice( "Leaving loop()" CR );
     return;
 }
 
+void
+heartbeat( int times_through )
+{
+    ++g_times_through;
+    if ( g_times_through % 10 == 0 )
+    {
+        digitalWrite( 5, HIGH );
+        delay( 50 );
+        digitalWrite( 5, LOW );
+    }
+
+    return;
+}
 
 
 

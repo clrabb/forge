@@ -1,12 +1,13 @@
 #include "forge_data.h"
 #include "forge_types.h"
 #include "singleton_t.h"
-#include "error.h"
 #include <Arduino.h>
+#include <ArduinoLog.h>
 
 void
 forge_data::current_temp( temp_t new_temp )
 {
+    Log.notice( "Setting new temp to %d" CR, new_temp );
     if ( new_temp != m_current_temp )
     {
         this->last_temp_changed_mills( millis() );
