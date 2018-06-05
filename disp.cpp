@@ -136,7 +136,14 @@ disp::display_temp()
     {
         forge_data& fd = singleton_t< forge_data >::instance();
         temp_t current_temp = fd.current_temp();
-   
+        
+#ifdef __DEBUG__
+        Serial.print( "Changing display temp from " );
+        Serial.print( round( this->last_temp_seen() ) );
+        Serial.print( " to " );
+        Serial.println( round( current_temp ) );
+#endif // __DEBUG__      
+     
         this->display_temp_impl( current_temp );
         this->last_temp_seen( current_temp );
         this->last_temp_display_mills( millis() );

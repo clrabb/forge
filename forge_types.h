@@ -7,19 +7,18 @@
 // to something like the twinky in ghostbusters
 //
 #define DISABLE_LOGGING
-//#define __DEBUG__
+#define __DEBUG__
 
 
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
 #include <PID_v1.h>
 
-typedef double temp_t;
-typedef unsigned short setpoint_t;
-typedef unsigned short short_t;
+typedef double            temp_t;
 typedef Adafruit_7segment seven_seg;
-typedef Adafruit_GFX gfx;
-typedef PID pid_v1;
+typedef Adafruit_GFX      gfx;
+typedef PID               pid_v1;
+typedef unsigned short    setpoint_t;
 
 
 static const int UP_BTN_PIN     = 2;   // Pin for the 'up' button
@@ -31,6 +30,7 @@ static const int THERM_DO       = 8;   // Data out from the MAX6675 module
 static const int THERM_CS       = 9;   // Chip select from same
 static const int THERM_CLK      = 10;  // Clock from same
 static const int START_SP       = 70;  // initial starting set point
+static const int LED_BRIGHTNESS = 10;  // between 0 and 15
 
 
 

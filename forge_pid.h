@@ -16,7 +16,7 @@ public:
     const double CON_KD = 0.25;
     
 public:
-    // Tor
+    // Ctor
     //
     forge_pid()
         : m_pid_guts( 
@@ -33,7 +33,8 @@ public:
 public:
     // Methods
     double compute( double input, double setpoint );
-    void initial_values( double input, double setpont );
+    void initial_values( double input, double setpoint, int sample_time );
+    void initial_values( double input, double setpoint );
     void start();
 
 private:
@@ -45,7 +46,7 @@ private:
     double m_setpoint;
 
 private:
-    // Disable copy ctro and assignment op
+    // Disable copy ctor and assignment op
     //
     forge_pid( const forge_pid& );
     forge_pid operator=(const & forge_pid );

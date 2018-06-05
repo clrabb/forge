@@ -9,7 +9,16 @@ void
 forge_data::current_temp( temp_t new_temp )
 {
     if ( m_current_temp == new_temp )
-        return;  // Bail.
+    {
+#ifdef __DEBUG__
+        Serial.print( "Old temp same as new temp.  Old: ");
+        Serial.print( m_current_temp );
+        Serial.print( " New: " );
+        Serial.println( new_temp );
+#endif // __DEBUG__
+        return;
+    }
+
 
     this->last_temp_changed_mills( millis() );
     this->m_current_temp = new_temp;

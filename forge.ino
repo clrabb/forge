@@ -15,10 +15,6 @@
 void upButton_ISR()
 {
     forge_data& fd     = singleton_t< forge_data >::instance();
-
-    
-    // up_button_state is a global
-    //
     
     volatile int up_button_state = digitalRead( UP_BTN_PIN );
     if ( up_button_state == 1 )
@@ -110,6 +106,7 @@ void init_led_matrix()
     seven_seg& matrix = singleton_t< seven_seg >::instance();
     
     matrix.begin( 0x70 );
+    matrix.setBrightness( LED_BRIGHTNESS );
 
     matrix.print( 8, DEC );
     matrix.writeDisplay();
@@ -171,7 +168,11 @@ void setup()
 
     //initialize pid
     //
+    //fpid.initial_values( fd.current_temp(), fd.setpoint(), 10 /* ms */ );
     fpid.initial_values( fd.current_temp(), fd.setpoint() );
+
+    delay( 1000 );
+    
     fpid.start();
 
     // Everything seems good.  Turnon the power light
@@ -196,6 +197,13 @@ void loop()
     
     // update the current temp in the global data struct
     //
+    temp_t nt = tc.read_f();
+
+#ifdef __DEBUG__
+    Serial.print( "New temp read from thermocouple was: " );
+    Serial.println( nt );
+#endif // __DEBUG__
+    
     fd.current_temp( tc.read_f() );
 
     // Change pid output if needed
@@ -230,13 +238,19 @@ void output_pid()
 #ifdef __DEBUG__
     // Fucking logging framework doesn't deal with floats
     //
-    Serial.print( "Computed new output to regulator: " );
-    Serial.print( output );
+    Serial.print( "Temp: " );
+    Serial.print( fd.current_temp() );
+    Serial.print( ". Computed new output to regulator: " );
+    Serial.println( output );
+#endif // __DEBUG__
+
+/*
     Serial.print( ". Setpoint was " );
     Serial.print( fd.setpoint() );
     Serial.print( " . Temp was " );
     Serial.println( fd.current_temp() );
 #endif // __DEBUG __
+*/
 
     analogWrite( PID_OUTPUT_PIN, output );
 
