@@ -10,12 +10,12 @@ forge_data::current_temp( temp_t new_temp )
 {
     if ( m_current_temp == new_temp )
     {
-#ifdef __DEBUG__
-        Serial.print( "Old temp same as new temp.  Old: ");
+#ifdef __T_DEBUG__     
+        Serial.print( "forge_data::current_temp(temp_t); Old temp same as new temp.  Old: ");
         Serial.print( m_current_temp );
         Serial.print( " New: " );
         Serial.println( new_temp );
-#endif // __DEBUG__
+#endif // __T_DEBUG__
         return;
     }
 
@@ -31,6 +31,15 @@ forge_data::current_temp( temp_t new_temp )
     Serial.print( ". Old temp was: " );
     Serial.println( this->m_current_temp );
 #endif
+
+    return;
+}
+
+void
+forge_data::current_pid_output( double output )
+{
+    m_current_pid_output = output;
+    this->last_pid_output_mills( millis() );
 
     return;
 }
@@ -77,6 +86,19 @@ double
 forge_data::seconds_since_last_sp_change()
 {
     return this->mills_since_last_sp_change() / 1000;
+}
+
+unsigned long 
+forge_data::mills_since_last_pid_output_change()
+{
+    unsigned long now_mills = millis();
+    return now_mills - this->last_sp_changed_mills();
+}
+
+double
+forge_data::seconds_since_last_pid_output_change()
+{
+    return this->mills_since_last_pid_output_change() / 1000;
 }
 
 

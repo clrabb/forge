@@ -57,9 +57,11 @@ void init_singletons()
 {
     Log.notice( "In init_singletons()" CR );
     
-    singleton_t<thermoc> s_tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
+    singleton_t<thermoc>    s_tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
     singleton_t<forge_data> s_fdata( new forge_data() );
-    singleton_t<seven_seg> s_matrix( new seven_seg() );
+    singleton_t<seven_seg>  s_matrix( new seven_seg() );
+    singleton_t<led_bar>        s_bar( new led_bar() );
+    
     singleton_t<disp> s_display( new disp() );
     singleton_t<forge_pid> fpid( new forge_pid() );
 
@@ -93,6 +95,58 @@ void init_interrupts()
     Log.notice( "Leaving init_interrupts()" CR );
     return;
 }
+void init_led_bar()
+{
+    Log.notice( "In init_led_bar()" CR );
+    
+    static const int BAR_LED_ADDR      = 0x72;
+    led_bar& b = singleton_t< led_bar >::instance();
+
+    b.begin(0x72);  // pass in the address
+    b.setBrightness( LED_BAR_BRIGHTNESS );
+
+    for (uint8_t i = 0; i < 24; ++i )
+    {
+        if ((i % 3) == 0)  b.setBar(i, LED_RED);
+        if ((i % 3) == 1)  b.setBar(i, LED_YELLOW);
+        if ((i % 3) == 2)  b.setBar(i, LED_GREEN);
+    }    
+    
+    b.writeDisplay();
+    delay(2000);
+
+    for ( uint8_t i = 0; i < 24; ++i ) 
+    {
+        b.setBar( i, LED_RED );
+        b.writeDisplay();
+        delay( 50 );
+        b.setBar( i, LED_OFF );
+        b.writeDisplay();
+    }
+    
+    for ( uint8_t i = 0; i < 24; ++i ) 
+    {
+        b.setBar( i, LED_GREEN );
+        b.writeDisplay();
+        delay( 50 );
+        b.setBar( i, LED_OFF );
+        b.writeDisplay();
+    }
+
+    for ( uint8_t i = 0; i < 24; ++i ) 
+    {
+        b.setBar( i, LED_YELLOW );
+        b.writeDisplay();
+        delay( 50 );
+        b.setBar( i, LED_OFF );
+        b.writeDisplay();
+    }
+
+    delay( 1000 );
+
+    Log.notice( "Leaving init_led_bar()" CR );
+    return;
+}
 
 // Sets up LED and prints test pattern
 //
@@ -102,11 +156,14 @@ void init_led_matrix()
     
     static const int TEST_NUMBER_DELAY = 100;
     static const int TEST_END_DELAY    = 1000;
+    static const int BLUE_LED_ADDR     = 0x70;
+    static const int RED_LED_ADDR      = 0X71;
+
 
     seven_seg& matrix = singleton_t< seven_seg >::instance();
     
     matrix.begin( 0x70 );
-    matrix.setBrightness( LED_BRIGHTNESS );
+    matrix.setBrightness( BLUE_LED_BRIGHTNESS );
 
     matrix.print( 8, DEC );
     matrix.writeDisplay();
@@ -154,6 +211,7 @@ void setup()
     init_interrupts();
     init_singletons();
     init_led_matrix();
+    init_led_bar();
 
     // wait for MAX chip to stabilize
     //
@@ -180,48 +238,6 @@ void setup()
     digitalWrite( PWR_LED_PIN, HIGH );
 
     Log.notice( "Leaving setup()" CR );
-    return;
-}
-
-
-int g_times_through;
-void loop() 
-{
-    Log.notice( "In loop()" CR );
-
-    // Snag the various globals
-    //
-    forge_data& fd = singleton_t< forge_data >::instance();
-    disp& displ    = singleton_t< disp >::instance();
-    thermoc& tc    = singleton_t< thermoc >::instance();
-    
-    // update the current temp in the global data struct
-    //
-    temp_t nt = tc.read_f();
-
-#ifdef __DEBUG__
-    Serial.print( "New temp read from thermocouple was: " );
-    Serial.println( nt );
-#endif // __DEBUG__
-    
-    fd.current_temp( tc.read_f() );
-
-    // Change pid output if needed
-    //
-    output_pid();
-    
-    // /Run the display loop
-    //
-    displ.display();
-
-#ifdef __DEBUG__
-    // Send a heartbeat to an external LED
-    //
-    heartbeat( g_times_through++ );
-#endif // __DEBUG__
-
-    Log.notice( "Leaving loop()" CR );
-    
     return;
 }
 
@@ -258,6 +274,56 @@ void output_pid()
     return;
 }
 
+
+
+
+int g_times_through;
+void loop() 
+{
+    Log.notice( "In loop()" CR );
+
+    // Snag the various globals
+    //
+    forge_data& fd = singleton_t< forge_data >::instance();
+    disp& displ    = singleton_t< disp >::instance();
+    thermoc& tc    = singleton_t< thermoc >::instance();
+
+#ifdef __T_DEBUG__
+    Serial.println();
+    Serial.println( "************ LOOP **************");
+    Serial.print( "LOOP(); about to read temp.  Old temp was: " );
+    Serial.println( fd.current_temp() );
+#endif // __T_DEBUG__
+    
+    // update the current temp in the global data struct
+    //
+    temp_t nt = tc.read_f();
+    fd.current_temp( nt );
+
+#ifdef __T_DEBUG__
+    Serial.print( "LOOP()::New temp read from thermocouple was: " );
+    Serial.println( nt );
+#endif // __T_DEBUG__
+   
+
+    // Change pid output if needed
+    //
+    output_pid();
+    
+    // /Run the display loop
+    //
+    displ.display();
+
+#ifdef __DEBUG__
+    // Send a heartbeat to an external LED
+    //
+    heartbeat( g_times_through++ );
+#endif // __DEBUG__
+
+    Log.notice( "Leaving loop()" CR );
+    
+    return;
+}
 
 
 

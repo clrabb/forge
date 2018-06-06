@@ -3,8 +3,10 @@
 #include "forge_types.h"
 #include "forge_data.h"
 #include "thermoc.h"
+#include "forge_pid.h"
 #include <ArduinoLog.h>
 #include <arduino.h>
+
 
 // Accessing
 //
@@ -38,26 +40,10 @@ disp::seconds_since_last_setpoint_display()
 }
 
 bool
-disp::is_too_soon_temp_display()
+disp::is_too_soon_display( unsigned long last_mills_display )
 {
-    Log.notice( "In disp::is_too_soon_temp_display()" CR );
-    
-    static const unsigned long TEMP_DISPLAY_DEBOUNCE_PERIOD = 2000;
-
-    unsigned long last_temp_display = this->mills_since_last_temp_display();
-    bool too_soon = last_temp_display < TEMP_DISPLAY_DEBOUNCE_PERIOD;
-    if ( too_soon  )
-    {
-
-        Log.notice( "Last temp display mills: %l, debounce period: %l.  Too soon.  Bailing" CR, 
-            last_temp_display,
-            TEMP_DISPLAY_DEBOUNCE_PERIOD
-        );
-    }
-    
-    Log.notice( "Leaving disp::is_too_soon_temp_display() with retval %T" CR, too_soon );
-
-    return too_soon;
+    unsigned long now = millis();
+    return ( ( now - last_mills_display ) > DISPLAY_DEBOUNCE_MILLS );
 }
 
 bool
@@ -73,6 +59,17 @@ disp::is_same_temp_as_last_display()
     return is_same_temp;
 }
 
+bool
+disp::is_same_pid_output_as_last_display()
+{
+    forge_data& fd = singleton_t< forge_data >::instance();
+    
+    short last_pid_output_display = round( this->last_pid_output_seen() );
+    short current_pid_output      = round( fd.current_pid_output()      );
+
+    return last_pid_output_display == current_pid_output;
+}
+
 // Main calling point from loop()
 //
 void
@@ -80,8 +77,34 @@ disp::display()
 {
    this->display_temp();
    this->display_setpoint();
+   this->display_pid_output();
    
    return;
+}
+
+void
+disp::display_pid_output()
+{
+    // Debounce
+    //
+    if ( is_same_pid_output_as_last_display() )
+        return;
+    
+    if ( this->is_too_soon_display( this->last_pid_output_display_mills() ) )
+        return;
+
+    forge_data& fd = singleton_t< forge_data >::instance();
+    led_bar& bar   = singleton_t< led_bar >::instance();
+    
+    short rnded_output = round( fd.current_pid_output() );
+    for ( int i = 0; i < rnded_output; ++i )
+    {
+        bar.setBar( i, LED_GREEN );
+    }
+
+    bar.writeDisplay();
+
+    return;
 }
 
 void
@@ -122,7 +145,7 @@ disp::display_temp()
 {
     // Main debouncing routine
     //
-    bool too_soon   = this->is_too_soon_temp_display();
+    bool too_soon   = this->is_too_soon_display( this->last_temp_display_mills() );
     bool same_temp  = this->is_same_temp_as_last_display();
   
     if ( too_soon || same_temp  )

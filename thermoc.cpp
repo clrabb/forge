@@ -18,7 +18,15 @@ thermoc::~thermoc()
 temp_t
 thermoc::read_f()
 {
-    return this->m_tc.readFahrenheit();
+    temp_t t = this->m_tc.readFahrenheit();
+    
+#ifdef __T_DEBUG__
+    Serial.print( "thermoc::read_f(); Temp read directly from thermocouple was: " );
+    Serial.println( t );
+#endif __T_DEBUG__
+
+    return t;
+
 }
 
 
