@@ -57,14 +57,14 @@ void init_singletons()
 {
     Log.notice( "In init_singletons()" CR );
     
-    singleton_t<thermoc>    s_tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
-    singleton_t<forge_data> s_fdata( new forge_data() );
-    singleton_t<seven_seg>  s_matrix( new seven_seg() );
-    singleton_t<led_bar>        s_bar( new led_bar() );
-    
-    singleton_t<disp> s_display( new disp() );
-    singleton_t<forge_pid> fpid( new forge_pid() );
+    singleton_t< thermoc >    s_tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
+    singleton_t< forge_data > s_fdata( new forge_data() );    
+    singleton_t< disp >       s_display( new disp() );
+    singleton_t< forge_pid >  fpid( new forge_pid() );
 
+    disp& d = singleton_t< disp >::instance();
+    d.init();
+    
     Log.notice( "Leaving init_singletons()" CR );
     return;
 }
@@ -95,103 +95,27 @@ void init_interrupts()
     Log.notice( "Leaving init_interrupts()" CR );
     return;
 }
-void init_led_bar()
+
+
+/*
+void init_temp_led()
 {
-    Log.notice( "In init_led_bar()" CR );
+    seven_seg& disp = singleton_t< seven_seg >::instance
     
-    static const int BAR_LED_ADDR      = 0x72;
-    led_bar& b = singleton_t< led_bar >::instance();
-
-    b.begin(0x72);  // pass in the address
-    b.setBrightness( LED_BAR_BRIGHTNESS );
-
-    for (uint8_t i = 0; i < 24; ++i )
-    {
-        if ((i % 3) == 0)  b.setBar(i, LED_RED);
-        if ((i % 3) == 1)  b.setBar(i, LED_YELLOW);
-        if ((i % 3) == 2)  b.setBar(i, LED_GREEN);
-    }    
     
-    b.writeDisplay();
-    delay(2000);
+}
+*/
 
-    for ( uint8_t i = 0; i < 24; ++i ) 
-    {
-        b.setBar( i, LED_RED );
-        b.writeDisplay();
-        delay( 50 );
-        b.setBar( i, LED_OFF );
-        b.writeDisplay();
-    }
-    
-    for ( uint8_t i = 0; i < 24; ++i ) 
-    {
-        b.setBar( i, LED_GREEN );
-        b.writeDisplay();
-        delay( 50 );
-        b.setBar( i, LED_OFF );
-        b.writeDisplay();
-    }
 
-    for ( uint8_t i = 0; i < 24; ++i ) 
-    {
-        b.setBar( i, LED_YELLOW );
-        b.writeDisplay();
-        delay( 50 );
-        b.setBar( i, LED_OFF );
-        b.writeDisplay();
-    }
+void init_displays()
+{
+    disp& d = singleton_t< disp >::instance();
 
-    delay( 1000 );
+    d.init();
 
-    Log.notice( "Leaving init_led_bar()" CR );
     return;
 }
 
-// Sets up LED and prints test pattern
-//
-void init_led_matrix()
-{   
-    Log.notice( "In init_led_matrix()" CR );
-    
-    static const int TEST_NUMBER_DELAY = 100;
-    static const int TEST_END_DELAY    = 1000;
-    static const int BLUE_LED_ADDR     = 0x70;
-    static const int RED_LED_ADDR      = 0X71;
-
-
-    seven_seg& matrix = singleton_t< seven_seg >::instance();
-    
-    matrix.begin( 0x70 );
-    matrix.setBrightness( BLUE_LED_BRIGHTNESS );
-
-    matrix.print( 8, DEC );
-    matrix.writeDisplay();
-    delay( TEST_NUMBER_DELAY );
-
-    matrix.print( 88, DEC );
-    matrix.writeDisplay();
-    delay( TEST_NUMBER_DELAY );
-
-    matrix.drawColon( true );
-    matrix.writeDisplay();
-    delay( TEST_NUMBER_DELAY );
-
-    matrix.print( 888, DEC );
-    matrix.drawColon( true );
-    matrix.writeDisplay();
-    delay( TEST_NUMBER_DELAY );
-
-    matrix.print(8888, DEC);
-    matrix.drawColon( true );
-    matrix.writeDisplay();
-
-    delay( TEST_END_DELAY );
-
-    Log.notice( "Leaving init_led_matrix()" CR );
-    
-    return;
-}
 
 void setup() 
 {
@@ -210,8 +134,6 @@ void setup()
     init_pins();
     init_interrupts();
     init_singletons();
-    init_led_matrix();
-    init_led_bar();
 
     // wait for MAX chip to stabilize
     //
@@ -220,6 +142,7 @@ void setup()
     forge_data& fd   = singleton_t< forge_data >::instance();
     thermoc&    tc   = singleton_t< thermoc    >::instance();
     forge_pid&  fpid = singleton_t< forge_pid >::instance();
+    disp&       d    = singleton_t< disp >::instance();
     
     fd.setpoint( START_SP );
     fd.current_temp( tc.read_f() );
@@ -243,13 +166,14 @@ void setup()
 
 void output_pid()
 {
-    Log.notice( "**************** IN OUTPUT_ID() **************" CR );
+    Log.notice( "**************** IN OUTPUT_PID() **************" CR );
     // Snag any needed globals
     //
     forge_data& fd   = singleton_t< forge_data >::instance();
     forge_pid&  fpid = singleton_t< forge_pid >::instance();
 
     double output = fpid.compute( fd.current_temp(), fd.setpoint() );
+    fd.current_pid_output( output );
 
 #ifdef __DEBUG__
     // Fucking logging framework doesn't deal with floats
@@ -259,14 +183,6 @@ void output_pid()
     Serial.print( ". Computed new output to regulator: " );
     Serial.println( output );
 #endif // __DEBUG__
-
-/*
-    Serial.print( ". Setpoint was " );
-    Serial.print( fd.setpoint() );
-    Serial.print( " . Temp was " );
-    Serial.println( fd.current_temp() );
-#endif // __DEBUG __
-*/
 
     analogWrite( PID_OUTPUT_PIN, output );
 
@@ -305,7 +221,6 @@ void loop()
     Serial.println( nt );
 #endif // __T_DEBUG__
    
-
     // Change pid output if needed
     //
     output_pid();

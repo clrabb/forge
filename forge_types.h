@@ -21,7 +21,9 @@ typedef Adafruit_GFX        gfx;
 typedef PID                 pid_v1;
 typedef unsigned short      setpoint_t;
 
-
+static const int BLUE_LED_ADDR  = 0x70;
+static const int RED_LED_ADDR   = 0X73;
+static const int LED_BAR_ADDR   = 0X72;
 static const int UP_BTN_PIN     = 2;   // Pin for the 'up' button
 static const int DN_BTN_PIN     = 3;   // Pin for the 'down' button
 static const int PWR_LED_PIN    = 4;   // Pin for the 'green' led
@@ -31,8 +33,10 @@ static const int THERM_DO       = 8;   // Data out from the MAX6675 module
 static const int THERM_CS       = 9;   // Chip select from same
 static const int THERM_CLK      = 10;  // Clock from same
 static const int START_SP       = 70;  // initial starting set point
-static const int BLUE_LED_BRIGHTNESS = 7;  // between 0 and 15
-static const int LED_BAR_BRIGHTNESS  = 7;
+static const int BLUE_LED_BRIGHTNESS = 3;  // between 0 and 15
+static const int RED_LED_BRIGHTNESS  = 3;
+static const int LED_BAR_BRIGHTNESS  = 3;
+
 
 
 

@@ -14,10 +14,17 @@ private:
     // already displayed this number of milliseconds
     // ago 
     //
-    static const int DISPLAY_DEBOUNCE_MILLS      = 1000;
+    static const int DISPLAY_DEBOUNCE_MILLS = 1000;
+
+    // Number of leds in the bar 
+    //
+    static const int NUM_BAR_LEDS = 40;
     
     // Member vars
     //
+    seven_seg     m_temp_display;
+    seven_seg     m_setpoint_display;
+    led_bar       m_output_bar;
     unsigned long m_last_temp_display_mills       = 0;
     unsigned long m_last_setpoint_display_mills   = 0;
     unsigned long m_last_pid_output_display_mills = 0;
@@ -28,7 +35,7 @@ private:
 public:
     // Ctors & dtors
     //
-    disp() {}
+    disp();
 
     // Accessing
     //
@@ -41,16 +48,26 @@ public:
     // Behavior
     //
     void display();
+    void init();
+    
 
 private:    
+
+    led_bar& led_output_bar() { return m_output_bar; }
+    seven_seg& setpoint_display() { return m_setpoint_display; }
+    seven_seg& temp_display() { return m_temp_display; }
+    
     void last_temp_display_mills( unsigned long mills ) 
         { m_last_temp_display_mills = mills; }
 
     unsigned long last_temp_display_mills()
         { return m_last_temp_display_mills; }
   
-    void last_setpoint_dipslay_mills( unsigned long mills )
+    void last_setpoint_display_mills( unsigned long mills )
         { m_last_setpoint_display_mills = mills; } 
+
+    unsigned long last_setpoint_display_mills()
+        { return m_last_setpoint_display_mills; }
 
     void last_setpoint_seen( setpoint_t sp ) { m_last_setpoint_seen = sp; }
     setpoint_t last_setpoint_seen() { return m_last_setpoint_seen; }
@@ -67,6 +84,11 @@ private:
     unsigned long last_pid_output_display_mills() 
         { return m_last_pid_output_display_mills; }
 
+    void init_displays();
+    void init_led_bar();
+    void init_temp_led();
+    void init_setpoint_led();
+
     bool is_too_soon_display( unsigned long last_display_mills );
     bool is_same_temp_as_last_display();
     bool is_same_setpoint_as_last_display();
@@ -75,6 +97,7 @@ private:
     void display_temp();
     void display_setpoint();
     void display_pid_output();
+    void test_led_matrix( seven_seg& );
     void break_number( int number, int& tens, int& ones );
     
     void display_temp_impl( temp_t temp );
