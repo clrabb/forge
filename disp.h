@@ -3,6 +3,8 @@
 
 #include "forge_types.h"
 #include "forge_data.h"
+#include "seven_seg_display.h"
+#include "bar_display.h"
 
 
 class disp
@@ -22,15 +24,15 @@ private:
     
     // Member vars
     //
-    ada_seven_seg     m_temp_display;
-    ada_seven_seg     m_setpoint_display;
-    ada_led_bar       m_output_bar;
-    unsigned long m_last_temp_display_mills       = 0;
-    unsigned long m_last_setpoint_display_mills   = 0;
-    unsigned long m_last_pid_output_display_mills = 0;
-    short         m_last_pid_output_seen          = 0;
-    temp_t        m_last_temp_seen                = 0;
-    temp_t        m_last_setpoint_seen            = 0;
+    seven_seg_display* m_temp_display;
+    seven_seg_display* m_setpoint_display;
+    bar_display*       m_output_bar;
+    unsigned long     m_last_temp_display_mills       = 0;
+    unsigned long     m_last_setpoint_display_mills   = 0;
+    unsigned long     m_last_pid_output_display_mills = 0;
+    short             m_last_pid_output_seen          = 0;
+    temp_t            m_last_temp_seen                = 0;
+    temp_t            m_last_setpoint_seen            = 0;
     
 public:
     // Ctors & dtors
@@ -53,9 +55,9 @@ public:
 
 private:    
 
-    ada_led_bar& led_output_bar() { return m_output_bar; }
-    ada_seven_seg& setpoint_display() { return m_setpoint_display; }
-    ada_seven_seg& temp_display() { return m_temp_display; }
+    bar_display* output_bar() { return m_output_bar; }
+    seven_seg_display* setpoint_display() { return m_setpoint_display; }
+    seven_seg_display* temp_display() { return m_temp_display; }
     
     void last_temp_display_mills( unsigned long mills ) 
         { m_last_temp_display_mills = mills; }
@@ -85,7 +87,7 @@ private:
         { return m_last_pid_output_display_mills; }
 
     void init_displays();
-    //void init_led_bar();
+    void init_led_bar();
     void init_temp_led();
     void init_setpoint_led();
 

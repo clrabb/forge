@@ -10,11 +10,11 @@
 
 
 // Construction
-disp::disp() :
-    m_temp_display( ada_seven_seg() ),
-    m_setpoint_display( ada_seven_seg() ),
-    m_output_bar( ada_led_bar() )
+disp::disp() 
 {
+    m_temp_display = new seven_seg_display();
+    m_setpoint_display = new seven_seg_display();
+    m_output_bar = new bar_display( NUM_LEDS_IN_BAR );
 }
 
 // Initializing
@@ -23,9 +23,8 @@ disp::disp() :
 void 
 disp::init_setpoint_led()
 {
-    ada_seven_seg& sp_display = this->setpoint_display();
-    sp_display.begin( BLUE_LED_ADDR );
-    sp_display.setBrightness( BLUE_LED_BRIGHTNESS );
+    seven_seg_display* sp_display = this->setpoint_display();
+    sp_display->init( BLUE_LED_ADDR, BLUE_LED_BRIGHTNESS );
 
     return;
 }
@@ -33,9 +32,17 @@ disp::init_setpoint_led()
 void
 disp::init_temp_led()
 {
-    ada_seven_seg& temp_display = this->temp_display();
-    temp_display.begin( RED_LED_ADDR );
-    temp_display.setBrightness( RED_LED_BRIGHTNESS );
+    seven_seg_display* temp_display = this->temp_display();
+    temp_display->init( RED_LED_ADDR, RED_LED_BRIGHTNESS );
+
+    return;
+}
+
+void
+disp::init_led_bar()
+{
+    bar_display* bar = this->output_bar();
+    bar->init( LED_BAR_ADDR, LED_BAR_BRIGHTNESS );
 
     return;
 }
@@ -252,50 +259,4 @@ disp::display_temp()
 
     return;
 }
-
-
-void
-disp::display_temp_impl( temp_t temp )
-{ 
-    ada_seven_seg& seg = singleton_t< ada_seven_seg >::instance();
-
-    // Hack
-    // This is temprary until the second display shows up
-    //
-
-    // get tens digit
-    // Yeah, ugly.  This is temporary
-    //
-    int rounded_temp = round( temp );
-    int tens = 0;
-    int ones = 0;    
-    this->break_number( rounded_temp, tens, ones );
-
-    // Display tens
-    seg.writeDigitNum( 0, tens );
-
-    // display one
-    // 
-    seg.writeDigitNum( 1, ones );
-
-    seg.writeDisplay();
-
-    return;
-}
-
-// Break two digit number into ones and test
-//
-void 
-disp::break_number( int num, int& tens, int& ones )
-{
-    // Returns the tens digit of a positive number.
-    // 
-    tens = ( num / 10 ) % 10;
-    ones = num - ( tens * 10 );
-    
-    return;
-}
-
-
-
 

@@ -23,6 +23,10 @@ public:
     //
     void init( uint8_t address, uint8_t brightness );
 
+    // Behavior
+    //
+    virtual void write_number( uint8_t number ) = 0; 
+
 protected:
     // template methods
     // See 'design patterns', Gamma et al
