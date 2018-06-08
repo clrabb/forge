@@ -11,11 +11,152 @@
 
 // Construction
 disp::disp() :
-    m_temp_display( seven_seg() ),
-    m_setpoint_display( seven_seg() ),
-    m_output_bar( led_bar() )
+    m_temp_display( ada_seven_seg() ),
+    m_setpoint_display( ada_seven_seg() ),
+    m_output_bar( ada_led_bar() )
 {
 }
+
+// Initializing
+//
+
+void 
+disp::init_setpoint_led()
+{
+    ada_seven_seg& sp_display = this->setpoint_display();
+    sp_display.begin( BLUE_LED_ADDR );
+    sp_display.setBrightness( BLUE_LED_BRIGHTNESS );
+
+    this->test_led_matrix( sp_display );
+
+    return;
+}
+
+void
+disp::init_temp_led()
+{
+    ada_seven_seg& temp_display = this->temp_display();
+    temp_display.begin( RED_LED_ADDR );
+    temp_display.setBrightness( RED_LED_BRIGHTNESS );
+
+    this->test_led_matrix( temp_display );
+}
+
+void
+disp::init()
+{
+    this->init_displays();
+
+    return;
+}
+
+void
+disp::init_displays()
+{
+    this->init_led_bar();
+    this->init_temp_led();
+    this->init_setpoint_led();
+
+    return;
+}
+
+
+// Initialze and print test pattern on led bar
+//
+void 
+disp::init_led_bar()
+{
+    Log.notice( "In init_led_bar()" CR );
+
+    ada_led_bar& b = this->led_output_bar();  // avoiding copy ctor
+    
+    b.begin( LED_BAR_ADDR );  // pass in the address
+    b.setBrightness( LED_BAR_BRIGHTNESS );
+
+    for (uint8_t i = 0; i < 24; ++i )
+    {
+        if ((i % 3) == 0)  b.setBar(i, LED_RED);
+        if ((i % 3) == 1)  b.setBar(i, LED_YELLOW);
+        if ((i % 3) == 2)  b.setBar(i, LED_GREEN);
+    }    
+    
+    b.writeDisplay();
+    delay(2000);
+
+    for ( uint8_t i = 0; i < 24; ++i ) 
+    {
+        b.setBar( i, LED_RED );
+        b.writeDisplay();
+        delay( 50 );
+        b.setBar( i, LED_OFF );
+        b.writeDisplay();
+    }
+    
+    for ( uint8_t i = 0; i < 24; ++i ) 
+    {
+        b.setBar( i, LED_GREEN );
+        b.writeDisplay();
+        delay( 50 );
+        b.setBar( i, LED_OFF );
+        b.writeDisplay();
+    }
+
+    for ( uint8_t i = 0; i < 24; ++i ) 
+    {
+        b.setBar( i, LED_YELLOW );
+        b.writeDisplay();
+        delay( 50 );
+        b.setBar( i, LED_OFF );
+        b.writeDisplay();
+    }
+
+    delay( 1000 );
+
+    Log.notice( "Leaving init_led_bar()" CR );
+    return;
+}
+
+
+
+// print test pattern on seven segment display
+//
+void 
+disp::test_led_matrix( ada_seven_seg& matrix )
+{   
+    Log.notice( "In init_led_matrix()" CR );
+    
+    static const int TEST_NUMBER_DELAY = 100;
+    static const int TEST_END_DELAY    = 1000;
+
+    matrix.print( 8, DEC );
+    matrix.writeDisplay();
+    delay( TEST_NUMBER_DELAY );
+
+    matrix.print( 88, DEC );
+    matrix.writeDisplay();
+    delay( TEST_NUMBER_DELAY );
+
+    matrix.drawColon( true );
+    matrix.writeDisplay();
+    delay( TEST_NUMBER_DELAY );
+
+    matrix.print( 888, DEC );
+    matrix.drawColon( true );
+    matrix.writeDisplay();
+    delay( TEST_NUMBER_DELAY );
+
+    matrix.print(8888, DEC);
+    matrix.drawColon( true );
+    matrix.writeDisplay();
+
+    delay( TEST_END_DELAY );
+
+    Log.notice( "Leaving init_led_matrix()" CR );
+    
+    return;
+}
+
+
 
 // Accessing
 //
@@ -121,13 +262,12 @@ disp::display_pid_output()
     }
 
     forge_data& fd = singleton_t< forge_data >::instance();
-    led_bar& bar   = this->led_output_bar();
+    ada_led_bar& bar   = this->led_output_bar();
 
     double pid_output = fd.current_pid_output();
-    Log.notice( "current_pid_output is %d" CR, round( pid_output ) );
+    short rnded_output = round( pid_output / NUM_BAR_LEDS );
     
-    short rnded_output = round( fd.current_pid_output() / NUM_BAR_LEDS );
-
+    Log.notice( "current_pid_output is %d" CR, round( pid_output ) );
     Log.notice( "Rounded_output to pid_led is %d" CR, rnded_output );
 
     for ( int i = 0; i < rnded_output; ++i )
@@ -148,7 +288,7 @@ void
 disp::display_setpoint()
 {
     forge_data& fd = singleton_t< forge_data >::instance();
-    seven_seg& seg = singleton_t< seven_seg >::instance();
+    ada_seven_seg& seg = singleton_t< ada_seven_seg >::instance();
 
     int last_setpoint_seen = round( this->last_setpoint_seen() );
     int current_setpoint   = round( fd.setpoint() );
@@ -216,7 +356,7 @@ disp::display_temp()
 void
 disp::display_temp_impl( temp_t temp )
 { 
-    seven_seg& seg = singleton_t< seven_seg >::instance();
+    ada_seven_seg& seg = singleton_t< ada_seven_seg >::instance();
 
     // Hack
     // This is temprary until the second display shows up
@@ -256,139 +396,5 @@ disp::break_number( int num, int& tens, int& ones )
 }
 
 
-void
-disp::init_displays()
-{
-    this->init_led_bar();
-    this->init_temp_led();
-    this->init_setpoint_led();
 
-    return;
-}
-
-
-// Initialze and print test pattern on led bar
-//
-void 
-disp::init_led_bar()
-{
-    Log.notice( "In init_led_bar()" CR );
-
-    led_bar& b = this->led_output_bar();  // avoiding copy ctor
-    
-    b.begin( LED_BAR_ADDR );  // pass in the address
-    b.setBrightness( LED_BAR_BRIGHTNESS );
-
-    for (uint8_t i = 0; i < 24; ++i )
-    {
-        if ((i % 3) == 0)  b.setBar(i, LED_RED);
-        if ((i % 3) == 1)  b.setBar(i, LED_YELLOW);
-        if ((i % 3) == 2)  b.setBar(i, LED_GREEN);
-    }    
-    
-    b.writeDisplay();
-    delay(2000);
-
-    for ( uint8_t i = 0; i < 24; ++i ) 
-    {
-        b.setBar( i, LED_RED );
-        b.writeDisplay();
-        delay( 50 );
-        b.setBar( i, LED_OFF );
-        b.writeDisplay();
-    }
-    
-    for ( uint8_t i = 0; i < 24; ++i ) 
-    {
-        b.setBar( i, LED_GREEN );
-        b.writeDisplay();
-        delay( 50 );
-        b.setBar( i, LED_OFF );
-        b.writeDisplay();
-    }
-
-    for ( uint8_t i = 0; i < 24; ++i ) 
-    {
-        b.setBar( i, LED_YELLOW );
-        b.writeDisplay();
-        delay( 50 );
-        b.setBar( i, LED_OFF );
-        b.writeDisplay();
-    }
-
-    delay( 1000 );
-
-    Log.notice( "Leaving init_led_bar()" CR );
-    return;
-}
-
-
-
-// print test pattern on seven segment display
-//
-void 
-disp::test_led_matrix( seven_seg& matrix )
-{   
-    Log.notice( "In init_led_matrix()" CR );
-    
-    static const int TEST_NUMBER_DELAY = 100;
-    static const int TEST_END_DELAY    = 1000;
-
-    matrix.print( 8, DEC );
-    matrix.writeDisplay();
-    delay( TEST_NUMBER_DELAY );
-
-    matrix.print( 88, DEC );
-    matrix.writeDisplay();
-    delay( TEST_NUMBER_DELAY );
-
-    matrix.drawColon( true );
-    matrix.writeDisplay();
-    delay( TEST_NUMBER_DELAY );
-
-    matrix.print( 888, DEC );
-    matrix.drawColon( true );
-    matrix.writeDisplay();
-    delay( TEST_NUMBER_DELAY );
-
-    matrix.print(8888, DEC);
-    matrix.drawColon( true );
-    matrix.writeDisplay();
-
-    delay( TEST_END_DELAY );
-
-    Log.notice( "Leaving init_led_matrix()" CR );
-    
-    return;
-}
-
-void 
-disp::init_setpoint_led()
-{
-    seven_seg& sp_display = this->setpoint_display();
-    sp_display.begin( BLUE_LED_ADDR );
-    sp_display.setBrightness( BLUE_LED_BRIGHTNESS );
-
-    this->test_led_matrix( sp_display );
-
-    return;
-}
-
-void
-disp::init_temp_led()
-{
-    seven_seg& temp_display = this->temp_display();
-    temp_display.begin( RED_LED_ADDR );
-    temp_display.setBrightness( RED_LED_BRIGHTNESS );
-
-    this->test_led_matrix( temp_display );
-}
-
-void
-disp::init()
-{
-    this->init_displays();
-
-    return;
-}
 

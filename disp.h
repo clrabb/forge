@@ -18,13 +18,13 @@ private:
 
     // Number of leds in the bar 
     //
-    static const int NUM_BAR_LEDS = 40;
+    static const int NUM_BAR_LEDS = 24;
     
     // Member vars
     //
-    seven_seg     m_temp_display;
-    seven_seg     m_setpoint_display;
-    led_bar       m_output_bar;
+    ada_seven_seg     m_temp_display;
+    ada_seven_seg     m_setpoint_display;
+    ada_led_bar       m_output_bar;
     unsigned long m_last_temp_display_mills       = 0;
     unsigned long m_last_setpoint_display_mills   = 0;
     unsigned long m_last_pid_output_display_mills = 0;
@@ -53,9 +53,9 @@ public:
 
 private:    
 
-    led_bar& led_output_bar() { return m_output_bar; }
-    seven_seg& setpoint_display() { return m_setpoint_display; }
-    seven_seg& temp_display() { return m_temp_display; }
+    ada_led_bar& led_output_bar() { return m_output_bar; }
+    ada_seven_seg& setpoint_display() { return m_setpoint_display; }
+    ada_seven_seg& temp_display() { return m_temp_display; }
     
     void last_temp_display_mills( unsigned long mills ) 
         { m_last_temp_display_mills = mills; }
@@ -97,7 +97,7 @@ private:
     void display_temp();
     void display_setpoint();
     void display_pid_output();
-    void test_led_matrix( seven_seg& );
+    void test_led_matrix( ada_seven_seg& );
     void break_number( int number, int& tens, int& ones );
     
     void display_temp_impl( temp_t temp );

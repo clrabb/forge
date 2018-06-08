@@ -14,12 +14,13 @@
 #include <Adafruit_GFX.h>
 #include <PID_v1.h>
 
-typedef double              temp_t;
-typedef Adafruit_7segment   seven_seg;
-typedef Adafruit_24bargraph led_bar;
-typedef Adafruit_GFX        gfx;
-typedef PID                 pid_v1;
-typedef unsigned short      setpoint_t;
+typedef double                temp_t;
+typedef Adafruit_LEDBackpack  ada_led_display;
+typedef Adafruit_7segment     ada_seven_seg;
+typedef Adafruit_24bargraph   ada_led_bar;
+typedef Adafruit_GFX          gfx;
+typedef PID                   pid_v1;
+typedef unsigned short        setpoint_t;
 
 static const int BLUE_LED_ADDR  = 0x70;
 static const int RED_LED_ADDR   = 0X73;
