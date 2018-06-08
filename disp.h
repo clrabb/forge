@@ -97,7 +97,7 @@ private:
     void display_temp();
     void display_setpoint();
     void display_pid_output();
-    void test_led_matrix( ada_seven_seg& );
+
     void break_number( int number, int& tens, int& ones );
     
     void display_temp_impl( temp_t temp );

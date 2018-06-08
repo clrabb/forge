@@ -14,6 +14,7 @@ public:
     //
     virtual ada_led_display* create_display();
     virtual void run_tests();
+    void write_number( short number );
 
 private:
     // stop compiler generated crap

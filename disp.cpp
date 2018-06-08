@@ -27,8 +27,6 @@ disp::init_setpoint_led()
     sp_display.begin( BLUE_LED_ADDR );
     sp_display.setBrightness( BLUE_LED_BRIGHTNESS );
 
-    this->test_led_matrix( sp_display );
-
     return;
 }
 
@@ -39,7 +37,7 @@ disp::init_temp_led()
     temp_display.begin( RED_LED_ADDR );
     temp_display.setBrightness( RED_LED_BRIGHTNESS );
 
-    this->test_led_matrix( temp_display );
+    return;
 }
 
 void
@@ -118,43 +116,6 @@ disp::init_led_bar()
 
 
 
-// print test pattern on seven segment display
-//
-void 
-disp::test_led_matrix( ada_seven_seg& matrix )
-{   
-    Log.notice( "In init_led_matrix()" CR );
-    
-    static const int TEST_NUMBER_DELAY = 100;
-    static const int TEST_END_DELAY    = 1000;
-
-    matrix.print( 8, DEC );
-    matrix.writeDisplay();
-    delay( TEST_NUMBER_DELAY );
-
-    matrix.print( 88, DEC );
-    matrix.writeDisplay();
-    delay( TEST_NUMBER_DELAY );
-
-    matrix.drawColon( true );
-    matrix.writeDisplay();
-    delay( TEST_NUMBER_DELAY );
-
-    matrix.print( 888, DEC );
-    matrix.drawColon( true );
-    matrix.writeDisplay();
-    delay( TEST_NUMBER_DELAY );
-
-    matrix.print(8888, DEC);
-    matrix.drawColon( true );
-    matrix.writeDisplay();
-
-    delay( TEST_END_DELAY );
-
-    Log.notice( "Leaving init_led_matrix()" CR );
-    
-    return;
-}
 
 
 
