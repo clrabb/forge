@@ -59,66 +59,6 @@ disp::init_displays()
 }
 
 
-// Initialze and print test pattern on led bar
-//
-void 
-disp::init_led_bar()
-{
-    Log.notice( "In init_led_bar()" CR );
-
-    ada_led_bar& b = this->led_output_bar();  // avoiding copy ctor
-    
-    b.begin( LED_BAR_ADDR );  // pass in the address
-    b.setBrightness( LED_BAR_BRIGHTNESS );
-
-    for (uint8_t i = 0; i < 24; ++i )
-    {
-        if ((i % 3) == 0)  b.setBar(i, LED_RED);
-        if ((i % 3) == 1)  b.setBar(i, LED_YELLOW);
-        if ((i % 3) == 2)  b.setBar(i, LED_GREEN);
-    }    
-    
-    b.writeDisplay();
-    delay(2000);
-
-    for ( uint8_t i = 0; i < 24; ++i ) 
-    {
-        b.setBar( i, LED_RED );
-        b.writeDisplay();
-        delay( 50 );
-        b.setBar( i, LED_OFF );
-        b.writeDisplay();
-    }
-    
-    for ( uint8_t i = 0; i < 24; ++i ) 
-    {
-        b.setBar( i, LED_GREEN );
-        b.writeDisplay();
-        delay( 50 );
-        b.setBar( i, LED_OFF );
-        b.writeDisplay();
-    }
-
-    for ( uint8_t i = 0; i < 24; ++i ) 
-    {
-        b.setBar( i, LED_YELLOW );
-        b.writeDisplay();
-        delay( 50 );
-        b.setBar( i, LED_OFF );
-        b.writeDisplay();
-    }
-
-    delay( 1000 );
-
-    Log.notice( "Leaving init_led_bar()" CR );
-    return;
-}
-
-
-
-
-
-
 // Accessing
 //
 unsigned long 

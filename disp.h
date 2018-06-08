@@ -85,7 +85,7 @@ private:
         { return m_last_pid_output_display_mills; }
 
     void init_displays();
-    void init_led_bar();
+    //void init_led_bar();
     void init_temp_led();
     void init_setpoint_led();
 
