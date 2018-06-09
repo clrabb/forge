@@ -46,11 +46,11 @@ private:
     
     // Behavior
     //
-    void animate_leds_to( uint8_t pos );
-    void animate_up_to( uint8_t pos );
-    void animate_down_to( uint8_t pos );
-    void turn_on_led( uint8_t pos );
-    void turn_off_led( uint8_t pos );
+    void animate_leds_to( signed short pos );
+    void animate_up_to( signed short pos );
+    void animate_down_to( signed short pos );
+    void turn_on_led( signed short pos );
+    void turn_off_led( signed short pos );
 
 private:
     // Disable compiler generated shit

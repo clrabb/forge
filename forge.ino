@@ -55,8 +55,6 @@ void heartbeat( int times_through )
 
 void init_singletons()
 {
-    Log.notice( "In init_singletons()" CR );
-    
     singleton_t< thermoc >    s_tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
     singleton_t< forge_data > s_fdata( new forge_data() );    
     singleton_t< disp >       s_display( new disp() );
@@ -64,35 +62,29 @@ void init_singletons()
 
     disp& d = singleton_t< disp >::instance();
     d.init();
-    
-    Log.notice( "Leaving init_singletons()" CR );
+
     return;
 }
 
 void init_pins()
-{
-    Log.notice( "In init_pins()" CR );
-    
+{   
     // Set up pin usage
     //
     pinMode( UP_BTN_PIN,     INPUT  );
     pinMode( DN_BTN_PIN,     INPUT  );
     pinMode( PWR_LED_PIN,    OUTPUT );
     pinMode( STATUS_LED_PIN, OUTPUT );
-
-    Log.notice( "Leaving init_pins()" CR );
+;
     return;
 }
 
 void init_interrupts()
 {
-    Log.notice( "In init_interrupts()" CR );
     // Set up interrupts for buttons
     //
     attachInterrupt( 0, upButton_ISR, RISING );
     attachInterrupt( 1, dnButton_ISR, RISING );
 
-    Log.notice( "Leaving init_interrupts()" CR );
     return;
 }
 
@@ -114,8 +106,6 @@ void setup()
 
     Serial.begin( BAUD_RATE );
     Log.begin( LOG_LEVEL_VERBOSE, &Serial );
-    Log.notice( "In setup" CR );
-
 
     // All the various initializing needed
     //  
@@ -149,7 +139,6 @@ void setup()
     //
     digitalWrite( PWR_LED_PIN, HIGH );
 
-    Log.notice( "Leaving setup()" CR );
     return;
 }
 

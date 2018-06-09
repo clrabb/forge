@@ -22,9 +22,19 @@ display_led_abc::write_number( uint8_t number )
         return;  // Bail.  not time to display yet
 
     uint8_t last_displayed = this->last_displayed_number();
+
     Log.notice( "Number is %d, last displayed number is %d" CR, number, last_displayed );
+    /*
+    int a = (int)last_displayed;
+    int b = (int)number;
+    
+    Log.notice( "The fucking things cast to an int.  A: %d, B: %d" CR, a, b );
+    */
     if ( number == last_displayed )
-        return // Bail, number the same as last time
+    {
+        Log.notice( "Numbers are the same.  Bailing" CR );
+        return; // Bail, number the same as last time
+    }
         
     this->write_number_impl( number );
     this->last_displayed_number( number );
