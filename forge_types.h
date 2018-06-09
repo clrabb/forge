@@ -6,7 +6,7 @@
 // serial out.  It will also inflate the size of the code space
 // to something like the twinky in ghostbusters
 //
-#define DISABLE_LOGGING
+//#define DISABLE_LOGGING
 //#define __T_DEBUG__
 
 

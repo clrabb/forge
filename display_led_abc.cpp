@@ -15,24 +15,13 @@ display_led_abc::~display_led_abc()
 void
 display_led_abc::write_number( uint8_t number )
 {
-    Log.notice( "************ DISPLAY_LED_ABC::WRITE_NUMBER() ************" CR );
-    Log.notice( "%s In display_led_abc::write_number with number: %d" CR, this->name(), number );
-    
     if ( ( millis() - this->last_display_mills()  ) < DEFAULT_MIN_REFRESH_TIME )
         return;  // Bail.  not time to display yet
 
     uint8_t last_displayed = this->last_displayed_number();
 
-    Log.notice( "Number is %d, last displayed number is %d" CR, number, last_displayed );
-    /*
-    int a = (int)last_displayed;
-    int b = (int)number;
-    
-    Log.notice( "The fucking things cast to an int.  A: %d, B: %d" CR, a, b );
-    */
     if ( number == last_displayed )
     {
-        Log.notice( "Numbers are the same.  Bailing" CR );
         return; // Bail, number the same as last time
     }
         
@@ -40,8 +29,6 @@ display_led_abc::write_number( uint8_t number )
     this->last_displayed_number( number );
     this->last_display_mills( millis() );
 
-    Log.notice( "Leaving display_led_abc::write_number()" CR );
-    Log.notice( "***********" CR );
     return;
 }
 

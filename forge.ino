@@ -43,7 +43,7 @@ void dnButton_ISR()
 
 void heartbeat( int times_through )
 {
-    if ( times_through % 10 == 0 )
+    if ( times_through % 100 == 0 )
     {
         digitalWrite( 5, HIGH );
         delay( 20 );
