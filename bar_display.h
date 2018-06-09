@@ -27,6 +27,8 @@ public:
     uint8_t number_leds_lit() { return m_number_leds_lit; }
     void number_of_leds( uint8_t number ) { m_number_leds = number; }
 
+    virtual const char* name() { return "BAR_DISPLAY"; }
+
 
 protected:
     // Virtual overrides

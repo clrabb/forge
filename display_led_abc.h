@@ -37,6 +37,10 @@ public:
     //
     void write_number( uint8_t number );
 
+    // Printing
+    //
+    virtual const char* name() = 0;
+
 protected:
     // template methods
     // See 'design patterns', Gamma et al

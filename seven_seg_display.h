@@ -10,6 +10,7 @@ public:
     //
     seven_seg_display() {}
 
+    virtual const char* name() { return "SEVEN_SEG_DISPLAY"; }
 
 
 protected:

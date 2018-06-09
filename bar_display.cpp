@@ -65,9 +65,7 @@ bar_display::run_tests()
 void
 bar_display::write_number_impl( uint8_t number )
 {
-    if ( this->number_of_leds() == 0 )
-        return;
-
+    Log.notice( "In bar_display::write_number_impl with number %d" CR, number );
     // Map the number passed in to the number of LEDs in the bar
     //
     uint8_t num_leds = this->number_of_leds();
@@ -75,6 +73,7 @@ bar_display::write_number_impl( uint8_t number )
     
     this->animate_leds_to( num_to_light );
 
+    Log.notice( "Leaving bar_display::write_number_impl()" CR );
     return;
 }
 
