@@ -116,16 +116,8 @@ bar_display::animate_up_to( signed short num_to_light )
 void 
 bar_display::animate_down_to( signed short num_to_light )
 {
-    Serial.print( "In animate_down_to() with " );
-    Serial.println( num_to_light );
-    
     uint8_t num_lit = this->number_leds_lit();
     signed short delta  = (signed short)num_lit - num_to_light;
-
-    Serial.print( "Current num lit is ");
-    Serial.print( num_lit );
-    Serial.print( " delta is " );
-    Serial.println( delta );
     
     for ( int i = 0; i < delta; ++i )
     {
