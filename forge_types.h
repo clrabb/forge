@@ -23,6 +23,8 @@ typedef PID                   pid_v1;
 typedef unsigned short        setpoint_t;
 
 static const uint8_t NUM_LEDS_IN_BAR = 24;
+static const double  PWM_OUTPUT_MIN  = 0;
+static const double  PWM_OUTPUT_MAX  = 255;
 static const int     BLUE_LED_ADDR  = 0x70;
 static const int     RED_LED_ADDR   = 0X73;
 static const int     LED_BAR_ADDR   = 0X72;

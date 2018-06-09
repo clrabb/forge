@@ -96,17 +96,6 @@ void init_interrupts()
     return;
 }
 
-
-/*
-void init_temp_led()
-{
-    seven_seg& disp = singleton_t< seven_seg >::instance
-    
-    
-}
-*/
-
-
 void init_displays()
 {
     disp& d = singleton_t< disp >::instance();
@@ -166,7 +155,6 @@ void setup()
 
 void output_pid()
 {
-    Log.notice( "**************** IN OUTPUT_PID() **************" CR );
     // Snag any needed globals
     //
     forge_data& fd   = singleton_t< forge_data >::instance();
@@ -175,67 +163,37 @@ void output_pid()
     double output = fpid.compute( fd.current_temp(), fd.setpoint() );
     fd.current_pid_output( output );
 
-#ifdef __DEBUG__
-    // Fucking logging framework doesn't deal with floats
-    //
-    Serial.print( "Temp: " );
-    Serial.print( fd.current_temp() );
-    Serial.print( ". Computed new output to regulator: " );
-    Serial.println( output );
-#endif // __DEBUG__
-
     analogWrite( PID_OUTPUT_PIN, output );
 
-    Log.notice( "***************** LEAVING OUTPUT_PID() **************" CR );
     return;
 }
-
-
-
 
 int g_times_through;
 void loop() 
 {
-    Log.notice( "In loop()" CR );
 
     // Snag the various globals
     //
     forge_data& fd = singleton_t< forge_data >::instance();
     disp& displ    = singleton_t< disp >::instance();
     thermoc& tc    = singleton_t< thermoc >::instance();
-
-#ifdef __T_DEBUG__
-    Serial.println();
-    Serial.println( "************ LOOP **************");
-    Serial.print( "LOOP(); about to read temp.  Old temp was: " );
-    Serial.println( fd.current_temp() );
-#endif // __T_DEBUG__
     
     // update the current temp in the global data struct
     //
     temp_t nt = tc.read_f();
     fd.current_temp( nt );
 
-#ifdef __T_DEBUG__
-    Serial.print( "LOOP()::New temp read from thermocouple was: " );
-    Serial.println( nt );
-#endif // __T_DEBUG__
-   
     // Change pid output if needed
     //
     output_pid();
     
-    // /Run the display loop
+    // Display everything
     //
     displ.display();
 
-#ifdef __DEBUG__
     // Send a heartbeat to an external LED
     //
     heartbeat( g_times_through++ );
-#endif // __DEBUG__
-
-    Log.notice( "Leaving loop()" CR );
     
     return;
 }
