@@ -1,6 +1,5 @@
 #include "thermoc.h"
-#include <stdio.h>
-#include <stdlib.h>
+
 
 // Ctors
 //
@@ -18,15 +17,15 @@ thermoc::~thermoc()
 temp_t
 thermoc::read_f()
 {
+    unsigned long mills_now = millis();
+    if ( ( mills_now - this->last_read_mills() ) < thermoc::MIN_TC_READ_TIME )
+        return this->last_temp_read();
+
     temp_t t = this->m_tc.readFahrenheit();
-    
-#ifdef __T_DEBUG__
-    Serial.print( "thermoc::read_f(); Temp read directly from thermocouple was: " );
-    Serial.println( t );
-#endif __T_DEBUG__
+    this->last_temp_read( t );
+    this->last_read_mills( mills_now );
 
     return t;
-
 }
 
 

@@ -1,5 +1,4 @@
 #include "bar_display.h"
-#include <ArduinoLog.h>
 
 bar_display::bar_display( uint8_t num_leds )
 {
@@ -77,9 +76,7 @@ bar_display::write_number_impl( uint8_t number )
 
 void
 bar_display::animate_leds_to( signed short num_to_light )
-{
-    //Log.notice( "In bar_display::animate_leds_to with num_to_light = %d" CR, num_to_light );
-    
+{  
     signed short difference = num_to_light - this->number_leds_lit();
 
     if ( 0 == difference )

@@ -4,7 +4,6 @@
 #include "forge_data.h"
 #include "thermoc.h"
 #include "forge_pid.h"
-#include <ArduinoLog.h>
 #include <arduino.h>
 
 
@@ -104,6 +103,7 @@ disp::display_temp()
     forge_data& fd = singleton_t< forge_data >::instance();
     seven_seg_display* disp = this->temp_display();
     disp->write_number( fd.current_temp() );
+    
     return;
 }
 

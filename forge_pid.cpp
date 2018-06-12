@@ -6,14 +6,7 @@ forge_pid::compute( double input, double setpoint )
 {
     m_input    = input;
     m_setpoint = setpoint;
-/*
-#ifdef __DEBUG__ 
-    Serial.print( "About to compute new output based on temp: " );
-    Serial.print( m_input );
-    Serial.print( "; setpoint: " );
-    Serial.println( m_setpoint );
-#endif // __DEBUG__
-*/
+
     double gap = abs( setpoint - input );
     ( gap < 10 )
         ? m_pid_guts.SetTunings( CON_KP, CON_KI, CON_KD ) // Close, use conservative

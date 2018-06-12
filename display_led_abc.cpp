@@ -1,5 +1,4 @@
 #include "display_led_abc.h"
-#include <ArduinoLog.h>
 
 
 display_led_abc::~display_led_abc()
@@ -21,10 +20,8 @@ display_led_abc::write_number( uint8_t number )
     uint8_t last_displayed = this->last_displayed_number();
 
     if ( number == last_displayed )
-    {
         return; // Bail, number the same as last time
-    }
-        
+  
     this->write_number_impl( number );
     this->last_displayed_number( number );
     this->last_display_mills( millis() );

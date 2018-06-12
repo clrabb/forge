@@ -10,14 +10,6 @@
 class disp
 {
 private:
-
-    // Debouncing period
-    // We don't re-display something that we'eve
-    // already displayed this number of milliseconds
-    // ago 
-    //
-    static const int DISPLAY_DEBOUNCE_MILLS = 1000;
-
     // Number of leds in the bar 
     //
     static const int NUM_BAR_LEDS = 24;
@@ -47,7 +39,7 @@ private:
     
     void init_displays();
     void init_led_bar();
-    void init_temp_led();
+    void init_temp_led(); 
     void init_setpoint_led();
     
     void display_temp();

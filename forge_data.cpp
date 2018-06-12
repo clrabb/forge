@@ -2,7 +2,6 @@
 #include "forge_types.h"
 #include "singleton_t.h"
 #include <Arduino.h>
-#include <ArduinoLog.h>
 
 
 void
