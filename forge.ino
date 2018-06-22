@@ -8,18 +8,6 @@
 #include <arduino.h>
 #include <Wire.h>
 
-/*
-#include "singleton_t.h"
-#include "forge_types.h"
-#include "forge_data.h"
-#include "forge_pid.h"
-#include "disp.h"
-#include <arduino.h>
-#include <Wire.h>
-#include <math.h>
-*/
-
-
 // Interrupt routines
 //
 void upButton_ISR()
@@ -27,7 +15,7 @@ void upButton_ISR()
     forge_data& fd     = singleton_t< forge_data >::instance();
     
     volatile int up_button_state = digitalRead( UP_BTN_PIN );
-    if ( up_button_state == 1 )
+    if ( 1 == up_button_state )
     {
         fd.increment_setpoint();
     }
@@ -40,7 +28,7 @@ void dnButton_ISR()
     forge_data& fd = singleton_t< forge_data >::instance();
 
     volatile int down_button_state = digitalRead( DN_BTN_PIN );
-    if ( down_button_state == 1 && fd.setpoint() > 0 )
+    if ( 1 == down_button_state  && fd.setpoint() > 0 )
     {
         fd.decrement_setpoint();
     }
@@ -124,7 +112,7 @@ void init_displays()
     return;
 }
 
-/*
+
 void setup() 
 {
 
@@ -137,29 +125,29 @@ void setup()
     //  
 
     init_pins();
-    //init_interrupts();
+    init_interrupts();
     init_singletons();
 
     // wait for MAX chip to stabilize
     //
     delay( MAX6675_INIT_STABALIZE_WAIT );
 
-    //forge_data& fd   = singleton_t< forge_data >::instance();
-    thermoc&    tc   = singleton_t< thermoc    >::instance();
-    //forge_pid&  fpid = singleton_t< forge_pid >::instance();
-    //disp&       d    = singleton_t< disp >::instance();
+    forge_data& fd   = singleton_t< forge_data >::instance();
+    thermoc&    tc   = singleton_t< thermoc >::instance();
+    forge_pid&  fpid = singleton_t< forge_pid >::instance();
+    disp&       d    = singleton_t< disp >::instance();
     
-    //fd.setpoint( START_SP );
-    //fd.current_temp( tc.read_f() );
+    fd.setpoint( START_SP );
+    fd.current_temp( tc.read_f() );
 
     //initialize pid
     //
-    //fpid.initial_values( fd.current_temp(), fd.setpoint(), 10 ); // ten ms 
-    //fpid.initial_values( fd.current_temp(), fd.setpoint() );
+    fpid.initial_values( fd.current_temp(), fd.setpoint(), 10 ); // ten ms 
+    fpid.initial_values( fd.current_temp(), fd.setpoint() );
 
     delay( 1000 );
     
-    //fpid.start();
+    fpid.start();
 
     // Everything seems good.  Turn on the power light
     //
@@ -169,9 +157,6 @@ void setup()
 }
 
 
-
-*/
-
 void init_pid()
 {
     forge_pid&  p  = singleton_t< forge_pid >::instance();
@@ -180,23 +165,6 @@ void init_pid()
     p.initial_values( fd.current_temp(), fd.setpoint(), 10 ); // ten ms 
     p.initial_values( fd.current_temp(), fd.setpoint() );
     p.start();
-
-    return;
-}
-
-void setup()
-{
-    init_interrupts();
-    init_pins();
-    init_singletons();
-    delay(2000);
-
-
-    delay( 1000 );
-    
-    //fpid.start();
-
-    digitalWrite( PWR_LED_PIN, HIGH ); // power
 
     return;
 }

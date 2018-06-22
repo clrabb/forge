@@ -9,15 +9,12 @@
 //
 class display_led_abc
 {
-public:
-    static const unsigned long DEFAULT_MIN_REFRESH_TIME = 500; // millis
-    
 private:
     // Member Vars
     ada_led_display* m_ada_display           = NULL;
     unsigned long    m_last_display_mills    = 0;
     uint8_t          m_last_displayed_number = 0;
-    unsigned long    m_min_refresh_time      = 0;
+    unsigned long    m_refresh_time          = 0;
     
 public:
     // Ctors/dtors
@@ -30,7 +27,7 @@ public:
     void init( 
             uint8_t address, 
             uint8_t brightness, 
-            unsigned long min_refresh_time = DEFAULT_MIN_REFRESH_TIME  
+            unsigned long refresh_time = DEFAULT_DISP_REFRESH_TIME  
     );
 
     // Behavior
@@ -59,8 +56,10 @@ protected:
     unsigned long last_display_mills() { return m_last_display_mills; }
     void last_display_mills( unsigned long mills ) { m_last_display_mills = mills; }
 
-    unsigned long min_refresh_time() { return m_min_refresh_time; }
-    void min_refresh_time( unsigned long t ) { m_min_refresh_time = t; }
+    // refresh times are in milliseconds 
+    //
+    unsigned long refresh_time() { return m_refresh_time; }
+    void refresh_time( unsigned long t ) { m_refresh_time = t; }
 
     // Testing displays
     //

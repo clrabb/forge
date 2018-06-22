@@ -14,7 +14,7 @@ display_led_abc::~display_led_abc()
 void
 display_led_abc::write_number( uint8_t number )
 {
-    if ( ( millis() - this->last_display_mills()  ) < DEFAULT_MIN_REFRESH_TIME )
+    if ( ( millis() - this->last_display_mills()  ) < this->refresh_time() )
         return;  // Bail.  not time to display yet
 
     uint8_t last_displayed = this->last_displayed_number();
@@ -30,7 +30,7 @@ display_led_abc::write_number( uint8_t number )
 }
 
 void
-display_led_abc::init( uint8_t address, uint8_t brightness, unsigned long min_refresh_time )
+display_led_abc::init( uint8_t address, uint8_t brightness, unsigned long refresh_time /* milliseconds */ )
 {
     // Create display is a virtual function implemented
     // by subclasses
@@ -38,7 +38,7 @@ display_led_abc::init( uint8_t address, uint8_t brightness, unsigned long min_re
     this->ada_display( this->create_display() );
     this->ada_display()->begin( address );
     this->ada_display()->setBrightness( brightness );
-    this->min_refresh_time( min_refresh_time );
+    this->refresh_time( refresh_time );
     
     this->run_tests();
 

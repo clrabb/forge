@@ -21,9 +21,9 @@ disp::disp()
 
 void 
 disp::init_setpoint_led()
-{
+{    
     seven_seg_display* sp_display = this->setpoint_display();
-    sp_display->init( BLUE_LED_ADDR, BLUE_LED_BRIGHTNESS );
+    sp_display->init( SP_DISP_ADDR, SP_DISP_BRIGHTNESS, SP_DISP_REFRESH_TIME );
 
     return;
 }
@@ -32,7 +32,7 @@ void
 disp::init_temp_led()
 {
     seven_seg_display* temp_display = this->temp_display();
-    temp_display->init( RED_LED_ADDR, RED_LED_BRIGHTNESS );
+    temp_display->init( TEMP_DISP_ADDR, TEMP_DISP_BRIGHTNESS, TEMP_DISP_REFRESH_TIME );
 
     return;
 }
@@ -41,7 +41,7 @@ void
 disp::init_led_bar()
 {
     bar_display* bar = this->output_bar();
-    bar->init( LED_BAR_ADDR, LED_BAR_BRIGHTNESS );
+    bar->init( VALVE_DISP_ADDR, VALVE_DISP_BRIGHTNESS, VALVE_DISP_REFRESH_TIME );
 
     return;
 }
