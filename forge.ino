@@ -5,6 +5,7 @@
 #include "forge_data.h"
 #include "forge_pid.h"
 #include "disp.h"
+#include "heartbeat.h"
 #include <arduino.h>
 #include <Wire.h>
 
@@ -61,20 +62,6 @@ void init_interrupts()
     return;
 }
 
-
-void heartbeat( int times_through )
-{
-    static const int DELAY = 20;
-    if ( times_through % 1000 == 0 )
-    {
-        digitalWrite( STATUS_LED_PIN, HIGH );
-        delay( DELAY );
-        digitalWrite( STATUS_LED_PIN, LOW );
-    }
-
-    return;
-}
-
 void init_pins()
 {   
     // Set up pin usage
@@ -82,12 +69,9 @@ void init_pins()
     pinMode( UP_BTN_PIN,     INPUT  );
     pinMode( DN_BTN_PIN,     INPUT  );
     pinMode( PWR_LED_PIN,    OUTPUT );
-    pinMode( STATUS_LED_PIN, OUTPUT );
 
     return;
 }
-
-
 
 void init_singletons()
 {
@@ -100,9 +84,6 @@ void init_singletons()
 
     return;
 }
-
-
-
 
 void init_displays()
 {
@@ -169,7 +150,6 @@ void init_pid()
     return;
 }
 
-int g_times_through = 0;
 void loop()
 {
     thermoc& tc     = singleton_t< thermoc >::instance();
@@ -178,17 +158,10 @@ void loop()
 
     fd.current_temp( tc.read_f() );
 
-    // We need a temp to init the pid, so I'm doing it here
-    // rather than in setup.
-    //
-    if ( 0 == g_times_through )
-        init_pid();
-        
     output_pid();
     
     d.display();
     
-    heartbeat( g_times_through++ );
     return;
 }
 

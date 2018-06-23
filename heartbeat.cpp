@@ -1,4 +1,6 @@
 #include "heartbeat.h"
+#include "forge_types.h"
+#include <arduino.h>
 
 heartbeat::heartbeat( uint8_t led_pin, unsigned long mills_between_beats, unsigned long beat_length_mills )
     :
@@ -6,11 +8,16 @@ heartbeat::heartbeat( uint8_t led_pin, unsigned long mills_between_beats, unsign
     m_mills_between_beats( mills_between_beats ),
     m_beat_length_mills( beat_length_mills )
 {
+    pinMode( led_pin, OUTPUT );
 }
 
 void
 heartbeat::beat()
 {
+#ifdef __DEBUG__
+    Serial.println( "In heartbeat::beat()" );
+#endif
+
     if ( this->is_off() )
         this->off_beat();
     else
@@ -42,6 +49,10 @@ heartbeat::time_off()
 void 
 heartbeat::off_beat()
 {
+#ifdef __DEBUG__
+    Serial.println( "In heartbeat::off_beat()" );
+#endif
+   
     if ( this->time_off() >= this->mills_between_beats() )
     {
         this->turn_on();
@@ -53,6 +64,10 @@ heartbeat::off_beat()
 void
 heartbeat::on_beat()
 {
+#ifdef __DEBUG__
+    Serial.println( "In heartbeat::on_beat()" );
+#endif
+
     if ( this->time_on() >= this->beat_length_mills() )
     {
         this->turn_off();
@@ -64,6 +79,12 @@ heartbeat::on_beat()
 void 
 heartbeat::turn_on()
 {
+#ifdef __DEBUG__
+    Serial.println( "In heartbeat::turn_on()" );
+    Serial.print( "Turning on pin " );
+    Serial.println( this->led_pin() );
+#endif 
+
     digitalWrite( this->led_pin(), HIGH );
 
     this->last_state_change_mills( millis() );
