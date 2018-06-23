@@ -14,12 +14,12 @@ bar_display::create_display()
 void 
 bar_display::run_tests()
 {
-    static const int FULL_BAR_DELAY  = 1000;
-    static const int END_DELAY       = 1000;
+    static const int   FULL_BAR_DELAY  = 1000;
+    static const int   END_DELAY       = 1000;
     
     ada_led_bar* bar = static_cast< ada_led_bar* >( this->ada_display() ); 
 
-    for ( uint8_t i = 0; i < 24; ++i )
+    for ( uint8_t i = 0; i < NUM_LEDS_IN_BAR; ++i )
     {
         if ((i % 3) == 0)  bar->setBar( i, LED_RED    );
         if ((i % 3) == 1)  bar->setBar( i, LED_YELLOW );
@@ -29,7 +29,13 @@ bar_display::run_tests()
     bar->writeDisplay();
     delay( FULL_BAR_DELAY );
 
-    for ( uint8_t i = 0; i < 24; ++i ) 
+    for ( uint8_t i = 0; i < NUM_LEDS_IN_BAR; ++i )
+    {
+        bar->setBar( i, LED_OFF );    
+    }
+    bar->writeDisplay();
+
+    for ( uint8_t i = 0; i < NUM_LEDS_IN_BAR; ++i ) 
     {
         bar->setBar( i, LED_RED );
         bar->writeDisplay();
@@ -38,7 +44,7 @@ bar_display::run_tests()
         bar->writeDisplay();
     }
     
-    for ( uint8_t i = 0; i < 24; ++i ) 
+    for ( uint8_t i = 0; i < NUM_LEDS_IN_BAR; ++i ) 
     {
         bar->setBar( i, LED_GREEN );
         bar->writeDisplay();
@@ -47,7 +53,7 @@ bar_display::run_tests()
         bar->writeDisplay();
     }
 
-    for ( uint8_t i = 0; i < 24; ++i ) 
+    for ( uint8_t i = 0; i < NUM_LEDS_IN_BAR; ++i ) 
     {
         bar->setBar( i, LED_YELLOW );
         bar->writeDisplay();
