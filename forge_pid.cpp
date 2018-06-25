@@ -4,11 +4,12 @@
 double
 forge_pid::compute( double input, double setpoint )
 {
+    static const int GAP_THRESHOLD = 10;
     m_input    = input;
     m_setpoint = setpoint;
 
     double gap = abs( setpoint - input );
-    ( gap < 10 )
+    ( gap < GAP_THRESHOLD )
         ? m_pid_guts.SetTunings( CON_KP, CON_KI, CON_KD ) // Close, use conservative
         : m_pid_guts.SetTunings( AGG_KP, AGG_KI, AGG_KD ) // Far, use aggresive
     ;

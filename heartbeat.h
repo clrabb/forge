@@ -31,33 +31,19 @@ class heartbeat
 
     // Accessors
     //
-    unsigned long last_state_change_mills() {
-      return m_last_state_change_mills;
-    }
+    unsigned long last_state_change_mills() { return m_last_state_change_mills; }
     void last_state_change_mills( unsigned long mills ) {
       m_last_state_change_mills = mills;
     }
 
-    uint8_t led_pin() {
-      return m_led_pin;
-    }
-    void led_pin( uint8_t pin ) {
-      m_led_pin = pin;
-    }
+    uint8_t led_pin() { return m_led_pin; }
+    void led_pin( uint8_t pin ) { m_led_pin = pin; }
 
-    unsigned long mills_between_beats() {
-      return m_mills_between_beats;
-    }
-    void mills_between_beats( unsigned long mills ) {
-      m_mills_between_beats = mills;
-    }
+    unsigned long mills_between_beats() { return m_mills_between_beats; }
+    void mills_between_beats( unsigned long mills ) { m_mills_between_beats = mills; }
 
-    unsigned long beat_length_mills() {
-      return m_beat_length_mills;
-    }
-    void beat_length_mills( unsigned long mills ) {
-      m_beat_length_mills = mills;
-    }
+    unsigned long beat_length_mills() { return m_beat_length_mills; }
+    void beat_length_mills( unsigned long mills ) { m_beat_length_mills = mills; }
 
     // Behavior
     //
