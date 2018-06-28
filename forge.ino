@@ -6,6 +6,7 @@
 #include "forge_pid.h"
 #include "disp.h"
 #include "heartbeat.h"
+#include "forge_stepper.h"
 #include <arduino.h>
 #include <Wire.h>
 
@@ -37,6 +38,7 @@ void dnButton_ISR()
     return;
 }
 
+forge_stepper stepper( PWM_OUTPUT_MAX ); // HACK
 void output_pid()
 {
     // Snag any needed globals
@@ -48,6 +50,7 @@ void output_pid()
     fd.current_pid_output( output );
 
     analogWrite( PID_OUTPUT_PIN, output );
+    stepper.step_to( output );
 
     return;
 }
