@@ -16,7 +16,7 @@ public:
 protected:
     virtual ada_led_display* create_display();
     virtual void run_tests();
-    virtual void write_number_impl( uint8_t number );
+    virtual void write_number_impl( int number );
 
 private:
     // stop compiler generated crap

@@ -13,7 +13,7 @@ private:
     // Member Vars
     ada_led_display* m_ada_display           = NULL;
     unsigned long    m_last_display_mills    = 0;
-    uint8_t          m_last_displayed_number = 0;
+    int              m_last_displayed_number = 0;
     unsigned long    m_refresh_time          = 0;
     
 public:
@@ -32,7 +32,7 @@ public:
 
     // Behavior
     //
-    void write_number( uint8_t number );
+    void write_number( int number );
 
     // Printing
     //
@@ -44,14 +44,14 @@ protected:
     // Subclasses MUST implement these methods
     // 
     virtual ada_led_display* create_display() = 0;
-    virtual void write_number_impl( uint8_t number ) = 0;
+    virtual void write_number_impl( int number ) = 0;
 
     // Accessors
     //
     ada_led_display* ada_display() { return m_ada_display; }
     
-    uint8_t last_displayed_number() { return m_last_displayed_number; }
-    void last_displayed_number( uint8_t number ) { m_last_displayed_number = number; }
+    int last_displayed_number() { return m_last_displayed_number; }
+    void last_displayed_number( int number ) { m_last_displayed_number = number; }
     
     unsigned long last_display_mills() { return m_last_display_mills; }
     void last_display_mills( unsigned long mills ) { m_last_display_mills = mills; }

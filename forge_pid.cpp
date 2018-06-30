@@ -43,3 +43,9 @@ forge_pid::start()
     m_pid_guts.SetMode( AUTOMATIC );
 }
 
+void 
+forge_pid::set_output_limits( double min, double max )
+{
+    m_pid_guts.SetOutputLimits( min, max );
+}
+

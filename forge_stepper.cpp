@@ -25,6 +25,12 @@ forge_stepper::is_not_time_to_move()
 void
 forge_stepper::step_to( int new_pos )
 {
+#ifdef __DEBUG_PID__
+    Serial.print( "forge_stepper::step_to(" );
+    Serial.print( new_pos );
+    Serial.println( ")" );
+#endif 
+/*
     int cur_pos = this->current_pos();
     
     if ( new_pos < cur_pos )
@@ -37,7 +43,7 @@ forge_stepper::step_to( int new_pos )
     }
 
     this->work_queue();
-
+*/
     return;
 }
 

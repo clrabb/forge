@@ -35,6 +35,7 @@ public:
     double compute( double input, double setpoint );
     void initial_values( double input, double setpoint, int sample_time );
     void initial_values( double input, double setpoint );
+    void set_output_limits( double min, double max );
     void start();
 
 private:

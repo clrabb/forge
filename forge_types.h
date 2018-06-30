@@ -9,8 +9,9 @@
 #define DISABLE_LOGGING
 //#define __T_DEBUG__
 //#define __DEBUG__
-//#define __DEBUG_PID__
+//¨#define __DEBUG_PID__
 #define __DEBUG_STEPPER__
+#define __DEBUG_BAR__
 
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
@@ -41,6 +42,7 @@ static const int     FSTEPPER_PIN4      = 13;   // ...
 
 /* ----------------- STEPPER CONSTANTS  ------- */
 static const int     STEPS_PER_REVOLUTION = 4096;
+static const int     STEPS_TO_CLOSED      = 0;
 static const int     STEPS_TO_FULL_OPEN   = STEPS_PER_REVOLUTION * 2;
 static const int     STEP_DEAD_MILLS      = 2000; // Stepper won't move in this many mills
 
@@ -65,6 +67,9 @@ static const unsigned long DEFAULT_DISP_REFRESH_TIME  = 500;
 static const unsigned long SP_DISP_REFRESH_TIME       = 50;     
 static const unsigned long TEMP_DISP_REFRESH_TIME     = 3000;
 static const unsigned long VALVE_DISP_REFRESH_TIME    = 500;
+
+/* ---------------- BUTTON CONSTANTS ---------- */
+static const int BTN_SLOW_CHANGE = 100;
 
 
 #endif FORGE_TYPES_H

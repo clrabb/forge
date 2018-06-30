@@ -68,12 +68,13 @@ bar_display::run_tests()
 }
 
 void
-bar_display::write_number_impl( uint8_t number )
+bar_display::write_number_impl( int number )
 {
     // Map the number passed in to the number of LEDs in the bar
     //
-    uint8_t num_leds = this->number_of_leds();
-    signed short num_to_light = round( ( num_leds - 0 ) * (( number - PWM_OUTPUT_MIN )/( PWM_OUTPUT_MAX - PWM_OUTPUT_MIN )) );
+    int num_leds = this->number_of_leds();
+    int mapped = map( number, STEPS_TO_CLOSED, STEPS_TO_FULL_OPEN, 0, num_leds );
+    int num_to_light = constrain( mapped, 0, num_leds );
     
     this->animate_leds_to( num_to_light );
 

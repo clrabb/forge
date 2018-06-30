@@ -12,12 +12,12 @@ display_led_abc::~display_led_abc()
 }
 
 void
-display_led_abc::write_number( uint8_t number )
+display_led_abc::write_number( int number )
 {
     if ( ( millis() - this->last_display_mills()  ) < this->refresh_time() )
         return;  // Bail.  not time to display yet
 
-    uint8_t last_displayed = this->last_displayed_number();
+    int last_displayed = this->last_displayed_number();
 
     if ( number == last_displayed )
         return; // Bail, number the same as last time

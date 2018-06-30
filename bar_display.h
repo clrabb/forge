@@ -34,7 +34,7 @@ public:
 protected:
     // Virtual overrides
     //
-    virtual void write_number_impl( uint8_t number );
+    virtual void write_number_impl( int number );
     virtual void run_tests();
     virtual ada_led_display* create_display();
     virtual void increment_number_leds_lit();

@@ -7,7 +7,7 @@ seven_seg_display::create_display()
 }
 
 void
-seven_seg_display::write_number_impl( uint8_t number )
+seven_seg_display::write_number_impl( int number )
 {
     ada_seven_seg* disp = static_cast< ada_seven_seg* >( this->ada_display() );
 

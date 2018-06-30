@@ -10,37 +10,37 @@
 #include <arduino.h>
 #include <Wire.h>
 
-// Interrupt routines
+// HACK
 //
-void upButton_ISR()
+unsigned long last_btn_pressed_mills;
+void deal_with_buttons()
 {
-    forge_data& fd     = singleton_t< forge_data >::instance();
-    
-    volatile int up_button_state = digitalRead( UP_BTN_PIN );
-    if ( 1 == up_button_state )
+    forge_data& fd = singleton_t< forge_data >::instance();
+    unsigned long btn_pressed_interval = ( millis() - last_btn_pressed_mills );
+
+    if ( btn_pressed_interval < BTN_SLOW_CHANGE )
+        return;
+
+    if ( digitalRead( UP_BTN_PIN ) )
     {
         fd.increment_setpoint();
     }
-
-    return;
-}
-
-void dnButton_ISR()
-{
-    forge_data& fd = singleton_t< forge_data >::instance();
-
-    volatile int down_button_state = digitalRead( DN_BTN_PIN );
-    if ( 1 == down_button_state  && fd.setpoint() > 0 )
+    else if ( digitalRead( DN_BTN_PIN ) && fd.setpoint() > 0 )
     {
         fd.decrement_setpoint();
     }
 
+    last_btn_pressed_mills = millis();
     return;
 }
 
-forge_stepper stepper; // HACK
+forge_stepper* g_stepper; // HACK
 void output_pid()
 {
+#ifdef __DEBUG_PID__
+    Serial.println( "forge::output_pid" );
+#endif
+    
     // Snag any needed globals
     //
     forge_data& fd   = singleton_t< forge_data >::instance();
@@ -49,17 +49,13 @@ void output_pid()
     double output = fpid.compute( fd.current_temp(), fd.setpoint() );
     fd.current_pid_output( output );
 
-    stepper.step_to( output );
+#ifdef __DEBUG_STEPPER__
+    Serial.print( "forge::output_pid -> about to call step_to(" );
+    Serial.print( output );
+    Serial.println( ")" );
+#endif
 
-    return;
-}
-
-void init_interrupts()
-{
-    // Set up interrupts for buttons
-    //
-    attachInterrupt( 0, upButton_ISR, RISING );
-    attachInterrupt( 1, dnButton_ISR, RISING );
+    g_stepper->step_to( output );
 
     return;
 }
@@ -95,6 +91,12 @@ void init_displays()
     return;
 }
 
+void init_stepper()
+{
+    g_stepper = new forge_stepper();   
+
+    return;
+}
 
 void setup() 
 {
@@ -108,8 +110,9 @@ void setup()
     //  
 
     init_pins();
-    init_interrupts();
     init_singletons();
+    init_stepper();
+    last_btn_pressed_mills = 0; // HACK
 
     // wait for MAX chip to stabilize
     //
@@ -125,8 +128,8 @@ void setup()
 
     //initialize pid
     //
+    fpid.set_output_limits( STEPS_TO_CLOSED, STEPS_TO_FULL_OPEN );
     fpid.initial_values( fd.current_temp(), fd.setpoint(), 10 ); // ten ms 
-    fpid.initial_values( fd.current_temp(), fd.setpoint() );
 
     delay( 1000 );
     
@@ -158,10 +161,9 @@ void loop()
     forge_data& fd  = singleton_t< forge_data >::instance();
     disp& d         = singleton_t< disp >::instance();
 
+    deal_with_buttons();
     fd.current_temp( tc.read_f() );
-
     output_pid();
-    
     d.display();
     
     return;
