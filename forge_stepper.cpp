@@ -1,12 +1,14 @@
 #include "forge_stepper.h"
 #include "forge_types.h"
 
+
 forge_stepper::forge_stepper( int max_input_value )
     : m_stepper_impl( Stepper( STEPS_PER_REVOLUTION, FSTEPPER_PIN1, FSTEPPER_PIN2, FSTEPPER_PIN3, FSTEPPER_PIN4 ) )
 {
     m_max_input_value = max_input_value;  
     m_current_pos = 0;      
     m_last_move_mills = 0;
+    
 }
 
 bool
@@ -25,14 +27,28 @@ forge_stepper::is_not_time_to_move()
 void
 forge_stepper::step_to( int new_pos )
 {
-#ifdef __DEBUG_STEPPER__
-    Serial.print("forge_stepper::step_to(");
-    Serial.print( new_pos );
-    Serial.println( ")" );
-#endif
 
-    if ( this->is_not_time_to_move() )
-        return;
+void
+forge_stepper::step_right()
+{
+    uint8_t next_step = this->current_step() + 1;
+    this->step_impl( next_step );
+    this->current_step( next_step );
+
+    return;
+}
+
+void 
+forge_stepper::step_left()
+{
+    uint8_t next_step = this->current_step() - 1;
+    this->step_impl( next_step );
+    this->current_step( next_step );
+
+    return;
+}
+
+
 
     int cur_pos = this->current_pos();
     
@@ -89,6 +105,8 @@ forge_stepper::step_down( int steps )
 
     return;
 }
+
+
 
 
 
