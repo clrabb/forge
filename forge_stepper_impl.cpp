@@ -1,12 +1,17 @@
 #include "forge_stepper_impl.h"
 #include "forge_types.h"
-/*
+
+forge_stepper_impl::forge_stepper_impl()
+{
+    m_current_coil = 0;
+}
+
 void 
 forge_stepper_impl::step_open()
 {
-    uint8_t next_step = this->current_step() + 1;
-    this->step_impl( next_step );
-    this->current_step( next_step );
+    uint8_t next_coil = this->current_coil() + 1;
+    this->step_impl( next_coil );
+    this->current_coil( next_coil );
 
     return;
 }
@@ -14,9 +19,9 @@ forge_stepper_impl::step_open()
 void 
 forge_stepper_impl::step_closed()
 {
-    uint8_t next_step = this->current_step() - 1;
-    this->step_impl( next_step );
-    this->current_step( next_step );
+    uint8_t next_coil = this->current_coil() - 1;
+    this->step_impl( next_coil );
+    this->current_coil( next_coil );
 
     return;
 }
@@ -29,9 +34,9 @@ forge_stepper_impl::step_closed()
 // here.
 // 
 void
-forge_stepper_impl::step_impl( uint8_t step )
+forge_stepper_impl::step_impl( uint8_t coil )
 {
-    switch( step )
+    switch( coil )
     {
         case 0:
             digitalWrite(FSTEPPER_PIN1, LOW); 
@@ -101,16 +106,4 @@ forge_stepper_impl::step_impl( uint8_t step )
     return;
 }
 
-void
-stepper_step_open::step( forge_stepper_impl& stepper )
-{
-    stepper.step_open();
-}
-
-void 
-stepper_step_closed::step( forge_stepper_impl& stepper )
-{
-    stepper.step_closed()
-}
-*/
 

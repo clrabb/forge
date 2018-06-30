@@ -8,36 +8,37 @@
 #include <deque>
 using namespace std;
 
+typedef deque< stepper_step_abc* > step_queue;
+
 class forge_stepper
 {
 private:
-    int             m_max_input_value;
-    int             m_current_pos;     
-    unsigned long   m_last_move_mills;
-    forge_stepper_impl         m_stepper_impl;
-    deque< stepper_step_abc* > m_step_queue;
+    int                 m_current_pos;     
+    unsigned long       m_last_move_mills;
+    forge_stepper_impl* m_stepper_impl;
+    step_queue          m_step_queue;
     
 public:
     // Ctor
     //
-    forge_stepper( int max_input_value );
+    forge_stepper();
 
-    // behavior
+    // -------------------- BEHAVIOR ---------------
     //
     void step_to( int position );
     void step_open( int steps );
     void step_closed( int steps );
 
-    // testing
+    // -------------------- TESTING ----------------
     //
     bool is_time_to_move();
     bool is_not_time_to_move();
 
 private:
-    forge_stepper_impl& stepper_impl() { return m_stepper_impl; }
 
-    int max_input_value() { return m_max_input_value; }
-    void max_intput_value( int max_input_value ) { m_max_input_value = max_input_value; }
+    // -------------- Accessing ------------------
+    
+    const forge_stepper_impl* stepper_impl() { return m_stepper_impl; }
     
     unsigned long last_move_mills() { return m_last_move_mills; }
     void last_move_mills( unsigned long mills ) { m_last_move_mills = mills; }
@@ -45,9 +46,14 @@ private:
     int current_pos() { return m_current_pos; }
     void current_pos( int pos ) { m_current_pos = pos; }
 
-    uint8_t current_step() { return m_current_step; }
-    void current_step( uint8_t step ) { m_current_step = step; }
+    /* ------------------- COLLECTION --------------- */
+    step_queue& step_queue() { return m_step_queue; }
+    void push_step( stepper_step_abc* );
+    stepper_step_abc* pop_next_step();
+    void work_queue();
 
+    /* ---------------- PRIVATE BEHAVIOR ----------- */
+    void reset_move_counter();
 
 private:
     forge_stepper( const forge_stepper& );
