@@ -91,9 +91,6 @@ disp::display()
 void 
 disp::display_heartbeat()
 {
-#ifdef __DEBUG__
-    Serial.println( "In disp::display_heartbeat()" );
-#endif 
     this->heartbeat_led()->beat();
 
     return;

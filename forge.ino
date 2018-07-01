@@ -6,7 +6,6 @@
 #include "forge_pid.h"
 #include "disp.h"
 #include "heartbeat.h"
-#include "forge_stepper.h"
 #include "forge_servo.h"
 #include <arduino.h>
 #include <Wire.h>
@@ -39,11 +38,21 @@ void output_pid()
 {
     // Snag any needed globals
     //
-    forge_data& fd   = singleton_t< forge_data >::instance();
-    forge_pid&  fpid = singleton_t< forge_pid >::instance();
+    forge_data&  fdata  = singleton_t< forge_data >::instance();
+    forge_pid&   fpid   = singleton_t< forge_pid >::instance();
+    forge_servo& fservo = singleton_t< forge_servo >::instance();
 
-    double output = fpid.compute( fd.current_temp(), fd.setpoint() );
-    fd.current_pid_output( output );
+    double output = fpid.compute( fdata.current_temp(), fdata.setpoint() );
+    fservo.move_to( output );
+    fdata.current_pid_output( output );
+
+    return;
+}
+
+void init_servo()
+{
+    forge_servo& fservo = singleton_t< forge_servo >::instance();
+    fservo.initialize_movement();
 
     return;
 }
@@ -93,7 +102,8 @@ void init_pid()
 
 void setup() 
 {
-
+    delay( 5000 );
+    
     static const int MAX6675_INIT_STABALIZE_WAIT = 2000;
     static const int BAUD_RATE = 9600;
 
@@ -101,9 +111,10 @@ void setup()
 
     // All the various initializing needed
     //  
-
     init_pins();
     init_singletons();
+    init_displays();
+    init_servo();
     last_btn_pressed_mills = 0; // HACK
 
     // wait for MAX chip to stabilize
@@ -122,6 +133,7 @@ void setup()
     // must have already been read to initialize the pid
     //
     init_pid();
+
     
     delay( 1000 );
     
@@ -130,7 +142,7 @@ void setup()
     // Everything seems good.  Turn on the power light
     //
     digitalWrite( PWR_LED_PIN, HIGH );
-
+    
     return;
 }
 
@@ -144,6 +156,7 @@ void loop()
     deal_with_buttons();
     fd.current_temp( tc.read_f() );
     output_pid();
+
     d.display();
     
     return;

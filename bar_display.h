@@ -8,7 +8,7 @@
 class bar_display : public display_led_abc
 {
 public:
-    static const short ANIMATION_DELAY = 0;
+    static const short ANIMATION_DELAY = 20;
     
 private:
     // Member variables

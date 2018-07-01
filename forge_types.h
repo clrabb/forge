@@ -7,11 +7,11 @@
 // to something like the twinky in ghostbusters
 //
 #define DISABLE_LOGGING
-//#define __T_DEBUG__
+// #define __T_DEBUG__
 //#define __DEBUG__
 //¨#define __DEBUG_PID__
-#define __DEBUG_STEPPER__
-#define __DEBUG_BAR__
+//#define __DEBUG_SERVO__
+//#define __DEBUG_BAR__
 
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
@@ -34,26 +34,12 @@ static const int     HEARTBEAT_LED_PIN  = 5;    // Pin for the Heartbeat LED
 static const int     THERM_DO           = 6;    // Data out from the MAX6675 module
 static const int     THERM_CS           = 7;    // Chip select from same
 static const int     THERM_CLK          = 8;    // Clock from same
-static const int     PID_OUTPUT_PIN     = 9;    // Output PWM from pid
-//static const int     FSTEPPER_PIN1      = 10;   // Obvious
-//static const int     FSTEPPER_PIN2      = 11;   // ...
-//static const int     FSTEPPER_PIN3      = 12;   // ...
-//static const int     FSTEPPER_PIN4      = 13;   // ...
-
-
-/* ----------------- STEPPER CONSTANTS  ------- */
-
-// NOTE--- WE'VE MOVED TO USING A SERVO RATHER THAN A STEPPER, THOUGH I'M LEAVING
-// THE CODE IN PLACE IN CASE WE CHANGE BACK.
-//
-static const int     STEPS_PER_REVOLUTION = 4096;
-static const int     STEPS_TO_CLOSED      = 0;
-static const int     STEPS_TO_FULL_OPEN   = STEPS_PER_REVOLUTION * 2;
-static const int     STEP_DEAD_MILLS      = 2000;         // Stepper won't move in this many mills
 
 /* ----------------- SERVO CONSTANCES ----------*/
 static const int     SERVO_DEAD_MILLS     = 2000;
 static const int     SERVO_PIN            = 9;
+static const int     SERVO_MIN            = 18;
+static const int     SERVO_MAX            = 178;
 
 /* ----------------- SETPOINT CONSTANTS --------*/
 static const int SP_START = 50;                           // Beginning setpoint
@@ -66,12 +52,12 @@ static const int        TEMP_DISP_BRIGHTNESS      = 3;    // between 0 and 15
 static const int        VALVE_DISP_ADDR           = 0X72; // ID of the LED bar
 static const int        VALVE_DISP_BRIGHTNESS     = 3;    // between 0 and 15
 static unsigned long    HEARTBEAT_DURATION_ON     = 20;   // milliseconds on
-static unsigned long    HEARTBEAT_DURATION_OFF    = 2000; // milliseconds off
+static unsigned long    HEARTBEAT_DURATION_OFF    = 500; // milliseconds off
 static const uint8_t    NUM_LEDS_IN_BAR           = 24;   // Number of LEDs in the bar display
 
 /* ----------------- PID CONSTANTS -------------*/
-static const double        PID_RANGE_MIN   = 0;
-static const double        PID_RANGE_MAX   = 180;
+static const double        PID_RANGE_MIN   = SERVO_MIN;
+static const double        PID_RANGE_MAX   = SERVO_MAX;
 static const unsigned long PID_SAMPLE_TIME = 200; // Milliseconds 
 
 /* ----------------- LED REFRESH TIMES --------- */

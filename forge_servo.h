@@ -26,11 +26,16 @@ public:
     // --------------- MOVEMENT ------------------
     //
     void move_to( uint8_t percent_open );
+    void initialize_movement();
 
 private:
     // ---------------- ACCESSING ----------------
     //
     Servo& servo_impl() { return m_servo; }
+
+    // -------------- MOVEMENT --------------------
+    //
+    void move_to_impl( uint8_t percent_open );
 
 private:
     forge_servo( const forge_servo& ); // copy ctor
