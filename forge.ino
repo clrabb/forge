@@ -7,6 +7,7 @@
 #include "disp.h"
 #include "heartbeat.h"
 #include "forge_stepper.h"
+#include "forge_servo.h"
 #include <arduino.h>
 #include <Wire.h>
 
@@ -34,13 +35,8 @@ void deal_with_buttons()
     return;
 }
 
-forge_stepper* g_stepper; // HACK
 void output_pid()
 {
-#ifdef __DEBUG_PID__
-    Serial.println( "forge::output_pid" );
-#endif
-    
     // Snag any needed globals
     //
     forge_data& fd   = singleton_t< forge_data >::instance();
@@ -48,14 +44,6 @@ void output_pid()
 
     double output = fpid.compute( fd.current_temp(), fd.setpoint() );
     fd.current_pid_output( output );
-
-#ifdef __DEBUG_STEPPER__
-    Serial.print( "forge::output_pid -> about to call step_to(" );
-    Serial.print( output );
-    Serial.println( ")" );
-#endif
-
-    g_stepper->step_to( output );
 
     return;
 }
@@ -73,13 +61,12 @@ void init_pins()
 
 void init_singletons()
 {
-    singleton_t< thermoc >    tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
-    singleton_t< forge_data > fdata( new forge_data() );    
-    singleton_t< disp >       d( new disp() );
-    singleton_t< forge_pid >  fpid( new forge_pid() );
+    singleton_t< thermoc >     tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
+    singleton_t< forge_data >  fdata( new forge_data() );    
+    singleton_t< disp >        d( new disp() );
+    singleton_t< forge_pid >   fpid( new forge_pid() );
+    singleton_t< forge_servo > servo( new forge_servo( SERVO_PIN ) );
     
-    singleton_t< disp >::instance().init();
-
     return;
 }
 
@@ -91,12 +78,18 @@ void init_displays()
     return;
 }
 
-void init_stepper()
+void init_pid()
 {
-    g_stepper = new forge_stepper();   
+    forge_pid&  fpid  = singleton_t< forge_pid >::instance();
+    forge_data& fd    = singleton_t< forge_data >::instance();
+    
+
+    fpid.set_output_limits( PID_RANGE_MIN, PID_RANGE_MAX );
+    fpid.initial_values( fd.current_temp(), fd.setpoint(), PID_SAMPLE_TIME ); // Milliseconds
 
     return;
 }
+
 
 void setup() 
 {
@@ -111,7 +104,6 @@ void setup()
 
     init_pins();
     init_singletons();
-    init_stepper();
     last_btn_pressed_mills = 0; // HACK
 
     // wait for MAX chip to stabilize
@@ -123,14 +115,14 @@ void setup()
     forge_pid&  fpid = singleton_t< forge_pid >::instance();
     disp&       d    = singleton_t< disp >::instance();
     
-    fd.setpoint( START_SP );
     fd.current_temp( tc.read_f() );
 
-    //initialize pid
+    // initialize pid
+    // .. this is not with the other inits because the temperature
+    // must have already been read to initialize the pid
     //
-    fpid.set_output_limits( STEPS_TO_CLOSED, STEPS_TO_FULL_OPEN );
-    fpid.initial_values( fd.current_temp(), fd.setpoint(), 10 ); // ten ms 
-
+    init_pid();
+    
     delay( 1000 );
     
     fpid.start();
@@ -142,18 +134,6 @@ void setup()
     return;
 }
 
-
-void init_pid()
-{
-    forge_pid&  p  = singleton_t< forge_pid >::instance();
-    forge_data& fd = singleton_t< forge_data >::instance();
-
-    p.initial_values( fd.current_temp(), fd.setpoint(), 10 ); // ten ms 
-    p.initial_values( fd.current_temp(), fd.setpoint() );
-    p.start();
-
-    return;
-}
 
 void loop()
 {

@@ -22,8 +22,8 @@ public:
     // Ctors and dtors
     //
     forge_data() 
-        : m_setpoint( START_SP )
-    {};
+        : m_setpoint( SP_START )
+    {}
 
     // Member functions
     //

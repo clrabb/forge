@@ -36,6 +36,14 @@ forge_stepper_impl::step_closed()
 void
 forge_stepper_impl::step_impl( uint8_t coil )
 {
+    /* Commenting out this part because we have moved
+     *  away from using a stepper.  However, since we are still 
+     *  in development we may come back to it.  Rather than delete
+     *  the stepper code and try to get it back from version control
+     *  we are leaving it in place.  I don't want the pins being used,
+     *  though, so I am just commenting out the guts
+     */
+     /*
     switch( coil )
     {
         case 0:
@@ -102,6 +110,7 @@ forge_stepper_impl::step_impl( uint8_t coil )
             digitalWrite(FSTEPPER_PIN4, LOW);
         break; 
     }
+    */
 
     return;
 }

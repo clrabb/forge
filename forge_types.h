@@ -17,6 +17,7 @@
 #include <Adafruit_GFX.h>
 #include <PID_v1.h>
 
+/* -------------- TYPEDEFS ----------- */
 typedef double                temp_t;
 typedef Adafruit_LEDBackpack  ada_led_display;
 typedef Adafruit_7segment     ada_seven_seg;
@@ -34,22 +35,28 @@ static const int     THERM_DO           = 6;    // Data out from the MAX6675 mod
 static const int     THERM_CS           = 7;    // Chip select from same
 static const int     THERM_CLK          = 8;    // Clock from same
 static const int     PID_OUTPUT_PIN     = 9;    // Output PWM from pid
-static const int     FSTEPPER_PIN1      = 10;   // Obvious
-static const int     FSTEPPER_PIN2      = 11;   // ...
-static const int     FSTEPPER_PIN3      = 12;   // ...
-static const int     FSTEPPER_PIN4      = 13;   // ...
+//static const int     FSTEPPER_PIN1      = 10;   // Obvious
+//static const int     FSTEPPER_PIN2      = 11;   // ...
+//static const int     FSTEPPER_PIN3      = 12;   // ...
+//static const int     FSTEPPER_PIN4      = 13;   // ...
 
 
 /* ----------------- STEPPER CONSTANTS  ------- */
+
+// NOTE--- WE'VE MOVED TO USING A SERVO RATHER THAN A STEPPER, THOUGH I'M LEAVING
+// THE CODE IN PLACE IN CASE WE CHANGE BACK.
+//
 static const int     STEPS_PER_REVOLUTION = 4096;
 static const int     STEPS_TO_CLOSED      = 0;
 static const int     STEPS_TO_FULL_OPEN   = STEPS_PER_REVOLUTION * 2;
-static const int     STEP_DEAD_MILLS      = 2000; // Stepper won't move in this many mills
+static const int     STEP_DEAD_MILLS      = 2000;         // Stepper won't move in this many mills
 
-static const double  PWM_OUTPUT_MIN  = 0;    // 0% duty cycle
-static const double  PWM_OUTPUT_MAX  = 255;  // 100% duty cycle
-static const int     START_SP        = 50;   // initial starting set point
+/* ----------------- SERVO CONSTANCES ----------*/
+static const int     SERVO_DEAD_MILLS     = 2000;
+static const int     SERVO_PIN            = 9;
 
+/* ----------------- SETPOINT CONSTANTS --------*/
+static const int SP_START = 50;                           // Beginning setpoint
 
 /* ------------------ LED CONSTANTS ------------ */
 static const int        SP_DISP_ADDR              = 0x70; // ID of the 'blue' setpoint led display
@@ -62,6 +69,11 @@ static unsigned long    HEARTBEAT_DURATION_ON     = 20;   // milliseconds on
 static unsigned long    HEARTBEAT_DURATION_OFF    = 2000; // milliseconds off
 static const uint8_t    NUM_LEDS_IN_BAR           = 24;   // Number of LEDs in the bar display
 
+/* ----------------- PID CONSTANTS -------------*/
+static const double        PID_RANGE_MIN   = 0;
+static const double        PID_RANGE_MAX   = 180;
+static const unsigned long PID_SAMPLE_TIME = 200; // Milliseconds 
+
 /* ----------------- LED REFRESH TIMES --------- */
 static const unsigned long DEFAULT_DISP_REFRESH_TIME  = 500;
 static const unsigned long SP_DISP_REFRESH_TIME       = 50;     
@@ -70,7 +82,6 @@ static const unsigned long VALVE_DISP_REFRESH_TIME    = 500;
 
 /* ---------------- BUTTON CONSTANTS ---------- */
 static const int BTN_SLOW_CHANGE = 100;
-
 
 #endif FORGE_TYPES_H
 
