@@ -36,10 +36,10 @@ static const int     THERM_CS           = 7;    // Chip select from same
 static const int     THERM_CLK          = 8;    // Clock from same
 
 /* ----------------- SERVO CONSTANCES ----------*/
-static const int     SERVO_DEAD_MILLS     = 2000;
+static const int     SERVO_DEAD_MILLS     = 500;
 static const int     SERVO_PIN            = 9;
-static const int     SERVO_MIN            = 18;
-static const int     SERVO_MAX            = 178;
+static const int     SERVO_MIN            = 11;
+static const int     SERVO_MAX            = 175;
 
 /* ----------------- SETPOINT CONSTANTS --------*/
 static const int SP_START = 50;                           // Beginning setpoint
