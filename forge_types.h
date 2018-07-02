@@ -52,8 +52,9 @@ static const int        TEMP_DISP_BRIGHTNESS      = 3;    // between 0 and 15
 static const int        VALVE_DISP_ADDR           = 0X72; // ID of the LED bar
 static const int        VALVE_DISP_BRIGHTNESS     = 3;    // between 0 and 15
 static unsigned long    HEARTBEAT_DURATION_ON     = 20;   // milliseconds on
-static unsigned long    HEARTBEAT_DURATION_OFF    = 500; // milliseconds off
+static unsigned long    HEARTBEAT_DURATION_OFF    = 500;  // milliseconds off
 static const uint8_t    NUM_LEDS_IN_BAR           = 24;   // Number of LEDs in the bar display
+static const short      BAR_ANIMATION_DELAY       = 0;    // Amount of time between each LED in the bar being lit up.  Gives an animation effect
 
 /* ----------------- PID CONSTANTS -------------*/
 static const double        PID_RANGE_MIN   = SERVO_MIN;

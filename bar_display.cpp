@@ -39,7 +39,7 @@ bar_display::run_tests()
     {
         bar->setBar( i, LED_RED );
         bar->writeDisplay();
-        delay( ANIMATION_DELAY );
+        delay( BAR_ANIMATION_DELAY );
         bar->setBar( i, LED_OFF );
         bar->writeDisplay();
     }
@@ -48,7 +48,7 @@ bar_display::run_tests()
     {
         bar->setBar( i, LED_GREEN );
         bar->writeDisplay();
-        delay( ANIMATION_DELAY );
+        delay( BAR_ANIMATION_DELAY );
         bar->setBar( i, LED_OFF );
         bar->writeDisplay();
     }
@@ -57,7 +57,7 @@ bar_display::run_tests()
     {
         bar->setBar( i, LED_YELLOW );
         bar->writeDisplay();
-        delay( ANIMATION_DELAY );
+        delay( BAR_ANIMATION_DELAY );
         bar->setBar( i, LED_OFF );
         bar->writeDisplay();
     }
@@ -86,19 +86,18 @@ bar_display::animate_leds_to( signed short num_to_light )
 {  
     signed short difference = num_to_light - this->number_leds_lit();
 
-    if ( 0 == difference )
-    {
-        return;  // Bail, leds are the same number as last time
-    }
-    else if ( difference > 0 )
+    if ( difference > 0 )
     {
         this->animate_up_to( num_to_light );
     }
-    else
+    else if ( difference < 0 )
     {
         this->animate_down_to( num_to_light );
     }
 
+    // We do nothing if the difference == 0 since that LED is already
+    // lit.
+    
     return;
 }
 
@@ -110,8 +109,11 @@ bar_display::animate_up_to( signed short num_to_light )
     
     for ( int i = 0; i < delta; ++i )
     {
+        // TODO
+        // remove the delay
+        //
         this->turn_on_led( i + num_lit );
-        delay( ANIMATION_DELAY );
+        delay( BAR_ANIMATION_DELAY );
     }
 
     return;
@@ -121,12 +123,15 @@ void
 bar_display::animate_down_to( signed short num_to_light )
 {
     uint8_t num_lit = this->number_leds_lit();
-    signed short delta  = (signed short)num_lit - num_to_light;
+    signed short delta  = static_cast< signed short>( num_lit - num_to_light );
     
     for ( int i = 0; i < delta; ++i )
     {
+        // TODO
+        // remove the delay
+        //
         this->turn_off_led( ( num_lit - i ) - 1 );
-        delay( ANIMATION_DELAY );
+        delay( BAR_ANIMATION_DELAY );
     }
     
     return;
