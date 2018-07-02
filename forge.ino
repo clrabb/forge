@@ -11,14 +11,16 @@
 #include <Wire.h>
 
 // HACK
+// Global.  Get rid of this eventually
 //
-unsigned long last_btn_pressed_mills;
+unsigned long g_last_btn_pressed_mills;
 void deal_with_buttons()
 {
     forge_data& fd = singleton_t< forge_data >::instance();
-    unsigned long btn_pressed_interval = ( millis() - last_btn_pressed_mills );
+    unsigned long now = millis();
+    unsigned long g_btn_pressed_interval = ( now - g_last_btn_pressed_mills );
 
-    if ( btn_pressed_interval < BTN_SLOW_CHANGE )
+    if ( g_btn_pressed_interval < BTN_SLOW_CHANGE )
         return;
 
     if ( digitalRead( UP_BTN_PIN ) )
@@ -30,7 +32,7 @@ void deal_with_buttons()
         fd.decrement_setpoint();
     }
 
-    last_btn_pressed_mills = millis();
+    g_last_btn_pressed_mills = now;
     return;
 }
 
@@ -115,7 +117,7 @@ void setup()
     init_singletons();
     init_displays();
     init_servo();
-    last_btn_pressed_mills = 0; // HACK
+    g_last_btn_pressed_mills = 0; // HACK
 
     // wait for MAX chip to stabilize
     //
