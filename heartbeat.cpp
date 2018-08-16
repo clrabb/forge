@@ -9,6 +9,7 @@ heartbeat::heartbeat( uint8_t led_pin, unsigned long mills_between_beats, unsign
     m_beat_length_mills( beat_length_mills )
 {
     pinMode( led_pin, OUTPUT );
+    pinMode( LED_BUILTIN, OUTPUT );
 }
 
 void
@@ -68,6 +69,7 @@ void
 heartbeat::turn_on()
 {
     digitalWrite( this->led_pin(), HIGH );
+    digitalWrite( LED_BUILTIN, HIGH );
 
     this->last_state_change_mills( millis() );
     return;
@@ -77,6 +79,7 @@ void
 heartbeat::turn_off()
 {
     digitalWrite( this->led_pin(), LOW );   
+    digitalWrite( LED_BUILTIN, LOW );
     this->last_state_change_mills( millis() );
 
     return;

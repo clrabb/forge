@@ -11,10 +11,6 @@
 class disp
 {
 private:
-    // Number of leds in the bar 
-    //
-    static const int NUM_BAR_LEDS = 24;
-    
     // Member vars
     //
     seven_seg_display* m_temp_display;

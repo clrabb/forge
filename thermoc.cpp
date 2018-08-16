@@ -25,6 +25,9 @@ thermoc::read_f()
     this->last_temp_read( t );
     this->last_read_mills( mills_now );
 
+    Serial.print( "reading tc: " );
+    Serial.println( t );
+
     return t;
 }
 

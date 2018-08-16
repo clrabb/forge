@@ -12,6 +12,7 @@
 //¨#define __DEBUG_PID__
 //#define __DEBUG_SERVO__
 //#define __DEBUG_BAR__
+//#define __DEBUG_TC__
 
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
@@ -51,8 +52,8 @@ static const int        TEMP_DISP_ADDR            = 0X73; // ID of the 'red' tem
 static const int        TEMP_DISP_BRIGHTNESS      = 3;    // between 0 and 15
 static const int        VALVE_DISP_ADDR           = 0X72; // ID of the LED bar
 static const int        VALVE_DISP_BRIGHTNESS     = 3;    // between 0 and 15
-static unsigned long    HEARTBEAT_DURATION_ON     = 20;   // milliseconds on
-static unsigned long    HEARTBEAT_DURATION_OFF    = 500;  // milliseconds off
+static unsigned long    HEARTBEAT_DURATION_ON     = 100;  // milliseconds on
+static unsigned long    HEARTBEAT_DURATION_OFF    = 1000; // milliseconds off
 static const uint8_t    NUM_LEDS_IN_BAR           = 24;   // Number of LEDs in the bar display
 static const short      BAR_ANIMATION_DELAY       = 0;    // Amount of time between each LED in the bar being lit up.  Gives an animation effect
 
@@ -68,7 +69,7 @@ static const unsigned long TEMP_DISP_REFRESH_TIME     = 3000;
 static const unsigned long VALVE_DISP_REFRESH_TIME    = 500;
 
 /* ---------------- BUTTON CONSTANTS ---------- */
-static const int BTN_SLOW_CHANGE = 100;
+static const int BTN_SLOW_CHANGE = 300;
 
 #endif FORGE_TYPES_H
 
