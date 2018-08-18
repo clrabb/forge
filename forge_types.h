@@ -28,8 +28,8 @@ typedef PID                   pid_v1;
 typedef unsigned short        setpoint_t;
 
 /* --------------- PINS ----------------------*/
-static const int     UP_BTN_PIN         = 2;    // Pin for the 'up' button
-static const int     DN_BTN_PIN         = 3;    // Pin for the 'down' button
+static const int     BTN_UP_PIN         = 2;    // Pin for the 'up' button
+static const int     BTN_DN_PIN         = 3;    // Pin for the 'down' button
 static const int     PWR_LED_PIN        = 4;    // Pin for the Power led
 static const int     HEARTBEAT_LED_PIN  = 5;    // Pin for the Heartbeat LED
 static const int     THERM_DO           = 6;    // Data out from the MAX6675 module
@@ -51,7 +51,7 @@ static const int        SP_DISP_BRIGHTNESS        = 3;    // between 0 and 15
 static const int        TEMP_DISP_ADDR            = 0X73; // ID of the 'red' temperature led display
 static const int        TEMP_DISP_BRIGHTNESS      = 3;    // between 0 and 15
 static const int        VALVE_DISP_ADDR           = 0X72; // ID of the LED bar
-static const int        VALVE_DISP_BRIGHTNESS     = 3;    // between 0 and 15
+static const int        VALVE_DISP_BRIGHTNESS     = 3;    // between 0 and 1s
 static unsigned long    HEARTBEAT_DURATION_ON     = 100;  // milliseconds on
 static unsigned long    HEARTBEAT_DURATION_OFF    = 1000; // milliseconds off
 static const uint8_t    NUM_LEDS_IN_BAR           = 24;   // Number of LEDs in the bar display
@@ -60,7 +60,7 @@ static const short      BAR_ANIMATION_DELAY       = 0;    // Amount of time betw
 /* ----------------- PID CONSTANTS -------------*/
 static const double        PID_RANGE_MIN   = SERVO_MIN;
 static const double        PID_RANGE_MAX   = SERVO_MAX;
-static const unsigned long PID_SAMPLE_TIME = 200; // Milliseconds 
+static const unsigned long PID_SAMPLE_TIME = 200; // Millisecondss
 
 /* ----------------- LED REFRESH TIMES --------- */
 static const unsigned long DEFAULT_DISP_REFRESH_TIME  = 500;
@@ -69,7 +69,9 @@ static const unsigned long TEMP_DISP_REFRESH_TIME     = 3000;
 static const unsigned long VALVE_DISP_REFRESH_TIME    = 500;
 
 /* ---------------- BUTTON CONSTANTS ---------- */
-static const int BTN_SLOW_CHANGE = 300;
+static const int BTN_SPEEDUP_MILLS = 200;
+static char* BTN_UP_KEY = "UP BUTTON";
+static char* BTN_DN_KEY = "DOWN BUTTON";
 
 #endif FORGE_TYPES_H
 

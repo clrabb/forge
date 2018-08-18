@@ -7,33 +7,16 @@
 #include "disp.h"
 #include "heartbeat.h"
 #include "forge_servo.h"
+#include "button.h"
+#include "button_array.h"
 #include <arduino.h>
 #include <Wire.h>
 
-// HACK
-// Global.  Get rid of this eventually
-//
-unsigned long g_last_btn_pressed_mills;
 void deal_with_buttons()
 {
-    forge_data& fd = singleton_t< forge_data >::instance();
-    unsigned long now = millis();
-    unsigned long g_btn_pressed_interval = ( now - g_last_btn_pressed_mills );
-
-    if ( g_btn_pressed_interval < BTN_SLOW_CHANGE )
-        return;
-
-    if ( digitalRead( UP_BTN_PIN ) )
-    {
-        fd.increment_setpoint();
-    }
-    else if ( digitalRead( DN_BTN_PIN ) && fd.setpoint() > 0 )
-    {
-        fd.decrement_setpoint();
-    }
-
-    g_last_btn_pressed_mills = now;
-    return;
+    button_array& b = singleton_t< button_array >::instance();
+    
+    
 }
 
 void output_pid()
@@ -63,8 +46,8 @@ void init_pins()
 {   
     // Set up pin usage
     //
-    pinMode( UP_BTN_PIN,     INPUT  );
-    pinMode( DN_BTN_PIN,     INPUT  );
+    pinMode( BTN_UP_PIN,     INPUT  );
+    pinMode( BTN_DN_PIN,     INPUT  );
     pinMode( PWR_LED_PIN,    OUTPUT );
 
     return;
@@ -72,11 +55,17 @@ void init_pins()
 
 void init_singletons()
 {
-    singleton_t< thermoc >     tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
-    singleton_t< forge_data >  fdata( new forge_data() );    
-    singleton_t< disp >        d( new disp() );
-    singleton_t< forge_pid >   fpid( new forge_pid() );
-    singleton_t< forge_servo > servo( new forge_servo( SERVO_PIN ) );
+    singleton_t< thermoc >      tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
+    singleton_t< forge_data >   fdata( new forge_data() );    
+    singleton_t< disp >         d( new disp() );
+    singleton_t< forge_pid >    fpid( new forge_pid() );
+    singleton_t< forge_servo >  servo( new forge_servo( SERVO_PIN ) );
+
+    button_array* buttons = new button_array();
+    buttons->set_up_button( new button( BTN_UP_KEY ) );
+    buttons->set_dn_button( new button( BTN_DN_KEY ) );
+
+    singleton_t< button_array > b( buttons );
     
     return;
 }
@@ -117,7 +106,7 @@ void setup()
     init_singletons();
     init_displays();
     init_servo();
-    g_last_btn_pressed_mills = 0; // HACK
+    //g_last_btn_pressed_mills = 0; // HACK
 
     // wait for MAX chip to stabilize
     //
