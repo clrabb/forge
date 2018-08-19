@@ -8,8 +8,9 @@ class up_button : public button
 public:
     up_button( short pin );
 
-protected:
-    virtual void update_data_impl();
+public:
+    virtual void update_setpoint();
+
     
 private:
     up_button( const up_button& ); // COPY CTOR

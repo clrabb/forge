@@ -18,7 +18,7 @@ public:
     button* dn_button() { return m_dn_button; }
     void dn_button( button* btn ) { m_dn_button = btn; }
 
-    void update_data();
+    void update_buttons();
 
 private:
     button_array( const button_array& );                // copy ctor

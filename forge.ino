@@ -7,16 +7,20 @@
 #include "disp.h"
 #include "heartbeat.h"
 #include "forge_servo.h"
-#include "button.h"
+#include "up_button.h"
+#include "down_button.h"
 #include "button_array.h"
 #include <arduino.h>
 #include <Wire.h>
 
 void deal_with_buttons()
 {
-    button_array& b = singleton_t< button_array >::instance();
+    Serial.println("in deal_with_buttons()");
     
-    
+    button_array& buttons = singleton_t< button_array >::instance();
+    buttons.update_buttons();
+
+    return;
 }
 
 void output_pid()
@@ -62,8 +66,8 @@ void init_singletons()
     singleton_t< forge_servo >  servo( new forge_servo( SERVO_PIN ) );
 
     button_array* buttons = new button_array();
-    buttons->set_up_button( new button( BTN_UP_KEY ) );
-    buttons->set_dn_button( new button( BTN_DN_KEY ) );
+    buttons->up_button( new up_button( BTN_UP_PIN ) );
+    buttons->dn_button( new down_button( BTN_DN_PIN ) );
 
     singleton_t< button_array > b( buttons );
     

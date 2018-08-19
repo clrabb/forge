@@ -1,26 +1,50 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
+#include "button_state.h"
+
 class button
 {
 private:
-    static const unsigned long HOLD_DOWN_DELAY_INTERVAL = 500;  
-    unsigned long m_initial_pressed_mills = 0; 
-    short m_button_pin;
+    short m_pin;
+    button_state* m_current_state;
+    button_state* m_btn_unpushed;
+    button_state* m_btn_pushed;
+    button_state* m_btn_latched;
     
 public:
-    button( short BUTTON_PIN );
-    unsigned long initial_pressed_mills() { return m_initial_pressed_mills; }
-    void initial_pressed_mills( unsigned long mills ) { m_initial_pressed_mills = mills; }
+    button( short pin );
+    short pin() { return m_pin; }
 
-    short button_pin() { return m_button_pin; }
+    void update();
 
+    button_state* current_state() { return m_current_state; }
+    void current_state( button_state* state ) { m_current_state = state; }
+
+    button_state* unpushed_state() { return m_btn_unpushed; }
+    void unpushed_state( button_state* state ) { m_btn_unpushed = state; }
+
+    button_state* pushed_state() { return m_btn_pushed; }
+    void pushed_state( button_state* state ) { m_btn_pushed = state; }
+
+    button_state* latched_state() { return m_btn_latched; }
+    void latched_state( button_state* state ) { m_btn_latched = state; }
+
+    //------------------------------------------
+    // 
+    // Virtual methods
+    //
+    //------------------------------------------
+    virtual void update_setpoint() = 0;
+        
+    //------------------------------------------
+    // 
     // Testing
     //
-    bool is_pressed();
-    bool is_still_pressed();
-    bool is_not_pressed() { return !( this->is_pressed() ); }
-    
+    //------------------------------------------
+    bool is_pushed();
+    bool is_latched();
+    bool is_unpushed();
 
 private:
     button( const button& );

@@ -69,9 +69,9 @@ static const unsigned long TEMP_DISP_REFRESH_TIME     = 3000;
 static const unsigned long VALVE_DISP_REFRESH_TIME    = 500;
 
 /* ---------------- BUTTON CONSTANTS ---------- */
-static const int BTN_SPEEDUP_MILLS = 200;
-static char* BTN_UP_KEY = "UP BUTTON";
-static char* BTN_DN_KEY = "DOWN BUTTON";
+static const int BTN_LATCHED_MILLS = 200;
+static const int MAX_SETPOINT = 9999;
+static const int MIN_SETPOINT = 0;
 
 #endif FORGE_TYPES_H
 

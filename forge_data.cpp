@@ -46,8 +46,9 @@ forge_data::current_pid_output( double output )
 void
 forge_data::increment_setpoint()
 {
-    // Not logging because this is called from inside interrupt
-    //
+    if ( this->setpoint() == MAX_SETPOINT )
+        return;
+        
     this->last_sp_changed_mills( millis() );
     ++m_setpoint;
 
@@ -57,6 +58,9 @@ forge_data::increment_setpoint()
 void 
 forge_data::decrement_setpoint()
 {
+    if ( this->setpoint() == MIN_SETPOINT )
+        return; 
+        
     this->last_sp_changed_mills( millis() );
     --m_setpoint;
 }
