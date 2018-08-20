@@ -15,7 +15,6 @@
 
 void deal_with_buttons()
 {
-    Serial.println( "In forge::deal_with_buttons" );
     button_array& buttons = singleton_t< button_array >::instance();
     buttons.update_buttons();
 

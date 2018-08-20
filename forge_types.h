@@ -68,8 +68,8 @@ static const unsigned long TEMP_DISP_REFRESH_TIME     = 3000;
 static const unsigned long VALVE_DISP_REFRESH_TIME    = 500;
 
 /* ---------------- BUTTON CONSTANTS ---------- */
-static const int BTN_LATCHED_MILLS = 1500;
-static const int BTN_UPDATE_SP_DELAY = 100; // Time beteween setpoint updates in fast mode.
+static const int BTN_LATCHED_MILLS = 700;
+static const int BTN_UPDATE_SP_DELAY = 50; // Time beteween setpoint updates in fast mode.
 static const int MAX_SETPOINT = 9999;
 static const int MIN_SETPOINT = 0;
 
