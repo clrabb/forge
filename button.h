@@ -19,16 +19,16 @@ public:
     void update();
 
     button_state* current_state() { return m_current_state; }
-    void current_state( button_state* state ) { m_current_state = state; }
+    void current_state( button_state* state ) { state->reset_state(); m_current_state = state; }
 
     button_state* unpressed_state() { return m_btn_unpressed; }
-    void unpressed_state( button_state* state ) { m_btn_unpressed= state; }
+    void unpressed_state( button_state* state ) { state->reset_state(); m_btn_unpressed= state; }
 
     button_state* pressed_state() { return m_btn_pressed; }
-    void pressed_state( button_state* state ) { m_btn_pressed = state; }
+    void pressed_state( button_state* state ) { state->reset_state(); m_btn_pressed = state; }
 
     button_state* latched_state() { return m_btn_latched; }
-    void latched_state( button_state* state ) { m_btn_latched = state; }
+    void latched_state( button_state* state ) { state->reset_state(); m_btn_latched = state; }
 
     //------------------------------------------
     // 
