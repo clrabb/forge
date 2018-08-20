@@ -2,59 +2,113 @@
 #include "button.h"
 #include "forge_data.h"
 #include "singleton_t.h"
+#include "arduino.h"
+
+/* -------------------- BASE -------------------- */
 
 void
-button_state_unpushed::button_pressed( button* btn )
+button_state::update( button* btn )
 {
-    Serial.println( "in button_state_unpushed::button_pressed()" );
-    this->update_setpoint( btn );
-    btn->current_state( btn->pushed_state() );   
-    
+    ( digitalRead( btn->pin() ) == HIGH )
+        ? this->button_pressed( btn )
+        : this->button_unpressed( btn )
+    ;
+
     return;
 }
 
 void
-button_state_unpushed::update_setpoint( button* btn )
+button_state::switch_to_pressed( button* btn )
 {
-    forge_data& fd = singleton_t< forge_data >::instance();
+    this->clear_state();
+    btn->current_state( btn->pressed_state() );
+
+    return;
+}
+
+void 
+button_state::switch_to_unpressed( button* btn )
+{
+    this->clear_state();
+    btn->current_state( btn->unpressed_state() );
+
+    return;
+}
+
+void 
+button_state::switch_to_latched( button* btn )
+{
+    this->clear_state();
+    btn->current_state( btn->latched_state() );
+
+    return;
+}
+
+/* -------------------- PUSHED -------------------- */
+
+unsigned long 
+button_state_pressed::mills_since_first_pressed()
+{
+    return millis() - this->first_pressed_mills();
+}
+
+void
+button_state_pressed::button_unpressed( button* btn )
+{
+    this->switch_to_unpressed( btn );
+
+    return;
+}
+
+void
+button_state_pressed::clear_state() 
+{
+    button_state::clear_state();
+    this->first_pressed_mills( 0 );
+
+    return;
+}
+
+button_state_pressed::button_state_pressed()
+{
+    this->first_pressed_mills( 0 );
+}
+
+void
+button_state_pressed::button_pressed( button* btn )
+{
+    Serial.println( "In button_state_pushed::button_pressed()" );
+    if ( digitalRead( btn->pin() ) == LOW )
+    {
+        this->switch_to_unpressed( btn );
+    }
+
+    return;
+}
+
+/* -------------------- UNPUSHED -------------------- */
+
+void
+button_state_unpressed::button_pressed( button* btn )
+{
+    Serial.println( "In button_state_unpressed::button_pressed()" );
     btn->update_setpoint();
-
-    return;
-}
-
-
-
-void
-button_state_pushed::button_pressed( button* btn )
-{
-    this->update_setpoint( btn );
-    btn->current_state( btn->unpushed_state() );
-
+    this->switch_to_pressed( btn ); 
+  
     return;
 }
 
 void
-button_state_pushed::update_setpoint( button* btn )
+button_state_unpressed::button_unpressed( button* btn )
 {
-    if ( this->has_updated_setpoint() )
-        return;
-
-    forge_data& fd = singleton_t< forge_data >::instance();
-    fd.increment_setpoint();
-
+    // I'm already unpresed
+    //
     return;
 }
 
 
-void
-button_state_latched::button_pressed( button* btn )
-{
-        
-}
+/* -------------------- LATCHED -------------------- */
 
-void
-button_state_latched::update_setpoint( button* btn )
-{
-    return this;
-}
+
+
 

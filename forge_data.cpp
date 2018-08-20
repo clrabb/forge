@@ -9,27 +9,11 @@ forge_data::current_temp( temp_t new_temp )
 {
     if ( m_current_temp == new_temp )
     {
-#ifdef __T_DEBUG__     
-        Serial.print( "forge_data::current_temp(temp_t); Old temp same as new temp.  Old: ");
-        Serial.print( m_current_temp );
-        Serial.print( " New: " );
-        Serial.println( new_temp );
-#endif // __T_DEBUG__
         return;
     }
 
-
     this->last_temp_changed_mills( millis() );
     this->m_current_temp = new_temp;
-
-#ifdef __DEBUG__
-    // Stupid logging framework doesn't deal with doubles???
-    //
-    Serial.print( "Setting temp to: " );
-    Serial.print( new_temp );
-    Serial.print( ". Old temp was: " );
-    Serial.println( this->m_current_temp );
-#endif
 
     return;
 }

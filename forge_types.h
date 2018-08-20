@@ -6,7 +6,6 @@
 // serial out.  It will also inflate the size of the code space
 // to something like the twinky in ghostbusters
 //
-#define DISABLE_LOGGING
 // #define __T_DEBUG__
 //#define __DEBUG__
 //¨#define __DEBUG_PID__
@@ -69,7 +68,7 @@ static const unsigned long TEMP_DISP_REFRESH_TIME     = 3000;
 static const unsigned long VALVE_DISP_REFRESH_TIME    = 500;
 
 /* ---------------- BUTTON CONSTANTS ---------- */
-static const int BTN_LATCHED_MILLS = 200;
+static const int BTN_LATCHED_MILLS = 1500;
 static const int MAX_SETPOINT = 9999;
 static const int MIN_SETPOINT = 0;
 

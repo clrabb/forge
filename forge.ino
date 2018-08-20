@@ -15,8 +15,7 @@
 
 void deal_with_buttons()
 {
-    Serial.println("in deal_with_buttons()");
-    
+    Serial.println( "In forge::deal_with_buttons" );
     button_array& buttons = singleton_t< button_array >::instance();
     buttons.update_buttons();
 
@@ -101,7 +100,6 @@ void setup()
     
     static const int MAX6675_INIT_STABALIZE_WAIT = 2000;
     static const int BAUD_RATE = 9600;
-
     Serial.begin( BAUD_RATE );
 
     // All the various initializing needed

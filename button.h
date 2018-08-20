@@ -8,8 +8,8 @@ class button
 private:
     short m_pin;
     button_state* m_current_state;
-    button_state* m_btn_unpushed;
-    button_state* m_btn_pushed;
+    button_state* m_btn_unpressed;
+    button_state* m_btn_pressed;
     button_state* m_btn_latched;
     
 public:
@@ -21,11 +21,11 @@ public:
     button_state* current_state() { return m_current_state; }
     void current_state( button_state* state ) { m_current_state = state; }
 
-    button_state* unpushed_state() { return m_btn_unpushed; }
-    void unpushed_state( button_state* state ) { m_btn_unpushed = state; }
+    button_state* unpressed_state() { return m_btn_unpressed; }
+    void unpressed_state( button_state* state ) { m_btn_unpressed= state; }
 
-    button_state* pushed_state() { return m_btn_pushed; }
-    void pushed_state( button_state* state ) { m_btn_pushed = state; }
+    button_state* pressed_state() { return m_btn_pressed; }
+    void pressed_state( button_state* state ) { m_btn_pressed = state; }
 
     button_state* latched_state() { return m_btn_latched; }
     void latched_state( button_state* state ) { m_btn_latched = state; }
