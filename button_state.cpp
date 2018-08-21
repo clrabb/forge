@@ -12,12 +12,10 @@ button_state::update( button* btn )
     ( digitalRead( btn->pin() ) == HIGH )
         ? this->button_pressed( btn )
         : this->button_unpressed( btn )
-  ;
+    ;
 
     return;
 }
-
-
 
 void
 button_state::switch_to_pressed( button* btn )
@@ -99,13 +97,24 @@ button_state_pressed::should_latch()
     unsigned long interval = this->mills_since_first_pressed();
     bool should_latch = ( interval > BTN_LATCHED_MILLS );
 
-  return should_latch;
+    return should_latch;
 }
 
 bool
 button_state_pressed::is_first_pressed()
 {
     return !( this->has_updated_setpoint() );
+}
+
+void 
+button_state_pressed::switch_to_latched_if_needed( button* btn )
+{
+    if ( this->should_latch() )
+    {
+        this->switch_to_latched( btn );
+    }
+
+    return;
 }
 
 void
@@ -118,13 +127,10 @@ button_state_pressed::button_pressed( button* btn )
     }
     else
     {
-        if ( this->should_latch() )
-        {
-            this->switch_to_latched( btn );
-        }
+        this->switch_to_latched_if_needed( btn );
     }
 
-  return;
+    return;
 }
 
 

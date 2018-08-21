@@ -50,6 +50,7 @@ private:
     bool            should_latch();
     bool            has_updated_setpoint() { return m_has_updated_setpoint; }
     void            has_updated_setpoint( bool updated ) { m_has_updated_setpoint = updated; }
+    void            switch_to_latched_if_needed( button* btn );
     
 protected:
     unsigned long   mills_since_first_pressed();
