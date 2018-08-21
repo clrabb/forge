@@ -15,13 +15,13 @@ button::button( short pin )
 }
 
 bool
-button::is_pushed()
+button::is_pressed()
 {
     return this->current_state()->is_pressed();
 }
 
 bool
-button::is_unpushed()
+button::is_unpressed()
 {
     return this->current_state()->is_unpressed();
 }

@@ -42,9 +42,9 @@ public:
     // Testing
     //
     //------------------------------------------
-    bool is_pushed();
+    bool is_unpressed();
+    bool is_pressed();
     bool is_latched();
-    bool is_unpushed();
 
 private:
     button( const button& );
