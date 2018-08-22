@@ -41,7 +41,7 @@ button_state::switch_to_latched( button* btn )
     return;
 }
 
-/* -------------------- UNPUSHED -------------------- */
+/* -------------------- UNPRESSED -------------------- */
 
 void
 button_state_unpressed::button_pressed( button* btn )
@@ -58,7 +58,7 @@ button_state_unpressed::button_unpressed( button* btn )
     return;
 }
 
-/* -------------------- PUSHED -------------------- */
+/* -------------------- PRESSED -------------------- */
 
 button_state_pressed::button_state_pressed()
 {
