@@ -40,11 +40,13 @@ static const int     THERM_DO           = 6;    // Data out from the MAX6675 mod
 static const int     THERM_CS           = 7;    // Chip select from same
 static const int     THERM_CLK          = 8;    // Clock from same
 
-/* ----------------- SERVO CONSTANCES ----------*/
-static const int     SERVO_DEAD_MILLS     = 500;
-static const int     SERVO_PIN            = 9;
-static const int     SERVO_MIN            = 11;
-static const int     SERVO_MAX            = 175;
+/* ----------------- SERVO CONSTANTS ----------*/
+static const int     SERVO_DEBOUNCE_INTERVAL    = 500;
+static const int     SERVO_MILLS_BETWEEN_TICKS  = 10;
+static const uint8_t SERVO_MOVE_STEP_SIZE       = 1; // step size in degrees
+static const int     SERVO_PIN                  = 9;
+static const int     SERVO_MIN                  = 11;
+static const int     SERVO_MAX                  = 175;
 
 /* ----------------- SETPOINT CONSTANTS --------*/
 static const int SP_START = 50;                           // Beginning setpoint
@@ -64,7 +66,7 @@ static const short      BAR_ANIMATION_DELAY       = 0;    // Amount of time betw
 /* ----------------- PID CONSTANTS -------------*/
 static const double        PID_RANGE_MIN   = SERVO_MIN;
 static const double        PID_RANGE_MAX   = SERVO_MAX;
-static const unsigned long PID_SAMPLE_TIME = 200; // Milliseconds
+static const unsigned long PID_SAMPLE_TIME = 1000; // Milliseconds
 
 /* ----------------- LED REFRESH TIMES --------- */
 static const unsigned long DEFAULT_DISP_REFRESH_TIME  = 500;
@@ -74,7 +76,7 @@ static const unsigned long VALVE_DISP_REFRESH_TIME    = 500;
 
 /* ---------------- BUTTON CONSTANTS ---------- */
 static const int BTN_LATCHED_MILLS = 700;
-static const int BTN_UPDATE_SP_DELAY = 5; // Time beteween setpoint updates in fast mode.
+static const int BTN_UPDATE_SP_DELAY = 20; // Time beteween setpoint updates in fast mode.
 static const int MAX_SETPOINT = 9999;
 static const int MIN_SETPOINT = 0;
 
