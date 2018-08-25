@@ -95,10 +95,7 @@ void init_pid()
 
 void setup() 
 {
-    delay( 5000 );
-    
-    static const int MAX6675_INIT_STABALIZE_WAIT = 2000;
-    static const int BAUD_RATE = 9600;
+    delay( INIT_BOOT_STABALIZE_WAIT );
     Serial.begin( BAUD_RATE );
 
     // All the various initializing needed
@@ -107,7 +104,6 @@ void setup()
     init_singletons();
     init_displays();
     init_servo();
-    //g_last_btn_pressed_mills = 0; // HACK
 
     // wait for MAX chip to stabilize
     //

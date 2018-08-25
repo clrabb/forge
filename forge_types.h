@@ -26,6 +26,11 @@ typedef Adafruit_GFX          gfx;
 typedef PID                   pid_v1;
 typedef unsigned short        setpoint_t;
 
+/* --------------- GENERAL CONSTANTS -----------*/
+static const int MAX6675_INIT_STABALIZE_WAIT = 2000;
+static const int BAUD_RATE                   = 9600;
+static const int INIT_BOOT_STABALIZE_WAIT    = 5000;
+
 /* --------------- PINS ----------------------*/
 static const int     BTN_UP_PIN         = 2;    // Pin for the 'up' button
 static const int     BTN_DN_PIN         = 3;    // Pin for the 'down' button
@@ -59,7 +64,7 @@ static const short      BAR_ANIMATION_DELAY       = 0;    // Amount of time betw
 /* ----------------- PID CONSTANTS -------------*/
 static const double        PID_RANGE_MIN   = SERVO_MIN;
 static const double        PID_RANGE_MAX   = SERVO_MAX;
-static const unsigned long PID_SAMPLE_TIME = 200; // Millisecondss
+static const unsigned long PID_SAMPLE_TIME = 200; // Milliseconds
 
 /* ----------------- LED REFRESH TIMES --------- */
 static const unsigned long DEFAULT_DISP_REFRESH_TIME  = 500;
@@ -69,7 +74,7 @@ static const unsigned long VALVE_DISP_REFRESH_TIME    = 500;
 
 /* ---------------- BUTTON CONSTANTS ---------- */
 static const int BTN_LATCHED_MILLS = 700;
-static const int BTN_UPDATE_SP_DELAY = 50; // Time beteween setpoint updates in fast mode.
+static const int BTN_UPDATE_SP_DELAY = 5; // Time beteween setpoint updates in fast mode.
 static const int MAX_SETPOINT = 9999;
 static const int MIN_SETPOINT = 0;
 
