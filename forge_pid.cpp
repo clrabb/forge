@@ -1,17 +1,17 @@
 #include "forge_pid.h"
+#include "forge_types.h"
 
 
 double
 forge_pid::compute( double input, double setpoint )
 {
-    static const int GAP_THRESHOLD = 10;
     m_input    = input;
     m_setpoint = setpoint;
 
     double gap = abs( setpoint - input );
-    ( gap < GAP_THRESHOLD )
-        ? m_pid_guts.SetTunings( CON_KP, CON_KI, CON_KD ) // Close, use conservative
-        : m_pid_guts.SetTunings( AGG_KP, AGG_KI, AGG_KD ) // Far, use aggresive
+    ( gap < PID_GAP_THRESHOLD )
+        ? m_pid_guts.SetTunings( PID_CON_KP, PID_CON_KI, PID_CON_KD ) // Close, use conservative
+        : m_pid_guts.SetTunings( PID_AGG_KP, PID_AGG_KI, PID_AGG_KD ) // Far, use aggresive
     ;
    
     m_pid_guts.Compute();

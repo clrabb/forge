@@ -6,14 +6,7 @@
 class forge_pid
 {
 public:
-    // constants
-    //
-    const double AGG_KP = 4;
-    const double AGG_KI = 2;
-    const double AGG_KD = 1;
-    const double CON_KP = 1;
-    const double CON_KI = 0.05;
-    const double CON_KD = 0.25;
+
     
 public:
     // Ctor
@@ -23,9 +16,9 @@ public:
                 &( this->m_input ), 
                 &( this->m_output ),
                 &( this->m_setpoint ),
-                CON_KP,
-                CON_KI,
-                CON_KD,
+                PID_CON_KP,
+                PID_CON_KI,
+                PID_CON_KD,
                 DIRECT
         )
     {}

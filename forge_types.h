@@ -45,8 +45,13 @@ static const int     SERVO_DEBOUNCE_INTERVAL    = 500;
 static const int     SERVO_MILLS_BETWEEN_TICKS  = 10;
 static const uint8_t SERVO_MOVE_STEP_SIZE       = 1; // step size in degrees
 static const int     SERVO_PIN                  = 9;
+static const int     SERVO_MIN                  = 18;
+static const int     SERVO_MAX                  = 177;
+/*
+ * Constants for 'large' servo
 static const int     SERVO_MIN                  = 11;
 static const int     SERVO_MAX                  = 175;
+*/
 
 /* ----------------- SETPOINT CONSTANTS --------*/
 static const int SP_START = 50;                           // Beginning setpoint
@@ -64,9 +69,17 @@ static const uint8_t    NUM_LEDS_IN_BAR           = 24;   // Number of LEDs in t
 static const short      BAR_ANIMATION_DELAY       = 0;    // Amount of time between each LED in the bar being lit up.  Gives an animation effect
 
 /* ----------------- PID CONSTANTS -------------*/
-static const double        PID_RANGE_MIN   = SERVO_MIN;
-static const double        PID_RANGE_MAX   = SERVO_MAX;
-static const unsigned long PID_SAMPLE_TIME = 1000; // Milliseconds
+static const double        PID_RANGE_MIN     = SERVO_MIN;
+static const double        PID_RANGE_MAX     = SERVO_MAX;
+static const unsigned long PID_SAMPLE_TIME   = 200; // Milliseconds
+static const int           PID_GAP_THRESHOLD = 20;
+static const double        PID_AGG_KP        = 4;
+static const double        PID_AGG_KI        = 2;
+static const double        PID_AGG_KD        = 1;
+static const double        PID_CON_KP        = 1;
+static const double        PID_CON_KI        = 0.05;
+static const double        PID_CON_KD        = 0.50;
+
 
 /* ----------------- LED REFRESH TIMES --------- */
 static const unsigned long DEFAULT_DISP_REFRESH_TIME  = 500;
@@ -75,10 +88,10 @@ static const unsigned long TEMP_DISP_REFRESH_TIME     = 3000;
 static const unsigned long VALVE_DISP_REFRESH_TIME    = 500;
 
 /* ---------------- BUTTON CONSTANTS ---------- */
-static const int BTN_LATCHED_MILLS = 700;
-static const int BTN_UPDATE_SP_DELAY = 20; // Time beteween setpoint updates in fast mode.
-static const int MAX_SETPOINT = 9999;
-static const int MIN_SETPOINT = 0;
+static const int BTN_LATCHED_MILLS   = 700;
+static const int BTN_UPDATE_SP_DELAY = 20;      // Time beteween setpoint updates in fast mode.
+static const int MAX_SETPOINT        = 1800;    // The highest temp the buttons will let you go
+static const int MIN_SETPOINT        = 0;       // The lowest temp the buttons will let you go
 
 #endif FORGE_TYPES_H
-
+   

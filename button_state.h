@@ -63,7 +63,7 @@ public:
     virtual bool is_unpressed() { return false; }
     virtual bool is_pressed()   { return true;  }
     virtual bool is_latched()   { return false; }
-    virtual void    reset_state() override;
+    virtual void reset_state() override;
 
 private:
     button_state_pressed( button_state_pressed& );
