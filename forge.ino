@@ -25,23 +25,19 @@ void output_pid()
 {
     // Snag any needed globals
     //
-    forge_data&  fdata  = singleton_t< forge_data >::instance();
-    forge_pid&   fpid   = singleton_t< forge_pid >::instance();
+    forge_data&  fdata  = singleton_t< forge_data  >::instance();
+    forge_pid&   fpid   = singleton_t< forge_pid   >::instance();
     forge_servo& fservo = singleton_t< forge_servo >::instance();
 
     uint8_t output = fpid.compute( fdata.current_temp(), fdata.setpoint() );
 
-
     uint8_t percent_open = fservo.target_percent_open();
     
-    if ( fservo.target_percent_open() != output )
-    {
-        fservo.move_to( output );
-    }
-    else
-    {
-        fservo.tick();
-    }
+    ( fservo.target_percent_open() != output )
+        ? fservo.move_to( output )
+        : fservo.tick()
+        
+    ;
         
     fdata.current_pid_output( output );
 

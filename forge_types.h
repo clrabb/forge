@@ -1,18 +1,6 @@
 #ifndef FORGE_TYPES_H
 #define FORGE_TYPES_H
 
-// Don't comment this line out unless
-// you want to just spam the snot out of the 
-// serial out.  It will also inflate the size of the code space
-// to something like the twinky in ghostbusters
-//
-// #define __T_DEBUG__
-//#define __DEBUG__
-//¨#define __DEBUG_PID__
-//#define __DEBUG_SERVO__
-//#define __DEBUG_BAR__
-//#define __DEBUG_TC__
-
 #include <Adafruit_LEDBackpack.h>
 #include <Adafruit_GFX.h>
 #include <PID_v1.h>
@@ -77,8 +65,8 @@ static const double        PID_AGG_KP        = 4;
 static const double        PID_AGG_KI        = 2;
 static const double        PID_AGG_KD        = 1;
 static const double        PID_CON_KP        = 1;
-static const double        PID_CON_KI        = 0.05;
-static const double        PID_CON_KD        = 0.50;
+static const double        PID_CON_KI        = 0.50;
+static const double        PID_CON_KD        = 0.75;
 
 
 /* ----------------- LED REFRESH TIMES --------- */

@@ -109,9 +109,6 @@ bar_display::animate_up_to( signed short num_to_light )
     
     for ( int i = 0; i < delta; ++i )
     {
-        // TODO
-        // remove the delay
-        //
         this->turn_on_led( i + num_lit );
         delay( BAR_ANIMATION_DELAY );
     }
@@ -127,9 +124,6 @@ bar_display::animate_down_to( signed short num_to_light )
     
     for ( int i = 0; i < delta; ++i )
     {
-        // TODO
-        // remove the delay
-        //
         this->turn_off_led( ( num_lit - i ) - 1 );
         delay( BAR_ANIMATION_DELAY );
     }

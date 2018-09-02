@@ -36,7 +36,7 @@ public:
     virtual void button_unpressed( button* btn );
     virtual bool is_unpressed() { return true;  }
     virtual bool is_pressed()   { return false; }
-    virtual bool is_latched()  { return false; }
+    virtual bool is_latched()   { return false; }
 };
 
 class button_state_pressed: public button_state
