@@ -33,13 +33,20 @@ static const int     SERVO_DEBOUNCE_INTERVAL    = 500;
 static const int     SERVO_MILLS_BETWEEN_TICKS  = 10;
 static const uint8_t SERVO_MOVE_STEP_SIZE       = 1; // step size in degrees
 static const int     SERVO_PIN                  = 9;
+
+/*
+ * Constants for 'small' servo
+ * 
 static const int     SERVO_MIN                  = 18;
 static const int     SERVO_MAX                  = 177;
+*/
+
 /*
  * Constants for 'large' servo
+*/
 static const int     SERVO_MIN                  = 11;
 static const int     SERVO_MAX                  = 175;
-*/
+
 
 /* ----------------- SETPOINT CONSTANTS --------*/
 static const int SP_START = 50;                           // Beginning setpoint
