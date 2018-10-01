@@ -1,4 +1,3 @@
-
 #include "thermoc.h"
 #include "forge_types.h"
 #include "singleton_t.h"
