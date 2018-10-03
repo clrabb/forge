@@ -29,16 +29,17 @@ static const int     THERM_CS           = 7;    // Chip select from same
 static const int     THERM_CLK          = 8;    // Clock from same
 
 /* ----------------- SERVO CONSTANTS ----------*/
-static const int     SERVO_DEBOUNCE_INTERVAL    = 500;
-static const int     SERVO_MILLS_BETWEEN_TICKS  = 10;
+static const int     SERVO_DEBOUNCE_INTERVAL    = 0;
+static const int     SERVO_MILLS_BETWEEN_TICKS  = 0; // Depricated
 static const uint8_t SERVO_MOVE_STEP_SIZE       = 1; // step size in degrees
 static const int     SERVO_PIN                  = 9;
 
 /*
  * Constants for 'small' servo
  * 
-static const int     SERVO_MIN                  = 18;
-static const int     SERVO_MAX                  = 177;
+ * 
+static const int     SERVO_MIN                  = 20;
+static const int     SERVO_MAX                  = 170;
 */
 
 /*
@@ -66,7 +67,7 @@ static const short      BAR_ANIMATION_DELAY       = 0;    // Amount of time betw
 /* ----------------- PID CONSTANTS -------------*/
 static const double        PID_RANGE_MIN     = SERVO_MIN;
 static const double        PID_RANGE_MAX     = SERVO_MAX;
-static const unsigned long PID_SAMPLE_TIME   = 200; // Milliseconds
+static const unsigned long PID_SAMPLE_TIME   = 2000; // Milliseconds
 static const int           PID_GAP_THRESHOLD = 20;
 static const double        PID_AGG_KP        = 4;
 static const double        PID_AGG_KI        = 2;

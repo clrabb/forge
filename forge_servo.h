@@ -45,7 +45,7 @@ private:
 
     // -------------- MOVEMENT --------------------
     //
-    void move_impl();
+    void move_impl( uint8_t new_pos );
 
 
 private:

@@ -5,6 +5,7 @@
 void 
 forge_servo::move_to( uint8_t percent_open )
 {
+    
     if ( percent_open < SERVO_MIN || percent_open > SERVO_MAX )
         return;
 
@@ -12,8 +13,9 @@ forge_servo::move_to( uint8_t percent_open )
     unsigned long interval = mills - this->last_command_mills();
     if ( interval > SERVO_DEBOUNCE_INTERVAL )
     {
-        this->target_percent_open( percent_open );
+        //this->target_percent_open( percent_open );
         this->last_command_mills( mills );
+        this->move_impl( percent_open );
     }
 
     return;
@@ -22,6 +24,7 @@ forge_servo::move_to( uint8_t percent_open )
 void 
 forge_servo::tick()
 {
+    /*
     unsigned long mills = millis();
     unsigned long interval = millis() - this->last_moved_mills();
     if ( interval > SERVO_MILLS_BETWEEN_TICKS )
@@ -29,6 +32,9 @@ forge_servo::tick()
         this->move_impl();
         this->last_moved_mills( mills );
     }
+
+    return;
+    */
 
     return;
 }
@@ -45,10 +51,11 @@ forge_servo::calculate_next_position( uint8_t current_pos, uint8_t target_pos )
 }
 
 void
-forge_servo::move_impl()
+forge_servo::move_impl( uint8_t new_pos )
 {
     Servo& servo = this->servo_impl();
 
+/*
     uint8_t current_pos = servo.read();
     uint8_t target_pos  = this->target_percent_open();
         
@@ -59,6 +66,8 @@ forge_servo::move_impl()
 
     this->servo_impl().write( new_pos );
     this->last_moved_mills( millis() );
+*/
+    servo.write( new_pos );
 
     return;
 }
