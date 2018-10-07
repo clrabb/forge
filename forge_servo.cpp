@@ -1,7 +1,16 @@
 #include "forge_servo.h"
 #include "forge_types.h"
 
-
+// NOTE:
+// There was (is) code that was intended to slow down the movement of the server.  This proved to be
+// counterproductive and was disabled by commenting out some code.  However, to remove it completely 
+// would require new tests of the PID.  As there is only one PID in existence and I don't have it
+// I can't safetly remove the references entirely.  Perhaps if I get a chance I'll do it next time
+// I'm in the same place as the device
+//
+// Chuck Rabb
+// 10/7/2018
+//
 void 
 forge_servo::move_to( uint8_t percent_open )
 {
