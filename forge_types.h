@@ -6,7 +6,7 @@
 #include <PID_v1.h>
 
 /* -------------- TYPEDEFS ----------- */
-typedef double                temp_t;               // This section creates the typedefs using in the program.
+typedef double                temp_t;               // This section creates the typedefs used in the program.
 typedef Adafruit_LEDBackpack  ada_led_display;      // A typedef is used as a shorthand or to give more context to a
 typedef Adafruit_7segment     ada_seven_seg;        // base type.  For example you could type 'double' instead of 'temp_t'
 typedef Adafruit_24bargraph   ada_led_bar;          // but the temp_t label makes the code more readable.
@@ -31,9 +31,9 @@ static const int     THERM_CS           = 7;    // Chip select from same
 static const int     THERM_CLK          = 8;    // Clock from same
 
 /* ----------------- SERVO CONSTANTS ----------*/
-static const int     SERVO_DEBOUNCE_INTERVAL    = 0; // Depricated - though still in the code.  Leave as 0
-static const int     SERVO_MILLS_BETWEEN_TICKS  = 0; // Depricated
-static const uint8_t SERVO_MOVE_STEP_SIZE       = 1; // step size in degrees
+static const int     SERVO_DEBOUNCE_INTERVAL    = 0;    // Depricated - though still in the code.  Leave as 0
+static const int     SERVO_MILLS_BETWEEN_TICKS  = 0;    // Depricated - how far to move on each tick
+static const uint8_t SERVO_MOVE_STEP_SIZE       = 1;    // Depricated - step size in degrees 
 static const int     SERVO_PIN                  = 9;
 static const int     SERVO_MIN                  = 11;   // The server being used is relatively cheap and does not
 static const int     SERVO_MAX                  = 175;  // have a full 180 degrees of motion.  These are the limits
@@ -59,9 +59,10 @@ static const short      BAR_ANIMATION_DELAY       = 0;    // Amount of time betw
 /* ----------------- PID CONSTANTS -------------*/
 static const double        PID_RANGE_MIN     = SERVO_MIN;   // Used to map the current temp to the bar display
 static const double        PID_RANGE_MAX     = SERVO_MAX;   // Same
-static const unsigned long PID_SAMPLE_TIME   = 500;         // Time between each same the PID is fed
+static const unsigned long PID_SAMPLE_TIME   = 500;         // Time between each PID refresh (sample rate)
 static const int           PID_GAP_THRESHOLD = 50;          // Difference in fahrenheit between current read temp and when
-                                                            // to switch to and 'aggressive' tuning.
+                                                            // to switch from a conservative to an 'aggressive' tuning.
+                                                            // We are not limited to two states.  This can be expanded if needed
                                                                 
 static const double        PID_AGG_KP        = 4;           // These constants are the PID tunables.  There are currently two tunnable settings, 
 static const double        PID_AGG_KI        = 2;           // one for agressive tuning and one for conservative tuning (PID_AGG_.. AND PID_CON_...
@@ -78,8 +79,8 @@ static const unsigned long TEMP_DISP_REFRESH_TIME     = 3000;
 static const unsigned long VALVE_DISP_REFRESH_TIME    = 500;
 
 /* ---------------- BUTTON CONSTANTS ---------- */
-static const int BTN_LATCHED_MILLS   = 700;     // how long you have to hold the button down before it speeds up
-static const int BTN_UPDATE_SP_DELAY = 20;      // Time beteween setpoint updates in fast mode.
+static const int BTN_LATCHED_MILLS   = 700;     // How long you need to hold the button down before it speeds up
+static const int BTN_UPDATE_SP_DELAY = 20;      // Time beteween setpoint updates in fast mode (speed of the 'fast' mode)
 static const int MAX_SETPOINT        = 1800;    // The highest temp the buttons will let you go
 static const int MIN_SETPOINT        = 0;       // The lowest temp the buttons will let you go
 
