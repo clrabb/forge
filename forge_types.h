@@ -35,7 +35,7 @@ static const int     SERVO_DEBOUNCE_INTERVAL    = 0;    // Depricated - though s
 static const int     SERVO_MILLS_BETWEEN_TICKS  = 0;    // Depricated - how far to move on each tick
 static const uint8_t SERVO_MOVE_STEP_SIZE       = 1;    // Depricated - step size in degrees 
 static const int     SERVO_PIN                  = 9;
-static const int     SERVO_MIN                  = 11;   // The server being used is relatively cheap and does not
+static const int     SERVO_MIN                  = 11;   // The servo being used is relatively cheap and does not
 static const int     SERVO_MAX                  = 175;  // have a full 180 degrees of motion.  These are the limits
                                                         // found by empiracle observations.  If you try to move the
                                                         // servo beyond these points it will hit a wall and keep trying
