@@ -3,6 +3,13 @@
 
 #include "button_state.h"
 
+
+//---------------------------------------------------------------
+// Abstract base class of all buttons in the system.
+// Much of the 'brains' of the buttons are in the state objects
+// (see 'State Patter').  
+//---------------------------------------------------------------
+
 class button
 {
 private:
