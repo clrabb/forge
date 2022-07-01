@@ -5,6 +5,7 @@
 #include <Adafruit_GFX.h>
 #include <PID_v1.h>
 
+
 /* -------------- TYPEDEFS ----------- */
 typedef double                temp_t;               // This section creates the typedefs used in the program.
 typedef Adafruit_LEDBackpack  ada_led_display;      // A typedef is used as a shorthand or to give more context to a
@@ -29,20 +30,11 @@ static const int     HEARTBEAT_LED_PIN  = 5;    // Pin for the Heartbeat LED
 static const int     THERM_DO           = 6;    // Data out from the MAX6675 module
 static const int     THERM_CS           = 7;    // Chip select from same
 static const int     THERM_CLK          = 8;    // Clock from same
+static const int     FAN_PIN            = 9;    // Fan PWM pins
 
-/* ----------------- SERVO CONSTANTS ----------*/
-static const int     SERVO_DEBOUNCE_INTERVAL    = 0;    // Depricated - though still in the code.  Leave as 0
-static const int     SERVO_MILLS_BETWEEN_TICKS  = 0;    // Depricated - how far to move on each tick
-static const uint8_t SERVO_MOVE_STEP_SIZE       = 1;    // Depricated - step size in degrees 
-static const int     SERVO_PIN                  = 9;
-static const int     SERVO_MIN                  = 11;   // The servo being used is relatively cheap and does not
-static const int     SERVO_MAX                  = 175;  // have a full 180 degrees of motion.  These are the limits
-                                                        // found by empiracle observations.  If you try to move the
-                                                        // servo beyond these points it will hit a wall and keep trying
-                                                        // to move (but never getting there)
 
 /* ----------------- SETPOINT CONSTANTS --------*/
-static const int SP_START = 300;                           // Beginning setpoint
+static const int SP_START = 100;                           // Beginning setpoint
 
 /* ------------------ LED CONSTANTS ------------ */
 static const int        SP_DISP_ADDR              = 0x70; // ID of the 'blue' setpoint led display

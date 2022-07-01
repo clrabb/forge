@@ -64,18 +64,6 @@ forge_servo::move_impl( uint8_t new_pos )
 {
     Servo& servo = this->servo_impl();
 
-/*
-    uint8_t current_pos = servo.read();
-    uint8_t target_pos  = this->target_percent_open();
-        
-    if ( current_pos == target_pos ) 
-        return;
-
-    uint8_t new_pos = this->calculate_next_position( current_pos, target_pos );
-
-    this->servo_impl().write( new_pos );
-    this->last_moved_mills( millis() );
-*/
     servo.write( new_pos );
 
     return;
@@ -92,4 +80,3 @@ forge_servo::initialize_movement()
 
     return;
 }
-

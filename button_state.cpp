@@ -2,7 +2,7 @@
 #include "button.h"
 #include "forge_data.h"
 #include "singleton_t.h"
-#include "arduino.h"
+//#include "arduino.h"
 
 /* -------------------- BASE -------------------- */
 
@@ -155,5 +155,3 @@ button_state_latched::reset_state()
     button_state_pressed::reset_state();
     this->last_sp_change_mills( 0 );
 }
-
-

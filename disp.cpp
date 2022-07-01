@@ -4,7 +4,7 @@
 #include "forge_data.h"
 #include "thermoc.h"
 #include "forge_pid.h"
-#include <arduino.h>
+//#include <arduino.h>
 
 
 
@@ -126,4 +126,3 @@ disp::display_temp()
     
     return;
 }
-

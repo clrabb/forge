@@ -2,7 +2,7 @@
 #include "forge_types.h"
 #include "forge_data.h"
 #include "button_state.h"
-#include <arduino.h>
+//#include <arduino.h>
 
 button::button( short pin )
     :m_pin( pin )
@@ -39,4 +39,3 @@ button::update()
     return;
     
 }
-

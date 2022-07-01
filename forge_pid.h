@@ -43,9 +43,8 @@ private:
     // Disable copy ctor and assignment op
     //
     forge_pid( const forge_pid& );
-    forge_pid operator=(const & forge_pid );
+    forge_pid operator=(const forge_pid& );
     
 };
 
 #endif // FORGE_PID_H
-
