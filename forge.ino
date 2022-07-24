@@ -9,6 +9,7 @@
 #include "up_button.h"
 #include "down_button.h"
 #include "button_array.h"
+#include "forge_fan.h"
 //#include <arduino.h>
 #include <Wire.h>
 
@@ -16,31 +17,6 @@ void deal_with_buttons()
 {
   button_array& buttons = singleton_t< button_array >::instance();
   buttons.update_buttons();
-
-  return;
-}
-
-void output_pid()
-{
-  // Snag any needed globals
-  //
-  forge_data&  fdata  = singleton_t< forge_data  >::instance();
-  forge_pid&   fpid   = singleton_t< forge_pid   >::instance();
-  forge_servo& fservo = singleton_t< forge_servo >::instance();
-
-  uint8_t output = fpid.compute( fdata.current_temp(), fdata.setpoint() );
-
-  uint8_t percent_open = fservo.target_percent_open();
-
-
-  ( fservo.target_percent_open() != output )
-    ? fservo.move_to( output )
-    : fservo.tick()
-
-  ;
-
-
-  fdata.current_pid_output( output );
 
   return;
 }
@@ -70,8 +46,8 @@ void init_singletons()
   singleton_t< thermoc >      tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
   singleton_t< forge_data >   fdata( new forge_data() );
   singleton_t< disp >         d( new disp() );
-  singleton_t< forge_pid >    fpid( new forge_pid() );
-  singleton_t< forge_servo >  servo( new forge_servo( SERVO_PIN ) );
+  singleton_t< forge_pid >  fpid( new forge_pid() );
+  singleton_t< forge_fan >    fan( new forge_fan( FAN_PIN ) );
 
 
   button_array* buttons = new button_array();
@@ -89,6 +65,11 @@ void init_displays()
   d.init();
 
   return;
+}
+
+void init_fan()
+{
+    // dummy method for now
 }
 
 void init_pid()
@@ -114,7 +95,8 @@ void setup()
   init_pins();
   init_singletons();
   init_displays();
-  init_servo();
+  //init_servo();
+  init_fan();
 
   // wait for MAX chip to stabilize
   //
@@ -145,6 +127,34 @@ void setup()
   return;
 }
 
+
+void output_pid()
+{
+  // Snag any needed globals
+  //
+  forge_data&  fdata  = singleton_t< forge_data  >::instance();
+  forge_pid&   fpid   = singleton_t< forge_pid   >::instance();
+  //forge_servo& fservo = singleton_t< forge_servo >::instance();
+  forge_fan&   fan    = singleton_t< forge_fan >::instance();
+
+  uint8_t output = fpid.compute( fdata.current_temp(), fdata.setpoint() );
+  fan.set_percent( output );
+  fan.tick();
+
+/*
+  uint8_t percent_open = fservo.target_percent_open();
+
+  ( fservo.target_percent_open() != output )
+    ? fservo.move_to( output )
+    : fservo.tick()
+
+  ;
+*/
+
+  fdata.current_pid_output( output );
+
+  return;
+}
 
 void loop()
 {

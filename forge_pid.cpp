@@ -5,6 +5,14 @@
 double
 forge_pid::compute( double input, double setpoint )
 {
+    unsigned long current_time = millis();
+    if ( current_time - this->last_time_change() < PID_SAMPLE_TIME )
+    {
+        // Early out
+        //
+        return;
+    }
+
     m_input    = input;
     m_setpoint = setpoint;
 
@@ -15,6 +23,8 @@ forge_pid::compute( double input, double setpoint )
     ;
    
     m_pid_guts.Compute();
+
+    this->last_time_change( current_time );
 
     return m_output;
 }
@@ -48,4 +58,3 @@ forge_pid::set_output_limits( double min, double max )
 {
     m_pid_guts.SetOutputLimits( min, max );
 }
-

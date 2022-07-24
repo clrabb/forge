@@ -29,15 +29,18 @@ public:
     void initial_values( double input, double setpoint, int sample_time );
     void initial_values( double input, double setpoint );
     void set_output_limits( double min, double max );
+    unsigned long last_time_change() {return m_last_time_change; }
+    void last_time_change( unsigned long time_change ) { m_last_time_change = time_change; }
     void start();
 
 private:
     // Member vars
     //
     pid_v1 m_pid_guts;
-    double m_input;
-    double m_output;
-    double m_setpoint;
+    unsigned long   m_last_time_change;
+    double          m_input;
+    double          m_output;
+    double          m_setpoint;
 
 private:
     // Disable copy ctor and assignment op

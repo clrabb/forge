@@ -32,6 +32,23 @@ static const int     THERM_CS           = 7;    // Chip select from same
 static const int     THERM_CLK          = 8;    // Clock from same
 static const int     FAN_PIN            = 9;    // Fan PWM pins
 
+/*----------------- FAN CONSTANT ----------*/
+static const int FAN_INIT_PERCENT_OPEN  = 0;
+static const int FAN_RANGE_MIN          = 0;
+static const int FAN_RANGE_MAX          = 255;
+
+
+/* ----------------- SERVO CONSTANTS ----------*/
+static const int     SERVO_DEBOUNCE_INTERVAL    = 0;    // Depricated - though still in the code.  Leave as 0
+static const int     SERVO_MILLS_BETWEEN_TICKS  = 0;    // Depricated - how far to move on each tick
+static const uint8_t SERVO_MOVE_STEP_SIZE       = 1;    // Depricated - step size in degrees 
+static const int     SERVO_PIN                  = 9;
+static const int     SERVO_MIN                  = 11;   // The servo being used is relatively cheap and does not
+static const int     SERVO_MAX                  = 175;  // have a full 180 degrees of motion.  These are the limits
+                                                        // found by empiracle observations.  If you try to move the
+                                                        // servo beyond these points it will hit a wall and keep trying
+                                                        // to move (but never getting there)
+
 
 /* ----------------- SETPOINT CONSTANTS --------*/
 static const int SP_START = 100;                           // Beginning setpoint
@@ -49,19 +66,19 @@ static const uint8_t    NUM_LEDS_IN_BAR           = 24;   // Number of LEDs in t
 static const short      BAR_ANIMATION_DELAY       = 0;    // Amount of time between each LED in the bar being lit up.  Gives an animation effect
 
 /* ----------------- PID CONSTANTS -------------*/
-static const double        PID_RANGE_MIN     = SERVO_MIN;   // Used to map the current temp to the bar display
-static const double        PID_RANGE_MAX     = SERVO_MAX;   // Same
-static const unsigned long PID_SAMPLE_TIME   = 500;         // Time between each PID refresh (sample rate)
-static const int           PID_GAP_THRESHOLD = 50;          // Difference in fahrenheit between current read temp and when
-                                                            // to switch from a conservative to an 'aggressive' tuning.
-                                                            // We are not limited to two states.  This can be expanded if needed
+static const double        PID_RANGE_MIN     = FAN_RANGE_MIN;   // Used to map the current temp to the bar display
+static const double        PID_RANGE_MAX     = FAN_RANGE_MAX;   // Same
+static const unsigned long PID_SAMPLE_TIME   = 500;             // Time between each PID refresh (sample rate)
+static const int           PID_GAP_THRESHOLD = 30;              // Difference in fahrenheit between current read temp and when
+                                                                // to switch from a conservative to an 'aggressive' tuning.
+                                                                // We are not limited to two states.  This can be expanded if needed
                                                                 
-static const double        PID_AGG_KP        = 4;           // These constants are the PID tunables.  There are currently two tunnable settings, 
-static const double        PID_AGG_KI        = 2;           // one for agressive tuning and one for conservative tuning (PID_AGG_.. AND PID_CON_...
-static const double        PID_AGG_KD        = 1;           // For more information on this see 
-static const double        PID_CON_KP        = 1;           // http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/ 
-static const double        PID_CON_KI        = 0.50;        // for more information
-static const double        PID_CON_KD        = 0.75;
+static const double        PID_AGG_KP        = 800;               // These constants are the PID tunables.  There are currently two tunnable settings, 
+static const double        PID_AGG_KI        = 0;               // one for agressive tuning and one for conservative tuning (PID_AGG_.. AND PID_CON_...
+static const double        PID_AGG_KD        = 0;               // For more information on this see 
+static const double        PID_CON_KP        = 200;               // http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/ 
+static const double        PID_CON_KI        = 20;            // for more information
+static const double        PID_CON_KD        = 0;
 
 
 /* ----------------- LED REFRESH TIMES --------- */

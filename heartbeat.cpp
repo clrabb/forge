@@ -1,5 +1,7 @@
 #include "heartbeat.h"
 #include "forge_types.h"
+#include "forge_data.h"
+#include "singleton_t.h"
 //#include <arduino.h>
 
 heartbeat::heartbeat( uint8_t led_pin, unsigned long mills_between_beats, unsigned long beat_length_mills )
@@ -61,6 +63,13 @@ heartbeat::on_beat()
     {
         this->turn_off();
     }
+
+    forge_data& d = singleton_t< forge_data >::instance();
+
+    // Print for debugging
+    // Not normally used
+    //
+    // Serial.println( d.current_pid_output() );
 
     return;
 }
