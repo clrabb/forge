@@ -73,12 +73,27 @@ static const int           PID_GAP_THRESHOLD = 30;              // Difference in
                                                                 // to switch from a conservative to an 'aggressive' tuning.
                                                                 // We are not limited to two states.  This can be expanded if needed
                                                                 
+/* These were so big it basically made a thermostat rather than a pid
+ *  
 static const double        PID_AGG_KP        = 800;               // These constants are the PID tunables.  There are currently two tunnable settings, 
-static const double        PID_AGG_KI        = 0;               // one for agressive tuning and one for conservative tuning (PID_AGG_.. AND PID_CON_...
-static const double        PID_AGG_KD        = 0;               // For more information on this see 
+static const double        PID_AGG_KI        = 0;                 // one for agressive tuning and one for conservative tuning (PID_AGG_.. AND PID_CON_...
+static const double        PID_AGG_KD        = 0;                 // For more information on this see 
 static const double        PID_CON_KP        = 200;               // http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/ 
-static const double        PID_CON_KI        = 20;            // for more information
+static const double        PID_CON_KI        = 20;                // for more information
 static const double        PID_CON_KD        = 0;
+**/
+
+
+/*
+ *  These values taken from https://forum.arduino.cc/t/pid-library/333329/4
+ */
+static const double        PID_AGG_KP        = 4;                 // These constants are the PID tunables.  There are currently two tunnable settings, 
+static const double        PID_AGG_KI        = 0.2;               // one for agressive tuning and one for conservative tuning (PID_AGG_.. AND PID_CON_...
+static const double        PID_AGG_KD        = 1;                 // For more information on this see 
+static const double        PID_CON_KP        = 1;                 // http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/ 
+static const double        PID_CON_KI        = 0.05;              // for more information
+static const double        PID_CON_KD        = 0.25;
+
 
 
 /* ----------------- LED REFRESH TIMES --------- */

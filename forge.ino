@@ -46,7 +46,7 @@ void init_singletons()
   singleton_t< thermoc >      tc( new thermoc( THERM_DO, THERM_CS, THERM_CLK ) );
   singleton_t< forge_data >   fdata( new forge_data() );
   singleton_t< disp >         d( new disp() );
-  singleton_t< forge_pid >  fpid( new forge_pid() );
+  singleton_t< forge_pid >    fpid( new forge_pid() );
   singleton_t< forge_fan >    fan( new forge_fan( FAN_PIN ) );
 
 
