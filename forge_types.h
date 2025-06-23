@@ -69,9 +69,10 @@ static const short      BAR_ANIMATION_DELAY       = 0;    // Amount of time betw
 static const double        PID_RANGE_MIN     = FAN_RANGE_MIN;   // Used to map the current temp to the bar display
 static const double        PID_RANGE_MAX     = FAN_RANGE_MAX;   // Same
 static const unsigned long PID_SAMPLE_TIME   = 500;             // Time between each PID refresh (sample rate)
-static const int           PID_GAP_THRESHOLD = 30;              // Difference in fahrenheit between current read temp and when
-                                                                // to switch from a conservative to an 'aggressive' tuning.
+static const int           PID_GAP_THRESHOLD = 10;              // Difference in fahrenheit between current read temp and when
+static const int           PID_THERMO_OFFSET = -10;             // to switch from a conservative to an 'aggressive' tuning.
                                                                 // We are not limited to two states.  This can be expanded if needed
+                                                                // Adding offset to calibrate probe
                                                                 
 /* These were so big it basically made a thermostat rather than a pid
  *  
@@ -87,10 +88,10 @@ static const double        PID_CON_KD        = 0;
 /*
  *  These values taken from https://forum.arduino.cc/t/pid-library/333329/4
  */
-static const double        PID_AGG_KP        = 4;                 // These constants are the PID tunables.  There are currently two tunnable settings, 
+static const double        PID_AGG_KP        = 2;                 // These constants are the PID tunables.  There are currently two tunnable settings, 
 static const double        PID_AGG_KI        = 0.2;               // one for agressive tuning and one for conservative tuning (PID_AGG_.. AND PID_CON_...
 static const double        PID_AGG_KD        = 1;                 // For more information on this see 
-static const double        PID_CON_KP        = 1;                 // http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/ 
+static const double        PID_CON_KP        = .5;                 // http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/ 
 static const double        PID_CON_KI        = 0.05;              // for more information
 static const double        PID_CON_KD        = 0.25;
 

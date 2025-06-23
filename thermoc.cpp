@@ -21,7 +21,7 @@ thermoc::read_f()
     if ( ( mills_now - this->last_read_mills() ) < thermoc::MIN_TC_READ_TIME )
         return this->last_temp_read();
 
-    temp_t t = this->m_tc.readFahrenheit();
+    temp_t t = ( this->m_tc.readFahrenheit() ) + PID_THERMO_OFFSET;
     this->last_temp_read( t );
     this->last_read_mills( mills_now );
 
@@ -34,4 +34,3 @@ thermoc::read_c()
 {
     return this->m_tc.readCelsius();
 }
-
