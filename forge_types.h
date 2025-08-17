@@ -70,7 +70,7 @@ static const double        PID_RANGE_MIN     = FAN_RANGE_MIN;   // Used to map t
 static const double        PID_RANGE_MAX     = FAN_RANGE_MAX;   // Same
 static const unsigned long PID_SAMPLE_TIME   = 500;             // Time between each PID refresh (sample rate)
 static const int           PID_GAP_THRESHOLD = 10;              // Difference in fahrenheit between current read temp and when
-static const int           PID_THERMO_OFFSET = -10;             // to switch from a conservative to an 'aggressive' tuning.
+static const int           PID_THERMO_OFFSET = 0;               // to switch from a conservative to an 'aggressive' tuning.
                                                                 // We are not limited to two states.  This can be expanded if needed
                                                                 // Adding offset to calibrate probe
                                                                 
